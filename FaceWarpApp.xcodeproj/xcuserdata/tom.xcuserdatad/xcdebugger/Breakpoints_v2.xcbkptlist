@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FaceWarpApp/OpenGLView.swift"
-            timestampString = "464633473.326422"
+            filePath = "FaceWarpApp/PHIdlib.mm"
+            timestampString = "464804057.850235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "642"
-            endingLineNumber = "642"
-            landmarkName = "findLandmarksInFaces()"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "-UIImageFromCVMat:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -54,11 +54,11 @@ var Indices: [GLubyte] = [
     0, 2, 3,
 ]
 
-func synchronize(lockObj: AnyObject!, closure: ()->()){
-    objc_sync_enter(lockObj)
-    closure()
-    objc_sync_exit(lockObj)
-}
+//func synchronize(lockObj: AnyObject!, closure: ()->()){
+//    objc_sync_enter(lockObj)
+//    closure()
+//    objc_sync_exit(lockObj)
+//}
 
 //helper extensions to pass arguments to GL land
 extension Array {
@@ -138,6 +138,9 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var pixelBuffer : CVImageBuffer? = nil
     
+    var flipPixelBuffer : CVPixelBufferRef? = nil
+    var flipTexture : CVOpenGLESTextureRef? = nil
+    
     var smallPixelBuffer : CVPixelBufferRef? = nil
     var smallTexture : CVOpenGLESTextureRef? = nil
     let smallTextureScale = 4
@@ -148,7 +151,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var detector : CIDetector? = nil
     
     var q_high_p : dispatch_queue_t? = nil
-    var faces : [CIFaceFeature]? = nil
+    var faces : [Rectangle] = []
     
     let faceLock = dispatch_queue_create("com.phi.FaceLock", nil)
     
@@ -186,6 +189,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.setupFrameBuffer()
         
         self.setupRenderTexture()
+        self.setupFlipTexture()
         self.setupSmallTexture()
 
         self.compileShaders()
@@ -305,6 +309,54 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
     }
     
+    func setupFlipTexture() {
+        let options = [
+            kCVPixelBufferCGImageCompatibilityKey as String: false,
+            kCVPixelBufferCGBitmapContextCompatibilityKey as String: false,
+            kCVPixelFormatOpenGLESCompatibility as String: true,
+            kCVPixelBufferIOSurfacePropertiesKey as String: [NSObject: NSObject]()
+        ]
+        
+        let height = 1280
+        let width = 720
+        
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(height), Int(width), kCVPixelFormatType_32BGRA, options, &flipPixelBuffer)
+        if status != kCVReturnSuccess {
+            print("Pixel buffer with image failed creating CVPixelBuffer with error \(status)")
+            exit(1)
+        }
+        guard let _ = flipPixelBuffer else {
+            print("Pixel buffer did not allocate")
+            exit(1)
+        }
+        
+        var texCacheRef : CVOpenGLESTextureCacheRef?
+        let cacheStatus = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, nil, self.context, nil, &texCacheRef)
+        if cacheStatus != kCVReturnSuccess {
+            print("Creating texture cache failed with error \(cacheStatus)")
+            exit(1)
+        }
+        
+        let res = CVOpenGLESTextureCacheCreateTextureFromImage(
+            kCFAllocatorDefault,
+            texCacheRef!,
+            flipPixelBuffer!,
+            nil,
+            GLenum(GL_TEXTURE_2D),
+            GLint(GL_RGBA),
+            GLsizei(height),
+            GLsizei(width),
+            GLenum(GL_BGRA),
+            GLenum(GL_UNSIGNED_BYTE),
+            0,
+            &flipTexture)
+        guard res == kCVReturnSuccess else {
+            print("Create texture from image failed with code \(res)")
+            exit(1)
+        }
+        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(flipTexture!), 0);
+    }
+    
     func setupSmallTexture() {
         let options = [
             kCVPixelBufferCGImageCompatibilityKey as String: false,
@@ -321,7 +373,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             print("Pixel buffer with image failed creating CVPixelBuffer with error \(status)")
             exit(1)
         }
-        guard let _ = renderPB else {
+        guard let _ = smallPixelBuffer else {
             print("Pixel buffer did not allocate")
             exit(1)
         }
@@ -350,8 +402,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             print("Create texture from image failed with code \(res)")
             exit(1)
         }
-        
-        renderTexName = CVOpenGLESTextureGetName(smallTexture!)
+
         glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(smallTexture!), 0);
     }
     
@@ -488,7 +539,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         session = AVCaptureSession()
         
         //get from cam
-        var videoDevice = AVCaptureDevice.devices()[1] as! AVCaptureDevice
+        let videoDevice = AVCaptureDevice.devices()[1]
         for format in videoDevice.formats! {
             for frameRate in format.videoSupportedFrameRateRanges! {
                 print(frameRate)
@@ -590,99 +641,55 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glBindVertexArrayOES(0)
     }
     
+    func renderWholeImageToFlipTexture() {
+        glBindVertexArrayOES(VAO)
+        glViewport(0, 0, GLint(CVPixelBufferGetWidth(flipPixelBuffer!)), GLint(CVPixelBufferGetHeight(flipPixelBuffer!)));
+        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(flipTexture!), 0);
+        glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
+        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+        glBindVertexArrayOES(0)
+    }
+    
     func findFacesInImage() {
-        if frameCounter < 2 {
-            frameCounter++
-        } else {
-            frameCounter = 0
-            let ciImage = CIImage(CVImageBuffer: smallPixelBuffer!)
-            dispatch_async(q_high_p!) {
-                let options : [String: AnyObject] = [
-                    CIDetectorAccuracy as String: CIDetectorAccuracyHigh,
-                    CIDetectorTracking as String: true,
-                    CIDetectorNumberOfAngles as String: 11,
-//                    CIDetectorImageOrientation as String: 3
-                ]
-                let features = self.detector?.featuresInImage(ciImage, options: options)
-                if let foundFaces = features {
-                    synchronize(self.faces) {
-                        if foundFaces.count > 0 {
-                            self.faces = foundFaces as? [CIFaceFeature]
-                        } else {
-                            self.faces = nil
-                        }
-                    }
-                }
-            }
+        CVPixelBufferLockBaseAddress(self.smallPixelBuffer!, 0)
+        let width = CVPixelBufferGetWidth(self.smallPixelBuffer!)
+        let height = CVPixelBufferGetHeight(self.smallPixelBuffer!)
+        let rowSize = CVPixelBufferGetBytesPerRow(self.smallPixelBuffer!)
+        let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.smallPixelBuffer!))
+        let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
+        let faceValues = self.faceFinder.facesInImage(img, withScale: Float(self.smallTextureScale)) as! [NSValue]
+        self.faces = []
+        for faceVal in faceValues {
+            self.faces.append(faceVal.rectangleValue)
         }
+        CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
     }
     
     func findLandmarksInFaces() {
-        var localFaces : [CIFaceFeature]? = nil
-        synchronize(self.faces) {
-            localFaces = self.faces
+        CVPixelBufferLockBaseAddress(self.flipPixelBuffer!, 0)
+        let width = CVPixelBufferGetWidth(self.flipPixelBuffer!)
+        let height = CVPixelBufferGetHeight(self.flipPixelBuffer!)
+        let rowSize = CVPixelBufferGetBytesPerRow(self.flipPixelBuffer!)
+        let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.flipPixelBuffer!))
+        let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
+        self.faceVertices = []
+        for face in faces {
+            let points = self.faceFinder.facePointsInImage(img, withRectangle: face) as! [NSValue]
+            self.fillFaceVertex(points)
         }
-//        dispatch_async(q_high_p!) {
-            if let foundFaces = localFaces {
-                CVPixelBufferLockBaseAddress(self.smallPixelBuffer!, 0)
-                let width = CVPixelBufferGetWidth(self.smallPixelBuffer!)
-                let height = CVPixelBufferGetHeight(self.smallPixelBuffer!)
-                let rowSize = CVPixelBufferGetBytesPerRow(self.smallPixelBuffer!)
-                let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.smallPixelBuffer!))
-                let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
-//                UIImageWriteToSavedPhotosAlbum(uiImageFromPixelBuffer(smallPixelBuffer!), nil, nil, nil)
-                
-//                exit(1)
-                for face in foundFaces {
-                    let points = self.faceFinder.facePointsInImage(img, withFeatures: face) as! [NSValue]
-//                    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-//                    written = true
-                    self.fillFaceVertex(points)
-                }
-                CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
-            }
-//        }
+        CVPixelBufferUnlockBaseAddress(self.flipPixelBuffer!, 0)
     }
-    
-//    func fillFaceVertex(rect : CGRect) {
-//        let x0 = Float(rect.origin.x)
-//        let y0 = Float(rect.origin.y)
-//        let x1 = x0 + Float(rect.size.height)
-//        let y1 = y0 + Float(rect.size.width)
-//        let xn0 = 2 * Float(rect.origin.x) / 1280.0 - 1
-//        let yn0 = 1 - 2 * Float(rect.origin.y) / 720.0
-//        let xn1 = 2 * (Float(rect.origin.x) + Float(rect.size.height)) / 1280.0 - 1
-//        let yn1 = 1 - 2 * (Float(rect.origin.y) + Float(rect.size.width)) / 720.0
-//        print(x0, y0, x1, y1)
-////        print(rect.o)
-//        faceVertices = [
-//            Coordinate(xyz: (xn0, yn0, 0), uv: (0, 0)),
-//            Coordinate(xyz: (xn0, yn1, 0), uv: (0, 1)),
-//            Coordinate(xyz: (xn1, yn1, 0), uv: (1, 1)),
-//            Coordinate(xyz: (xn1, yn0, 0), uv: (1, 0)),
-//        ]
-//    }
-    func fillFaceVertex(points : [NSValue]) {
 
-        let sfx : Float = 0.8
-        let sfy : Float = 0.6
+    func fillFaceVertex(points : [NSValue]) {
         
-        faceVertices = []
-        let spWidth = CVPixelBufferGetWidth(self.smallPixelBuffer!)
-        let spHeight = CVPixelBufferGetHeight(self.smallPixelBuffer!)
+        let smallTextureScale = 1 // naughty override for class variable!!!
+
+        let sfx : Float = 1.5
+        let sfy : Float = 1.9
         
-        var mean_x : Float = 0
-        var mean_y : Float = 0
-        var divby : Float = 0
-        for point_idx in 27..<48 {
-            divby++
-            mean_x += Float(points[point_idx].CGPointValue().x)
-            mean_y += Float(points[point_idx].CGPointValue().y)
-        }
-        mean_x /= divby
-        mean_y /= divby
-        print(mean_x, mean_y)
-        for point_idx in 0..<27 {
+        
+
+        for point_idx in 0..<36 {
             
             let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
             let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
@@ -691,28 +698,111 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let x = 2 * raw_xn - 1
             let y = 2 * raw_yn - 1
 
-//            print(x, y)
             faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
         }
         
-        for point_idx in 27..<points.count {
+        var mean_x1 : Float = 0
+        var mean_y1 : Float = 0
+        var divby1 : Float = 0
+        for point_idx in 36..<42 {
+            divby1++
+            mean_x1 += Float(points[point_idx].CGPointValue().x)
+            mean_y1 += Float(points[point_idx].CGPointValue().y)
+        }
+        mean_x1 /= divby1
+        mean_y1 /= divby1
+
+        
+        for point_idx in 36..<42 {
             let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
             let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
             
-            let mean_xn = mean_x / Float(1280 / smallTextureScale)
-            let mean_yn = mean_y / Float(720  / smallTextureScale)
+            let mean_xn1 = mean_x1 / Float(1280 / smallTextureScale)
+            let mean_yn1 = mean_y1 / Float(720  / smallTextureScale)
             
-            let scaled_xn = (raw_xn - mean_xn) * sfx + mean_xn
-            let scaled_yn = (raw_yn - mean_yn) * sfy + mean_yn
+            let scaled_xn = (raw_xn - mean_xn1) * sfx + mean_xn1
+            let scaled_yn = (raw_yn - mean_yn1) * sfy + mean_yn1
             
             let u = raw_xn
             let v = 1 - raw_yn
             let x = 2 * scaled_xn - 1
             let y = 2 * scaled_yn - 1
             
-            //            print(x, y)
             faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
         }
+        
+        var mean_x2 : Float = 0
+        var mean_y2 : Float = 0
+        var divby2 : Float = 0
+        for point_idx in 42..<48 {
+            divby2++
+            mean_x2 += Float(points[point_idx].CGPointValue().x)
+            mean_y2 += Float(points[point_idx].CGPointValue().y)
+        }
+        mean_x2 /= divby2
+        mean_y2 /= divby2
+        
+        
+        for point_idx in 42..<48 {
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            
+            let mean_xn2 = mean_x2 / Float(1280 / smallTextureScale)
+            let mean_yn2 = mean_y2 / Float(720  / smallTextureScale)
+            
+            let scaled_xn = (raw_xn - mean_xn2) * sfx + mean_xn2
+            let scaled_yn = (raw_yn - mean_yn2) * sfy + mean_yn2
+            
+            let u = raw_xn
+            let v = 1 - raw_yn
+            let x = 2 * scaled_xn - 1
+            let y = 2 * scaled_yn - 1
+            
+            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+        }
+        
+        var mean_x3 : Float = 0
+        var mean_y3 : Float = 0
+        var divby3 : Float = 0
+        for point_idx in 48..<points.count {
+            divby3++
+            mean_x3 += Float(points[point_idx].CGPointValue().x)
+            mean_y3 += Float(points[point_idx].CGPointValue().y)
+        }
+        mean_x3 /= divby3
+        mean_y3 /= divby3
+        
+        
+        for point_idx in 48..<points.count {
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            
+            let mean_xn3 = mean_x3 / Float(1280 / smallTextureScale)
+            let mean_yn3 = mean_y3 / Float(720  / smallTextureScale)
+            
+            let scaled_xn = (raw_xn - mean_xn3) * 1.2 + mean_xn3
+            let scaled_yn = (raw_yn - mean_yn3) * 1.5 + mean_yn3
+            
+            let u = raw_xn
+            let v = 1 - raw_yn
+            let x = 2 * scaled_xn - 1
+            let y = 2 * scaled_yn - 1
+            
+            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+        }
+
+        
+//        for point_idx in 48..<points.count {
+//            
+//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
+//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+//            let u = raw_xn
+//            let v = 1 - raw_yn
+//            let x = 2 * raw_xn - 1
+//            let y = 2 * raw_yn - 1
+//            
+//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+//        }
     }
     
     func setFaceVertices() {
@@ -728,7 +818,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             glBufferData(GLenum(GL_ARRAY_BUFFER), faceVertices.size(), faceVertices, GLenum(GL_STREAM_DRAW))
             glEnableVertexAttribArray(uvSlot)
             glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
-
+            
             glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), faceIndexBuffer)
             glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), FaceIndices.size(), FaceIndices, GLenum(GL_STATIC_DRAW))
             
@@ -738,16 +828,14 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func renderFaceToRenderTexture() {
-        glBindVertexArrayOES(VFaceAO);
-//        glPolygonMode(GL_FRONT_AND_BACK,GLenum(GL_LINE))
+        glBindVertexArrayOES(VFaceAO)
         if faceVertices.count > 0 {
             glViewport(0, 0, GLint(CVPixelBufferGetWidth(renderPB!)), GLint(CVPixelBufferGetHeight(renderPB!)));
             glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
             glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
             glDrawElements(GLenum(GL_TRIANGLES), GLsizei(FaceIndices.count), GLenum(GL_UNSIGNED_BYTE), nil)
         }
-        glBindVertexArrayOES(0);
-//        glPolygonMode(GL_FRONT_AND_BACK,GLEnum(GL_FILL))
+        glBindVertexArrayOES(0)
     }
     
     func renderRenderTextureToScreen() {
@@ -759,21 +847,16 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glBindVertexArrayOES(0)
     }
     func render() {
-//        let then = NSDate()
-        if !written {
-            renderWholeImageToSmallTexture()
-            findFacesInImage()
-            findLandmarksInFaces()
-        }
+        renderWholeImageToSmallTexture()
+        renderWholeImageToFlipTexture()
+        findFacesInImage()
+        findLandmarksInFaces()
         renderWholeImageToRenderTexture()
         setFaceVertices()
         renderFaceToRenderTexture()
-        
+
         renderRenderTextureToScreen()
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-        
-//        let delta = NSDate().timeIntervalSinceDate(then)
-//        print("That render took \(delta) seconds")
     }
 }
 

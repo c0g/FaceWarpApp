@@ -9,9 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 //#import "FaceWarpApp-Swift.h"
+#import "PHIRectangle.h"
 
 #ifndef PHIHarleyStreet_h
 #define PHIHarleyStreet_h
+
+
 
 typedef struct {
     uint8_t * pixels;
@@ -21,9 +24,11 @@ typedef struct {
     int rowSize;
 } CamImage;
 
+
 @interface FaceFinder : NSObject
 
--(NSArray *) facePointsInImage: (CamImage)image withFeatures: (CIFaceFeature *) box;
+-(NSArray *) facesInImage: (CamImage)image withScale: (float)scale;
+-(NSArray *) facePointsInImage: (CamImage)image withRectangle: (Rectangle)box;
 //-(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat;
 
 @end
