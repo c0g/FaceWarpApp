@@ -54,6 +54,7 @@ var Indices: [GLubyte] = [
     0, 2, 3,
 ]
 
+
 func synchronize(lockObj: AnyObject!, closure: ()->()){
     objc_sync_enter(lockObj)
     closure()
@@ -488,7 +489,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         session = AVCaptureSession()
         
         //get from cam
-        var videoDevice = AVCaptureDevice.devices()[1] as! AVCaptureDevice
+        let videoDevice = AVCaptureDevice.devices()[1] as! AVCaptureDevice
         for format in videoDevice.formats! {
             for frameRate in format.videoSupportedFrameRateRanges! {
                 print(frameRate)
@@ -496,7 +497,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         var input : AVCaptureDeviceInput? = nil
         do {
-            input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice)
+            input = try AVCaptureDeviceInput(device: videoDevice )
         } catch _ {
             print("Failed to get video input")
             exit(1);
