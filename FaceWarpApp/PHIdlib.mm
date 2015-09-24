@@ -12,6 +12,7 @@
 
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing.h>
+#include <dlib/filtering/kalman_filter.h>
 #include <dlib/image_io.h>
 #include <dlib/opencv.h>
 
@@ -36,6 +37,8 @@ Rectangle operator*(const Rectangle & rect, float scale) {
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
     dlib::frontal_face_detector detector;
+    NSMutableArray * facesAverage;
+    NSUInteger movingAverageCount;
     dlib::rectangle face_loc;
     int iter;
 }
@@ -47,6 +50,8 @@ Rectangle operator*(const Rectangle & rect, float scale) {
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"shape_predictor" ofType:@"dat"];
         detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
+        facesAverage = [[NSMutableArray alloc] init];
+        movingAverageCount = 0;
     }
     return self;
 };
@@ -114,6 +119,38 @@ Rectangle operator*(const Rectangle & rect, float scale) {
     for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
         [arr addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];
     }
+    
+//    if ( movingAverageCount == 0 )
+//    {
+//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
+//            [facesAverage addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];
+//        }
+//        movingAverageCount += 1;
+//        
+//    } else if (movingAverageCount < 4)
+//    {
+//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
+//            CGPoint tmp = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
+//            NSValue * nsTmp = [NSValue valueWithCGPoint:tmp];
+//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp];
+//           
+//        }
+//        movingAverageCount += 1;
+//    } else if (movingAverageCount == 4)
+//    {
+//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
+//            CGPoint tmp = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.75);
+//            NSValue * nsTmp = [NSValue valueWithCGPoint:tmp];
+//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp];
+//            CGPoint tmp2 = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
+//            NSValue * nsTmp2 = [NSValue valueWithCGPoint:tmp2];
+//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp2];
+//
+//            CGPoint tmp3 = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.25);
+//            NSValue * nsTmp3 = [NSValue valueWithCGPoint:tmp3];
+//            [arr replaceObjectAtIndex:pidx withObject:nsTmp3];
+//        }
+//    }
     return arr;
 }
 
@@ -124,5 +161,14 @@ Rectangle operator*(const Rectangle & rect, float scale) {
     return arr;
 }
 
+CGPoint CGPointAdd(CGPoint p1, CGPoint p2)
+{
+    return CGPointMake(p1.x + p2.x, p1.y + p2.y);
+}
+
+CGPoint CGPointAdjustScaling(CGPoint p1, double v1)
+{
+    return CGPointMake(p1.x * v1, p1.y * v1);
+}
 
 @end

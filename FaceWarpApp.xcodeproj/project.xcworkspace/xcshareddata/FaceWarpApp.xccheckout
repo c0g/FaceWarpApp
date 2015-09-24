@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>41A78227-D738-4212-BF36-5C137A6A43F4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FaceWarpApp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D2C25BD6F78102861E7914C2F29570AFE010A155</key>
+		<string>github.com:c0g/FaceWarpApp.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FaceWarpApp.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D2C25BD6F78102861E7914C2F29570AFE010A155</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:c0g/FaceWarpApp.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D2C25BD6F78102861E7914C2F29570AFE010A155</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D2C25BD6F78102861E7914C2F29570AFE010A155</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FaceWarpApp</string>
+		</dict>
+	</array>
+</dict>
+</plist>

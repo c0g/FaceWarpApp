@@ -60,6 +60,7 @@ var Indices: [GLubyte] = [
 //    objc_sync_exit(lockObj)
 //}
 
+
 //helper extensions to pass arguments to GL land
 extension Array {
     func size () -> Int {
@@ -547,7 +548,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         var input : AVCaptureDeviceInput? = nil
         do {
-            input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice)
+            input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice )
         } catch _ {
             print("Failed to get video input")
             exit(1);
