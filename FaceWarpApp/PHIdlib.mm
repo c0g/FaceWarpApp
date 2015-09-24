@@ -101,7 +101,7 @@
         }
         movingAverageCount += 1;
         
-    } else if (movingAverageCount < 3)
+    } else if (movingAverageCount < 4)
     {
         for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
             CGPoint tmp = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
@@ -110,17 +110,17 @@
            
         }
         movingAverageCount += 1;
-    } else if (movingAverageCount == 3)
+    } else if (movingAverageCount == 4)
     {
         for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-            CGPoint tmp = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.6666666666);
+            CGPoint tmp = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.75);
             NSValue * nsTmp = [NSValue valueWithCGPoint:tmp];
             [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp];
             CGPoint tmp2 = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
             NSValue * nsTmp2 = [NSValue valueWithCGPoint:tmp2];
             [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp2];
 
-            CGPoint tmp3 = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.333333334);
+            CGPoint tmp3 = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.25);
             NSValue * nsTmp3 = [NSValue valueWithCGPoint:tmp3];
             [arr replaceObjectAtIndex:pidx withObject:nsTmp3];
         }
