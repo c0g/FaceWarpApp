@@ -21,7 +21,7 @@
 		E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AAD1BAC442A00ACC953 /* Readme.md */; settings = {ASSET_TAGS = (); }; };
 		E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3ABE1BAC480500ACC953 /* libjpeg.a */; settings = {ASSET_TAGS = (); }; };
-		E28D3AC11BAC5BF800ACC953 /* PHIdlib.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* PHIdlib.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3 -ffast-math"; }; };
+		E28D3AC11BAC5BF800ACC953 /* PHIdlib.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* PHIdlib.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
 		E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */; };
 /* End PBXBuildFile section */
 
@@ -336,7 +336,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = YES;
+				GCC_FAST_MATH = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
@@ -368,8 +368,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = YES;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_FAST_MATH = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_LAPACK,
@@ -386,7 +386,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = phi.FaceWarpApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

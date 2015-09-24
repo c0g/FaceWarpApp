@@ -20,11 +20,15 @@
     dlib::shape_predictor predictor;
     dlib::frontal_face_detector detector;
     dispatch_queue_t concurrent_queue;
+    std::unique_ptr<double[]> dogget;
+    dlib::rectangle face_loc;
+    int iter;
 }
 
 -(FaceFinder *)init {
     self = [super init];
     if (self) {
+        iter = 0;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"shape_predictor" ofType:@"dat"];
         detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
@@ -71,19 +75,20 @@
 }
 
 
+
 -(NSArray *) facePointsInImage: (CamImage)img withFeatures: (CIFaceFeature *)box {
     cv::Mat mat(img.height, img.width, CV_8UC4, img.pixels, img.rowSize);
     dlib::cv_image<dlib::rgb_alpha_pixel> dlib_img(mat);
     float img_width = img.width;
     float img_height = img.height;
-    CGFloat left = (box.bounds.origin.y  - img_height / 2) * 1 + img_height / 2;
+    CGFloat left = (box.bounds.origin.y  - img_height / 2) * 1.1 + img_height / 2;
     CGFloat bottom = (box.bounds.origin.x  - img_width / 2) * 1 + img_width / 2;
-    CGFloat right = (box.bounds.origin.y + box.bounds.size.height - img_height / 2) * 1 + img_height / 2;
+    CGFloat right = (box.bounds.origin.y + box.bounds.size.height - img_height / 2) * 1.1 + img_height / 2;
     CGFloat top = (box.bounds.origin.x + box.bounds.size.width - img_width / 2) * 1 + img_width / 2;
-//    NSLog(@"Toms %f %f %f %f", left, bottom, right, top);
+    face_loc = detector(dlib_img)[0];
+//    std::vector<dlib::rectangle> valz = detector(dlib_img);
     dlib::rectangle rect(top, left, bottom, right);
-//    NSLog(@"DLib %ld %ld %ld %ld", rect.bl_corner().x(), rect.bl_corner().y(), rect.tr_corner().x(), rect.tr_corner().y());
-    dlib::full_object_detection res = predictor(dlib_img, rect);
+    dlib::full_object_detection res = predictor(dlib_img, face_loc);
     NSMutableArray * arr = [[NSMutableArray alloc] init];
     for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
         [arr addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];

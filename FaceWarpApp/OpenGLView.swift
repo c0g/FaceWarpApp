@@ -140,7 +140,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var smallPixelBuffer : CVPixelBufferRef? = nil
     var smallTexture : CVOpenGLESTextureRef? = nil
-    let smallTextureScale = 1
+    let smallTextureScale = 4
     
     var VAO:GLuint = GLuint()
     var VFaceAO:GLuint = GLuint()
@@ -598,7 +598,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let ciImage = CIImage(CVImageBuffer: smallPixelBuffer!)
             dispatch_async(q_high_p!) {
                 let options : [String: AnyObject] = [
-                    CIDetectorAccuracy as String: CIDetectorAccuracyLow,
+                    CIDetectorAccuracy as String: CIDetectorAccuracyHigh,
                     CIDetectorTracking as String: true,
                     CIDetectorNumberOfAngles as String: 11,
 //                    CIDetectorImageOrientation as String: 3
@@ -663,8 +663,9 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
 //        ]
 //    }
     func fillFaceVertex(points : [NSValue]) {
-        let sfx : Float = 0.7
-        let sfy : Float = 0.7
+
+        let sfx : Float = 0.8
+        let sfy : Float = 0.6
         
         faceVertices = []
         let spWidth = CVPixelBufferGetWidth(self.smallPixelBuffer!)
