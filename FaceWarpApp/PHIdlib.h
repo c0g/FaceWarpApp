@@ -27,8 +27,11 @@ typedef struct {
 
 @interface FaceFinder : NSObject
 
--(NSArray *) facesInImage: (CamImage)image withScale: (float)scale;
--(NSArray *) facePointsInImage: (CamImage)image withRectangle: (Rectangle)box;
+-(NSArray *) facesPointsInBigImage:(CamImage)bigImg andSmallImage: (CamImage)_smallImg withScale: (int) scale;
+
+
+//-(NSArray *) facesInImage: (CamImage)image withScale: (float)scale;
+//-(NSArray *) facePointsInImage: (CamImage)image withRectangle: (Rectangle)box;
 //-(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat;
 
 @end
