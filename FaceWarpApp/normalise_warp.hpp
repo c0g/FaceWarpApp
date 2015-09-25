@@ -66,7 +66,7 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     dlib::matrix<double> mean_reye_tmp = dlib::rowm(rotated_landmarks, dlib_reye_range);
     dlib::matrix<double> mean_reye = dlib::sum_rows(mean_reye_tmp) * (1.0/((double)leye_dlib.size()));
 
-    double mismatch_error = std::numeric_limits<double>::infinity();
+    double mismatch_error = std::numeric_limits<double>::max();
     
     if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
     {
@@ -85,7 +85,7 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     
     else
     {
-        mismatch_error = std::numeric_limits<double>::infinity();
+        mismatch_error = std::numeric_limits<double>::max();
     };
     
     return mismatch_error;
