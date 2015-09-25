@@ -12,7 +12,6 @@
 
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing.h>
-#include <dlib/filtering/kalman_filter.h>
 #include <dlib/image_io.h>
 #include <dlib/opencv.h>
 
