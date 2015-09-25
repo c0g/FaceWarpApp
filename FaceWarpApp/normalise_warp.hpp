@@ -14,8 +14,6 @@
 #include <cmath.h>
 #include "face_landmarks.h"
 
-
-
 dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<double,6,1> &vector)
 {
     dlib::matrix<double> rotation_matrix_cholesky(3,3);
