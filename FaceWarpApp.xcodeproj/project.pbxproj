@@ -36,6 +36,7 @@
 		E20FE7881BB092CF00142050 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		E26D166F1BB42F7700A0F573 /* PHIRectangle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHIRectangle.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHIRectangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHIRectangle.h; sourceTree = "<group>"; };
+		E26D16721BB58F9B00A0F573 /* fix_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = fix_triangulation.hpp; sourceTree = "<group>"; };
 		E28D3A8D1BAC409000ACC953 /* FaceWarpApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceWarpApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E28D3A981BAC409000ACC953 /* FaceWarpApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceWarpApp.xcdatamodel; sourceTree = "<group>"; };
 		E28D3A9A1BAC409000ACC953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -112,6 +113,7 @@
 				E28D3AC21BAC5C0E00ACC953 /* PHIdlib.h */,
 				E26D166F1BB42F7700A0F573 /* PHIRectangle.m */,
 				E26D16711BB42F8400A0F573 /* PHIRectangle.h */,
+				E26D16721BB58F9B00A0F573 /* fix_triangulation.hpp */,
 			);
 			name = dlibAPI;
 			sourceTree = "<group>";

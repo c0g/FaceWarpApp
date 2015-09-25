@@ -139,6 +139,7 @@ Rectangle operator*(const Rectangle & rect, float scale) {
             dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
             std::vector<dlib::rectangle> faces = detector(smallImgCopy);
             
+            // Update trackers inside mutex
             mtx.lock();
             trackers.clear();
             for (auto face : faces) {
@@ -147,12 +148,15 @@ Rectangle operator*(const Rectangle & rect, float scale) {
                 trackers.push_back(tracker_rect{tracker, face});
             }
             mtx.unlock();
+            
             iter = 0;
             std::cout << "Restart complete" << std::endl;
         });
     }
     std::cout << "Iter is " << iter << std::endl;
     iter++;
+    
+    // Get rectanges from tracker inside mutex
     std::vector<dlib::rectangle> rects;
     mtx.lock();
     for (auto tr : trackers) {
@@ -168,6 +172,8 @@ Rectangle operator*(const Rectangle & rect, float scale) {
     }
     mtx.unlock();
     
+    
+    // Got face points outside mutex
     NSMutableArray * arr = [[NSMutableArray alloc] init];
     for (auto faceRect : rects) {
         NSMutableArray * internalArr = [[NSMutableArray alloc] init];
