@@ -13,7 +13,7 @@
 
 std::vector<triangle> triangulate(int num_faces, const std::vector<int> edge_points, const std::vector<T> &landmarks, const std::vector<T> &delaunay){
     
-    std::vector<triangle> tris;
+    std::vector<triangle> tri;
     
     std::vector<int> range_of_end_points;
     for( int i = 0; i < num_faces; i++ ){
@@ -105,10 +105,10 @@ bool tri_el_not_in_interior(const std::vector<int>& delaunay_el, const std::vect
         };
     };
     
-    flag = false;
+    bool flag = false;
     if (sum > 0){
         flag = true;
-    }
+    };
     return flag;
 };
 
