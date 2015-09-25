@@ -159,7 +159,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var faceVertices : [Coordinate] = []
     var currentIndices : [GLushort] = []
-    
+    var iter = 0
     
     
     /* Class Methods
@@ -683,9 +683,9 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         let smallTextureScale = 1 // naughty override for class variable!!!
 
-        let sfx : Float = 1.5
-        let sfy : Float = 1.9
-        
+        let sfx : Float = 0.8
+        let sfy : Float = 0.8
+        iter += 1
         
 
         for point_idx in 0..<36 {
@@ -719,8 +719,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn1 = mean_x1 / Float(1280 / smallTextureScale)
             let mean_yn1 = mean_y1 / Float(720  / smallTextureScale)
             
-            let scaled_xn = (raw_xn - mean_xn1) * sfx + mean_xn1
-            let scaled_yn = (raw_yn - mean_yn1) * sfy + mean_yn1
+            let scaled_xn = (raw_xn - mean_xn1) * (1 + 0.3*sin(Float(120 + iter))) + mean_xn1
+            let scaled_yn = (raw_yn - mean_yn1) * (1 + 0.3*sin(Float(iter))) + mean_yn1
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -749,8 +749,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn2 = mean_x2 / Float(1280 / smallTextureScale)
             let mean_yn2 = mean_y2 / Float(720  / smallTextureScale)
             
-            let scaled_xn = (raw_xn - mean_xn2) * sfx + mean_xn2
-            let scaled_yn = (raw_yn - mean_yn2) * sfy + mean_yn2
+            let scaled_xn = (raw_xn - mean_xn2) * (1 + 0.3*sin(180 + Float(iter))) + mean_xn2
+            let scaled_yn = (raw_yn - mean_yn2) * (1.0 + 0.3*sin(90 + Float(iter))) + mean_yn2
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -779,8 +779,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn3 = mean_x3 / Float(1280 / smallTextureScale)
             let mean_yn3 = mean_y3 / Float(720  / smallTextureScale)
             
-            let scaled_xn = (raw_xn - mean_xn3) * 1.2 + mean_xn3
-            let scaled_yn = (raw_yn - mean_yn3) * 1.5 + mean_yn3
+            let scaled_xn = (raw_xn - mean_xn3) * 0.9 + mean_xn3
+            let scaled_yn = (raw_yn - mean_yn3) * 0.9 + mean_yn3
             
             let u = raw_xn
             let v = 1 - raw_yn
