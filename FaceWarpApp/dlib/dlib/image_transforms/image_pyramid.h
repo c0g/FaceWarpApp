@@ -598,8 +598,6 @@ namespace dlib
 
                 typedef typename image_traits<in_image_type>::pixel_type in_pixel_type;
                 typedef typename image_traits<out_image_type>::pixel_type out_pixel_type;
-                COMPILE_TIME_ASSERT( pixel_traits<in_pixel_type>::has_alpha == false );
-                COMPILE_TIME_ASSERT( pixel_traits<out_pixel_type>::has_alpha == false );
 
                 const_image_view<in_image_type> original(original_);
                 image_view<out_image_type> down(down_);
