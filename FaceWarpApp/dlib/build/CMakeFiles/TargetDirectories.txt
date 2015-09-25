@@ -1,2 +1,0 @@
-/Users/tbgunter/anaconda/conda-bld/work/dlib-18.16/build/CMakeFiles/dlib_.dir
-/Users/tbgunter/anaconda/conda-bld/work/dlib-18.16/build/dlib_build/CMakeFiles/dlib.dir
