@@ -35,5 +35,69 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FaceWarpApp/OpenGLView.swift"
+            timestampString = "464861255.167421"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "825"
+            endingLineNumber = "825"
+            landmarkName = "setFaceVertices()"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FaceWarpApp.OpenGLView.setFaceVertices (FaceWarpApp.OpenGLView)() -&gt; ()"
+                  moduleName = "FaceWarpApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tom/Code/FaceWarpApp/FaceWarpApp/OpenGLView.swift"
+                  timestampString = "464860945.63042"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "828"
+                  endingLineNumber = "828"
+                  offsetFromSymbolStart = "2788">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FaceWarpApp.OpenGLView.(setFaceVertices (FaceWarpApp.OpenGLView) -&gt; () -&gt; ()).(closure #1)"
+                  moduleName = "FaceWarpApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/tom/Code/FaceWarpApp/FaceWarpApp/OpenGLView.swift"
+                  timestampString = "464860945.632064"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "828"
+                  endingLineNumber = "828"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FaceWarpApp/OpenGLView.swift"
+            timestampString = "464861255.167421"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "828"
+            endingLineNumber = "828"
+            landmarkName = "setFaceVertices()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
