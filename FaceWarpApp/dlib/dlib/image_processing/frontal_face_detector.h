@@ -11,7 +11,7 @@
 
 namespace dlib
 {
-    typedef object_detector<scan_fhog_pyramid<pyramid_down<3> > > frontal_face_detector;
+    typedef object_detector<scan_fhog_pyramid<pyramid_down<6> > > frontal_face_detector;
     inline const std::string get_serialized_frontal_faces();
 
     inline frontal_face_detector get_frontal_face_detector()

@@ -102,7 +102,7 @@ func time<O>(name: String, f : ()->O )-> O {
 class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var written = false
-    
+    var numfaces = 0
     let faceFinder : FaceFinder = FaceFinder()
     
     var frameCounter : Int = 0
@@ -649,42 +649,35 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glBindVertexArrayOES(0)
     }
     
-    func findFacesInImage() {
+    func findFaces() {
         CVPixelBufferLockBaseAddress(self.smallPixelBuffer!, 0)
-        let width = CVPixelBufferGetWidth(self.smallPixelBuffer!)
-        let height = CVPixelBufferGetHeight(self.smallPixelBuffer!)
-        let rowSize = CVPixelBufferGetBytesPerRow(self.smallPixelBuffer!)
-        let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.smallPixelBuffer!))
-        let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
-        let faceValues = self.faceFinder.facesInImage(img, withScale: Float(self.smallTextureScale)) as! [NSValue]
-        self.faces = []
-        for faceVal in faceValues {
-            self.faces.append(faceVal.rectangleValue)
-        }
-        CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
-    }
-    
-    func findLandmarksInFaces() {
+        let sWidth = CVPixelBufferGetWidth(self.smallPixelBuffer!)
+        let sHeight = CVPixelBufferGetHeight(self.smallPixelBuffer!)
+        let sRowSize = CVPixelBufferGetBytesPerRow(self.smallPixelBuffer!)
+        let sPtr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.smallPixelBuffer!))
+        let smallImg  = CamImage(pixels: sPtr, width: Int32(sWidth), height: Int32(sHeight), channels: Int32(4), rowSize: Int32(sRowSize))
         CVPixelBufferLockBaseAddress(self.flipPixelBuffer!, 0)
         let width = CVPixelBufferGetWidth(self.flipPixelBuffer!)
         let height = CVPixelBufferGetHeight(self.flipPixelBuffer!)
         let rowSize = CVPixelBufferGetBytesPerRow(self.flipPixelBuffer!)
         let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.flipPixelBuffer!))
         let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
-        self.faceVertices = []
-        for face in faces {
-            let points = self.faceFinder.facePointsInImage(img, withRectangle: face) as! [NSValue]
+        
+        let arrPoints = self.faceFinder.facesPointsInBigImage(img, andSmallImage: smallImg, withScale: Int32(smallTextureScale)) as! [[NSValue]]
+        numfaces = arrPoints.count
+        faceVertices = []
+        for points in arrPoints {
             self.fillFaceVertex(points)
         }
+        
+        CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
         CVPixelBufferUnlockBaseAddress(self.flipPixelBuffer!, 0)
+        
     }
 
     func fillFaceVertex(points : [NSValue]) {
         
         let smallTextureScale = 1 // naughty override for class variable!!!
-
-        let sfx : Float = 0.8
-        let sfy : Float = 0.8
         iter += 1
         
 
@@ -805,10 +798,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             glEnableVertexAttribArray(uvSlot)
             glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
             
-            let numFaces = faces.count
-            
             currentIndices = [GLushort]()
-            for idx in 0..<numFaces {
+            for idx in 0..<numfaces {
                 currentIndices += FaceIndices.map({$0 + GLushort(idx * 68)})
             }
             
@@ -842,8 +833,9 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     func render() {
         renderWholeImageToSmallTexture()
         renderWholeImageToFlipTexture()
-        findFacesInImage()
-        findLandmarksInFaces()
+//        findFacesInImage()
+//        findLandmarksInFaces()
+        findFaces()
         renderWholeImageToRenderTexture()
         setFaceVertices()
         renderFaceToRenderTexture()
