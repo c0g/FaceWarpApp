@@ -789,19 +789,6 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             
             faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
         }
-
-        
-//        for point_idx in 48..<points.count {
-//            
-//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
-//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
-//            let u = raw_xn
-//            let v = 1 - raw_yn
-//            let x = 2 * raw_xn - 1
-//            let y = 2 * raw_yn - 1
-//            
-//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
-//        }
     }
     
     func setFaceVertices() {

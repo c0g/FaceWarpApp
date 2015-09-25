@@ -96,6 +96,9 @@ Rectangle operator*(const Rectangle & rect, float scale) {
 -(NSArray *) facesInImage: (CamImage)img withScale: (float)scale {
     cv::Mat mat(img.height, img.width, CV_8UC4, img.pixels, img.rowSize);
     dlib::cv_image<dlib::rgb_alpha_pixel> dlib_img(mat);
+    dlib::array2d<dlib::rgb_alpha_pixel> dlib_img_copy;
+    dlib::assign_image(dlib_img_copy, dlib_img);
+    std::cout << dlib_img_copy[1][1].red <<std::endl;
     std::vector<dlib::rectangle> faces = detector(dlib_img);
     NSMutableArray * arr = [[NSMutableArray alloc] init];
     for (auto rect : faces) {
