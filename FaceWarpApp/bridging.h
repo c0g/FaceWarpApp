@@ -9,6 +9,7 @@
 #ifndef bridging_h
 #define bridging_h
 
-#import "PHIdlib.h"
+#import "find_face.h"
+#import "Clarkson-Delaunay.h"
 
 #endif /* bridging_h */
