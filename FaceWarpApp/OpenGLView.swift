@@ -162,6 +162,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var iter = 0
     
     
+    
     /* Class Methods
     ------------------------------------------*/
     
@@ -177,7 +178,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
+        UIApplication.sharedApplication().idleTimerDisabled = true
         self.setupDetector()
         
         self.setupQueues()
@@ -539,11 +540,6 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         //get from cam
         let videoDevice = AVCaptureDevice.devices()[1]
-        for format in videoDevice.formats! {
-            for frameRate in format.videoSupportedFrameRateRanges! {
-                print(frameRate)
-            }
-        }
         var input : AVCaptureDeviceInput? = nil
         do {
             input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice )

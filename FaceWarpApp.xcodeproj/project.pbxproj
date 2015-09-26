@@ -22,8 +22,11 @@
 		E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AAD1BAC442A00ACC953 /* Readme.md */; settings = {ASSET_TAGS = (); }; };
 		E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3ABE1BAC480500ACC953 /* libjpeg.a */; settings = {ASSET_TAGS = (); }; };
-		E28D3AC11BAC5BF800ACC953 /* PHIdlib.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* PHIdlib.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
+		E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* find_face.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
 		E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */; };
+		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
+		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,10 +55,15 @@
 		E28D3ABA1BAC459C00ACC953 /* utils.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = utils.hpp; sourceTree = "<group>"; };
 		E28D3ABC1BAC464700ACC953 /* source.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = source.cpp; path = FaceWarpApp/dlib/dlib/all/source.cpp; sourceTree = "<group>"; };
 		E28D3ABE1BAC480500ACC953 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
-		E28D3AC01BAC5BF800ACC953 /* PHIdlib.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PHIdlib.mm; sourceTree = "<group>"; };
-		E28D3AC21BAC5C0E00ACC953 /* PHIdlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHIdlib.h; sourceTree = "<group>"; };
+		E28D3AC01BAC5BF800ACC953 /* find_face.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = find_face.mm; sourceTree = "<group>"; };
+		E28D3AC21BAC5C0E00ACC953 /* find_face.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = find_face.h; sourceTree = "<group>"; };
 		E28D3AC31BAC5D0500ACC953 /* bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridging.h; sourceTree = "<group>"; };
 		E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = shape_predictor.dat; sourceTree = "<group>"; };
+		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
+		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
+		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
+		E2B55E541BB69F390086F719 /* triangulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = triangulator.cpp; sourceTree = "<group>"; };
+		E2B55E561BB6B9590086F719 /* Triangulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangulator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,16 +101,17 @@
 		E28D3A8F1BAC409000ACC953 /* FaceWarpApp */ = {
 			isa = PBXGroup;
 			children = (
+				E2B55E501BB5DD540086F719 /* Swift */,
 				E20FE76C1BB0348400142050 /* AppDelegate.swift */,
 				E28D3AA81BAC436A00ACC953 /* External Projects */,
 				E28D3AA71BAC434500ACC953 /* Interface */,
 				E28D3AA61BAC40D200ACC953 /* Supporting Files */,
-				E28D3AA51BAC409C00ACC953 /* dlibAPI */,
+				E28D3AA51BAC409C00ACC953 /* ObjectiveCpp */,
 			);
 			path = FaceWarpApp;
 			sourceTree = "<group>";
 		};
-		E28D3AA51BAC409C00ACC953 /* dlibAPI */ = {
+		E28D3AA51BAC409C00ACC953 /* ObjectiveCpp */ = {
 			isa = PBXGroup;
 			children = (
 				E28D3AB61BAC459C00ACC953 /* dermatology.hpp */,
@@ -110,14 +119,16 @@
 				E28D3AB81BAC459C00ACC953 /* face_landmarks.hpp */,
 				E28D3ABA1BAC459C00ACC953 /* utils.hpp */,
 				E28D3AAD1BAC442A00ACC953 /* Readme.md */,
-				E28D3AC01BAC5BF800ACC953 /* PHIdlib.mm */,
+				E28D3AC01BAC5BF800ACC953 /* find_face.mm */,
 				5E2897471BB578DB00166D83 /* normalise_warp.hpp */,
-				E28D3AC21BAC5C0E00ACC953 /* PHIdlib.h */,
+				E28D3AC21BAC5C0E00ACC953 /* find_face.h */,
 				E26D166F1BB42F7700A0F573 /* PHIRectangle.m */,
 				E26D16711BB42F8400A0F573 /* PHIRectangle.h */,
 				E26D16721BB58F9B00A0F573 /* fix_triangulation.hpp */,
+				E2B55E531BB69F390086F719 /* triangulator.h */,
+				E2B55E541BB69F390086F719 /* triangulator.cpp */,
 			);
-			name = dlibAPI;
+			name = ObjectiveCpp;
 			sourceTree = "<group>";
 		};
 		E28D3AA61BAC40D200ACC953 /* Supporting Files */ = {
@@ -148,11 +159,29 @@
 		E28D3AA81BAC436A00ACC953 /* External Projects */ = {
 			isa = PBXGroup;
 			children = (
+				E2B55E4F1BB5DD380086F719 /* delaunay */,
 				E28D3ABE1BAC480500ACC953 /* libjpeg.a */,
 				E28D3AB21BAC451F00ACC953 /* dlib */,
 				E28D3AA91BAC43E000ACC953 /* opencv2.framework */,
 			);
 			name = "External Projects";
+			sourceTree = "<group>";
+		};
+		E2B55E4F1BB5DD380086F719 /* delaunay */ = {
+			isa = PBXGroup;
+			children = (
+				E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */,
+				E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */,
+			);
+			name = delaunay;
+			sourceTree = "<group>";
+		};
+		E2B55E501BB5DD540086F719 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				E2B55E561BB6B9590086F719 /* Triangulator.swift */,
+			);
+			name = Swift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -232,12 +261,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
+				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
 				E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */,
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
-				E28D3AC11BAC5BF800ACC953 /* PHIdlib.mm in Sources */,
+				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
+				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
+				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,
 				E26D16701BB42F7700A0F573 /* PHIRectangle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

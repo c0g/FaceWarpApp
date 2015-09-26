@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PHIdlib.h"
+#import "find_face.h"
 #import "PHIRectangle.h"
 #include <mutex>
 
@@ -127,7 +127,7 @@ Rectangle operator*(const Rectangle & rect, float scale) {
     dlib::cv_image<dlib::rgb_pixel> smallImg(smallMat);
     
     if (iter  == retrackAfter) {
-        std::cout << "Tracker restarted and iter is " << iter << std::endl;
+//        std::cout << "Tracker restarted and iter is " << iter << std::endl;
         
         
         // Copy small img data on main thread
@@ -149,10 +149,10 @@ Rectangle operator*(const Rectangle & rect, float scale) {
             mtx.unlock();
             
             iter = 0;
-            std::cout << "Restart complete" << std::endl;
+//            std::cout << "Restart complete" << std::endl;
         });
     }
-    std::cout << "Iter is " << iter << std::endl;
+//    std::cout << "Iter is " << iter << std::endl;
     iter++;
     
     // Get rectanges from tracker inside mutex
