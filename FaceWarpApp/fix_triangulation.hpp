@@ -39,7 +39,7 @@ std::vector<triangle> triangulate(int num_faces, const std::vector<int> edge_poi
         else
         {
             std::vector<int> sums;
-            
+            sums.resize(range_of_end_points.size());
             for (int j = 0; j < range_of_end_points.size(); j++){
                 sums[j] = 0;
                 if (range_of_end_points[j] >= delaunay[i]){

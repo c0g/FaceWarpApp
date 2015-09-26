@@ -12,7 +12,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int * return_adjusted_warp(int * landmarks, int * face_flat_warp);
+    
+double * return_adjusted_warp(double * landmarks, double * face_flat_warp);
     
 #ifdef __cplusplus
 }
