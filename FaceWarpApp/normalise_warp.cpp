@@ -32,11 +32,12 @@ double cost_function_3d_rotation(dlib::matrix<double> vector, const dlib::matrix
     
     dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
     dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
-    dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(2, rotated_3d_landmarks_subm - landmarks)));
-    dlib::matrix<double> mismatch_error_covariance = dlib::trans(mismatch_error) * mismatch_error;
-    dlib::matrix<double> mismatch_error_final = dlib::trans(mismatch_error) * mismatch_error_covariance * mismatch_error;
+    dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(rotated_3d_landmarks_subm - landmarks,2)));
+//    dlib::matrix<double> mismatch_error_covariance = dlib::trans(mismatch_error) * mismatch_error;
+//    dlib::matrix<double> mismatch_error_final = dlib::trans(mismatch_error) * mismatch_error_covariance * mismatch_error;
     
-    double error = mismatch_error_final(0,0);
+//    double error = mismatch_error_final(0,0);
+    double error = dlib::sum_rows(mismatch_error);
     return error;
 };
 
@@ -67,7 +68,7 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     dlib::matrix<double> mean_reye_tmp = dlib::rowm(rotated_landmarks, dlib_reye_range);
     dlib::matrix<double> mean_reye = dlib::sum_rows(mean_reye_tmp) * (1.0/((double)leye_dlib.size()));
     
-    double mismatch_error = 68*2*10000;//std::numeric_limits<double>::max();
+    double mismatch_error = 68*2*100000;//std::numeric_limits<double>::max();
     
     if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
     {
@@ -86,8 +87,9 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     
     else
     {
-        mismatch_error = 68*2*10000;//std::numeric_limits<double>::max();
+        mismatch_error = 68*2*100000;//std::numeric_limits<double>::max();
     };
+//    std::cout << "error_2d: " << mismatch_error << "\n";
     
     return mismatch_error;
     
@@ -117,27 +119,6 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
                                                      angle,
                                                      min_f,
                                                      dervative_eps);
-//        double begin, end, eps, initial_search_radius;
-//        long max_iter;
-//        
-//        dlib::find_min_single_variable(cost_function_2d_rotation_wrapper,
-//                                         angle,
-//                                         begin = 0.0,
-//                                         end = 6.284,
-//                                         eps = 1e-3,
-//                                         max_iter = 100,
-//                                         initial_search_radius = 1);
-        
-//        find_min_bobyqa(cost_function_2d_rotation_wrapper,
-//                        angle,
-//                        9,    // number of interpolation points
-//                        dlib::uniform_matrix<double>(1,1, -1e100),  // lower bound constraint
-//                        dlib::uniform_matrix<double>(1,1, 1e100),   // upper bound constraint
-//                        10,    // initial trust region radius
-//                        1e-4,  // stopping trust region radius
-//                        100    // max number of objective function evaluations
-//                        );
-
     }
     catch (std::exception &e)
     {
@@ -174,16 +155,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     column_vector vector(6);
     vector = 1.0, 0.0, 1.0, 0.0, 0.0, 1.0;
     
-//    double min_f;
-//    double dervative_eps = 1e-7;
-    
     try {
-//    dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
-//                                                 dlib::objective_delta_stop_strategy(1e-5),
-//                                                 cost_function_3d_rotation_wrapper,
-//                                                 vector,
-//                                                 min_f,
-//                                                 dervative_eps);
         
         find_min_bobyqa(cost_function_3d_rotation_wrapper,
                         vector,
@@ -192,7 +164,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
                         dlib::uniform_matrix<double>(6,1, 1e100),   // upper bound constraint
                         10,    // initial trust region radius
                         1e-4,  // stopping trust region radius
-                        100    // max number of objective function evaluations
+                        300    // max number of objective function evaluations
                         );
     }
     catch (std::exception& e)
@@ -248,8 +220,8 @@ double * return_3d_adjusted_warp(double * landmarks_ptr, double * face_flat_warp
     stdev_face_flat_warp[0] = dlib::stddev(dlib::colm(centered_face_flat_warp,0));
     stdev_face_flat_warp[1] = dlib::stddev(dlib::colm(centered_face_flat_warp,1));
     
-    dlib::set_colm(centered_landmarks3d,0) = dlib::colm(centered_face_flat_warp,0) * (stdev_landmarks3d[0] / stdev_face_flat_warp[0]);
-    dlib::set_colm(centered_landmarks3d,1) = dlib::colm(centered_face_flat_warp,1) * (stdev_landmarks3d[1] / stdev_face_flat_warp[1]);
+    dlib::set_colm(centered_landmarks3d,0) = dlib::colm(centered_face_flat_warp,0) * ((double)stdev_landmarks3d[0] / (double)stdev_face_flat_warp[0]);
+    dlib::set_colm(centered_landmarks3d,1) = dlib::colm(centered_face_flat_warp,1) * ((double)stdev_landmarks3d[1] / (double)stdev_face_flat_warp[1]);
     
     dlib::matrix<double> rotation_matrix = find_overall_rotation_matrix(centered_landmarks, centered_landmarks3d);
     

@@ -16,7 +16,7 @@ func getNormalisedWarp( landmarks : [Double], face_flat_warp : [Double]) -> [Dou
     let ans = return_adjusted_warp(&landmarks32, &face_flat_warp32);
     var safeAns : [Double] = [];
     for idx in 0..<landmarks.count {
-        safeAns.append(Int(ans[Int(idx)]))
+        safeAns.append(Double(ans[Int(idx)]))
     }
     
     free(ans)
