@@ -114,5 +114,4 @@ bool tri_el_not_in_interior(const std::vector<int>& delaunay_el, const std::vect
     };
     return flag;
 };
-
 #endif

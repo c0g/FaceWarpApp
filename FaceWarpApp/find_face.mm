@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "find_face.h"
-#import "PHIRectangle.h"
+#import "PHItypes.h"
 #include <mutex>
 
 #include <dlib/image_processing/frontal_face_detector.h>
@@ -21,23 +21,23 @@
 struct tracker_rect {
     dlib::correlation_tracker tracker;
     dlib::rectangle lastone;
-} ;
+};
 
-dlib::rectangle dlibRectFromRectangle(Rectangle rect) {
-    return dlib::rectangle(rect.left, rect.top, rect.right, rect.bottom);
-}
-
-Rectangle rectangleFromDlibRectangle(const dlib::rectangle & rect) {
-    return Rectangle{
-        static_cast<float>(rect.left()),
-        static_cast<float>(rect.top()),
-        static_cast<float>(rect.right()),
-        static_cast<float>(rect.bottom())};
-}
-
-Rectangle operator*(const Rectangle & rect, float scale) {
-    return Rectangle{rect.left * scale, rect.top * scale, rect.right * scale, rect.bottom * scale};
-}
+//dlib::rectangle dlibRectFromRectangle(PhiRectangle rect) {
+//    return dlib::rectangle(rect.left, rect.top, rect.right, rect.bottom);
+//}
+//
+//PhiRectangle rectangleFromDlibRectangle(const dlib::rectangle & rect) {
+//    return Rectangle{
+//        static_cast<float>(rect.left()),
+//        static_cast<float>(rect.top()),
+//        static_cast<float>(rect.right()),
+//        static_cast<float>(rect.bottom())};
+//}
+//
+//Rectangle operator*(const Rectangle & rect, float scale) {
+//    return Rectangle{rect.left * scale, rect.top * scale, rect.right * scale, rect.bottom * scale};
+//}
 
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
@@ -178,78 +178,14 @@ Rectangle operator*(const Rectangle & rect, float scale) {
         NSMutableArray * internalArr = [[NSMutableArray alloc] init];
         dlib::full_object_detection res = predictor(bigImg, faceRect);
         for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-            [internalArr addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];
+            [internalArr addObject: [NSValue valueWithCGPoint:CGPointMake(
+                                                res.part(pidx).x(), res.part(pidx).y()
+                                    )]];
         }
         [arr addObject: internalArr];
     }
     return arr;
 }
-
-//-(NSArray *) facesInImage: (CamImage)img withScale: (float)scale {
-//    cv::Mat mat(img.height, img.width, CV_8UC4, img.pixels, img.rowSize);
-//    dlib::cv_image<dlib::rgb_alpha_pixel> dlib_img(mat);
-//    dlib::array2d<dlib::rgb_alpha_pixel> dlib_img_copy;
-//    dlib::assign_image(dlib_img_copy, dlib_img);
-//    std::cout << dlib_img_copy[1][1].red <<std::endl;
-//    
-//    NSMutableArray * arr = [[NSMutableArray alloc] init];
-//    for (auto rect : faces) {
-////        std::cout << rect.left() << ", " << rect.top() << ", " << rect.right() << ", " << rect.bottom() << std::endl;
-//        [arr addObject: [NSValue valueWithRectangle:rectangleFromDlibRectangle(rect) * scale]];
-//    }
-//    return arr;
-//}
-//
-//
-//
-//-(NSArray *) facePointsInImage: (CamImage)img withRectangle: (Rectangle)box {
-//    cv::Mat mat(img.height, img.width, CV_8UC4, img.pixels, img.rowSize);
-////    std::cout << box.left << ", " << box.top << ", " << box.right << ", " << box.bottom << std::endl;
-//    dlib::cv_image<dlib::rgb_alpha_pixel> dlib_img(mat);
-//    dlib::rectangle rect = dlibRectFromRectangle(box);
-//    dlib::full_object_detection res = predictor(dlib_img, rect);
-////    dlib::draw_rectangle(dlib_img, rect, dlib::rgb_alpha_pixel(255, 0, 0, 255));
-////    cv::Mat dlib_cv_mat = dlib::toMat(dlib_img);
-//    NSMutableArray * arr = [[NSMutableArray alloc] init];
-//    for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-//        [arr addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];
-//    }
-
-//    if ( movingAverageCount == 0 )
-//    {
-//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-//            [facesAverage addObject: [NSValue valueWithCGPoint:CGPointMake(res.part(pidx).x(), res.part(pidx).y())]];
-//        }
-//        movingAverageCount += 1;
-//        
-//    } else if (movingAverageCount < 2)
-//    {
-//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-//            CGPoint tmp = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
-//            NSValue * nsTmp = [NSValue valueWithCGPoint:tmp];
-//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp];
-//           
-//        }
-//        movingAverageCount += 1;
-//    } else if (movingAverageCount == 2)
-//    {
-//        for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-//            CGPoint tmp = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.5);
-//            NSValue * nsTmp = [NSValue valueWithCGPoint:tmp];
-//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp];
-//            CGPoint tmp2 = CGPointAdd([[facesAverage objectAtIndex:pidx] CGPointValue], [[arr objectAtIndex:pidx] CGPointValue]);
-//            NSValue * nsTmp2 = [NSValue valueWithCGPoint:tmp2];
-//            [facesAverage replaceObjectAtIndex:pidx withObject:nsTmp2];
-//
-//            CGPoint tmp3 = CGPointAdjustScaling([[facesAverage objectAtIndex:pidx] CGPointValue], 0.5);
-//            NSValue * nsTmp3 = [NSValue valueWithCGPoint:tmp3];
-//            [arr replaceObjectAtIndex:pidx withObject:nsTmp3];
-//        }
-//    }
-//    return arr;
-//}
-
-
 
 CGPoint CGPointAdd(CGPoint p1, CGPoint p2)
 {
