@@ -9,10 +9,9 @@
 #ifndef bridging_h
 #define bridging_h
 
-#import "PHIdlib.h"
-#inport "normalise_warp.hpp"
 #import "find_face.h"
 #import "Clarkson-Delaunay.h"
 #import "triangulator.h"
+#import "normalise_warp.h"
 
 #endif /* bridging_h */

@@ -10,8 +10,8 @@ import Foundation
 
 
 func wrapIt() {
-    var edges : [Float] = [1, 2, 3]
-    var landmarks : [Float] = [1, 2, 3]
+    var edges : [Int32] = [1, 2, 3]
+    var landmarks : [Int32] = [1, 2, 3]
     let numFaces : Int32 = 2
     let numEdges : Int32 = 2
     var tris : Int32 = 0

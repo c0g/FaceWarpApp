@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5ED3AB891BB6BF250092A7CE /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; settings = {ASSET_TAGS = (); }; };
+		5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; settings = {ASSET_TAGS = (); }; };
 		E20FE7671BB0326C00142050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7661BB0326C00142050 /* ViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7681BB032A800142050 /* OpenGLView.swift */; settings = {ASSET_TAGS = (); }; };
 		E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76A1BB032AF00142050 /* Main.storyboard */; settings = {ASSET_TAGS = (); }; };
@@ -30,7 +32,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5E2897471BB578DB00166D83 /* normalise_warp.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = normalise_warp.hpp; sourceTree = "<group>"; };
+		5E2897471BB578DB00166D83 /* normalise_warp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = normalise_warp.h; sourceTree = "<group>"; };
+		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
+		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E20FE7681BB032A800142050 /* OpenGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLView.swift; sourceTree = "<group>"; };
 		E20FE76A1BB032AF00142050 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -120,7 +124,8 @@
 				E28D3ABA1BAC459C00ACC953 /* utils.hpp */,
 				E28D3AAD1BAC442A00ACC953 /* Readme.md */,
 				E28D3AC01BAC5BF800ACC953 /* find_face.mm */,
-				5E2897471BB578DB00166D83 /* normalise_warp.hpp */,
+				5E2897471BB578DB00166D83 /* normalise_warp.h */,
+				5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */,
 				E28D3AC21BAC5C0E00ACC953 /* find_face.h */,
 				E26D166F1BB42F7700A0F573 /* PHIRectangle.m */,
 				E26D16711BB42F8400A0F573 /* PHIRectangle.h */,
@@ -180,6 +185,7 @@
 			isa = PBXGroup;
 			children = (
 				E2B55E561BB6B9590086F719 /* Triangulator.swift */,
+				5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */,
 			);
 			name = Swift;
 			sourceTree = "<group>";
@@ -217,7 +223,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = S559Q4PGN4;
+						DevelopmentTeam = 2WHKXWB6SD;
 					};
 				};
 			};
@@ -262,14 +268,16 @@
 			files = (
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
 				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
+				5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */,
+				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
 				E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */,
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
-				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,
+				5ED3AB891BB6BF250092A7CE /* Warpnormalise.swift in Sources */,
 				E26D16701BB42F7700A0F573 /* PHIRectangle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,7 +410,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -437,7 +445,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

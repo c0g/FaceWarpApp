@@ -1,13 +1,13 @@
 //
-//  normalise_warp.hpp
+//  normalise_warp.cpp
 //  FaceWarpApp
 //
-//  Created by Thomas Gunter on 9/25/15.
+//  Created by Thomas Gunter on 9/26/15.
 //  Copyright © 2015 Phi Research. All rights reserved.
 //
 
-#ifndef normalise_warp_h
-#define normalise_warp_h
+#include <stdio.h>
+#include "normalise_warp.h"
 
 #include <dlib/matrix/matrix.h>
 #include <dlib/optimization.h>
@@ -17,8 +17,8 @@ dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<
 {
     dlib::matrix<double> rotation_matrix_cholesky(3,3);
     rotation_matrix_cholesky = vector(0,0), 0.0,         0.0,
-                               vector(1,0), vector(2,0), 0.0,
-                               vector(3,0), vector(4,0), vector(5,0);
+    vector(1,0), vector(2,0), 0.0,
+    vector(3,0), vector(4,0), vector(5,0);
     dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky * dlib::trans(rotation_matrix_cholesky);
     
     return rotation_matrix;
@@ -64,7 +64,7 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     dlib::matrix<double> mean_leye = dlib::sum_rows(mean_leye_tmp) * (1.0/((double)leye_dlib.size()));
     dlib::matrix<double> mean_reye_tmp = dlib::rowm(rotated_landmarks, dlib_reye_range);
     dlib::matrix<double> mean_reye = dlib::sum_rows(mean_reye_tmp) * (1.0/((double)leye_dlib.size()));
-
+    
     double mismatch_error = std::numeric_limits<double>::max();
     
     if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
@@ -117,9 +117,9 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     
     dlib::matrix<double,2,2> rotation_matrix_2d = dlib::rotation_matrix(angle(0,0));
     dlib::matrix<double,2,2> rotation_matrix_2d_inv = dlib::inv(rotation_matrix_2d);
-//    dlib::matrix<double,3,3> rotation_matrix = dlib::identity_matrix<double>(3);
+    //    dlib::matrix<double,3,3> rotation_matrix = dlib::identity_matrix<double>(3);
     dlib::matrix<double,3,3> rotation_matrix_inv = dlib::identity_matrix<double>(3);
-//    dlib::set_subm(rotation_matrix, dlib::range(0,1), dlib::range(0,1)) = rotation_matrix_2d;
+    //    dlib::set_subm(rotation_matrix, dlib::range(0,1), dlib::range(0,1)) = rotation_matrix_2d;
     dlib::set_subm(rotation_matrix_inv, dlib::range(0,1), dlib::range(0,1)) = rotation_matrix_2d_inv;
     
     return rotation_matrix_inv;
@@ -172,9 +172,11 @@ dlib::matrix<double> find_overall_rotation_matrix(const dlib::matrix<double> &la
     return rotation_matrix_total;
 };
 
-double * return_3d_adjusted_warp(const dlib::matrix<double> &landmarks, const dlib::matrix<double> &face_flat_warp)
+int * return_3d_adjusted_warp(double * landmarks_ptr, double * face_flat_warp_ptr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
+    dlib::matrix<double> landmarks = dlib::mat(landmarks_ptr, 68, 2);
+    dlib::matrix<double> face_flat_warp = dlib::mat(face_flat_warp_ptr, 68, 2);
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -188,17 +190,26 @@ double * return_3d_adjusted_warp(const dlib::matrix<double> &landmarks, const dl
     dlib::set_colm(new_warp_de_centered,0) = colm(new_warp_de_centered,0) + mean_landmarks(0,0);
     dlib::set_colm(new_warp_de_centered,1) = colm(new_warp_de_centered,1) + mean_landmarks(0,1);
     
-    double * output = (double *)malloc(new_warp_de_centered.nr()*new_warp_de_centered.nc()*sizeof(double));
+    int * output = (int *)malloc(new_warp_de_centered.nr()*new_warp_de_centered.nc()*sizeof(int));
     int index = 0;
     for (int row = 0; row < new_warp_de_centered.nr(); row++)
     {
         for (int col = 0; col < new_warp_de_centered.nc(); col++)
         {
             index++;
-            output[index] = new_warp_de_centered(row,col);
+            output[index] = (int)std::round(new_warp_de_centered(row,col));
         }
-    }
+    };
     return output;
 };
 
-#endif /* normalise_warp_h */
+// Needs c linkage to be imported to Swift
+extern "C" {
+int * return_adjusted_warp(int * landmarks, int * face_flat_warp)
+{
+    // CALLER MUST FREE MEMORY ON RETURN.
+    int * adjusted_warp = return_3d_adjusted_warp((double *) landmarks, (double *) face_flat_warp);
+    return adjusted_warp;
+}
+}
+
