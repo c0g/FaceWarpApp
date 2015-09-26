@@ -11,6 +11,11 @@ import Foundation
 
 func wrapIt() {
     var edges : [Int32] = [1, 2, 3]
+    
+    var edges32 = edges.map({Int32($0)})
+    
+//    var edges2 = edges as [Int]
+    
     var landmarks : [Int32] = [1, 2, 3]
     let numFaces : Int32 = 2
     let numEdges : Int32 = 2

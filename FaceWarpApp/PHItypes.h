@@ -6,15 +6,10 @@
 //  Copyright © 2015 Phi Research. All rights reserved.
 //
 
-#ifndef PHIRectangle_h
-#define PHIRectangle_h
+#ifndef PHITypes_h
+#define PHITypes_h
 
-typedef struct {
-    float left;
-    float top;
-    float right;
-    float bottom;
-} Rectangle;
+#include "PHI_C_Points.h"
 
 @interface NSValue (Rectangle)
 +(instancetype) valueWithRectangle:(Rectangle)value;

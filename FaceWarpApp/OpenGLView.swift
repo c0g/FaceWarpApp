@@ -672,15 +672,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 
     func fillFaceVertex(points : [NSValue]) {
-        
-        let smallTextureScale = 1 // naughty override for class variable!!!
         iter += 1
-        
-
         for point_idx in 0..<36 {
             
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             let u = raw_xn
             let v = 1 - raw_yn
             let x = 2 * raw_xn - 1
@@ -702,8 +698,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
 
         
         for point_idx in 36..<42 {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             
             let mean_xn1 = mean_x1 / Float(1280 / smallTextureScale)
             let mean_yn1 = mean_y1 / Float(720  / smallTextureScale)
@@ -732,8 +728,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         
         for point_idx in 42..<48 {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             
             let mean_xn2 = mean_x2 / Float(1280 / smallTextureScale)
             let mean_yn2 = mean_y2 / Float(720  / smallTextureScale)
@@ -762,11 +758,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         
         for point_idx in 48..<points.count {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280 / smallTextureScale)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720  / smallTextureScale)))
+            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             
-            let mean_xn3 = mean_x3 / Float(1280 / smallTextureScale)
-            let mean_yn3 = mean_y3 / Float(720  / smallTextureScale)
+            let mean_xn3 = mean_x3 / Float(1280)
+            let mean_yn3 = mean_y3 / Float(720)
             
             let scaled_xn = (raw_xn - mean_xn3) * 0.9 + mean_xn3
             let scaled_yn = (raw_yn - mean_yn3) * 0.9 + mean_yn3
