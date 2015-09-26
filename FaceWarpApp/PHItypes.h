@@ -9,11 +9,11 @@
 #ifndef PHITypes_h
 #define PHITypes_h
 
-#include "PHI_C_Points.h"
+#include "PHI_C_Types.h"
 
-@interface NSValue (Rectangle)
-+(instancetype) valueWithRectangle:(Rectangle)value;
-@property (readonly) Rectangle rectangleValue;
+@interface NSValue (PhiRectangle)
++(instancetype) valueWithRectangle:(PhiRectangle)value;
+@property (readonly) PhiRectangle rectangleValue;
 @end
 
-#endif /* PHIRectangle_h */
+#endif /* PHITypes_h */

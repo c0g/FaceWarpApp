@@ -10,7 +10,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    triangle * tidyIndices(point * edgesLandMarks, int nEdges, int nFaces, int * nTris);
+    PhiTriangle * tidyIndices(PhiPoint * edgesLandMarks, int nEdges, int nFaces, int * nTris);
 #ifdef __cplusplus
 }
 #endif

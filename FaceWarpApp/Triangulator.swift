@@ -20,12 +20,12 @@ func wrapIt() {
     let numFaces : Int32 = 2
     let numEdges : Int32 = 2
     var tris : Int32 = 0
-    let ans = tidyIndices(&edges, Int32(2), &landmarks, Int32(2), &tris)
+//    let ans = tidyIndices(&edges, Int32(2), &landmarks, Int32(2), &tris)
     
-    var safeAns : [Int] = []
-    for idx in 0..<tris {
-        safeAns.append(Int(ans[Int(idx)]))
-    }
-
-    free(ans)
+//    var safeAns : [Int] = []
+//    for idx in 0..<tris {
+//        safeAns.append(Int(ans[Int(idx)]))
+//    }
+//
+//    free(ans)
 }

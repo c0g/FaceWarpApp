@@ -14,18 +14,18 @@ typedef struct {
     float top;
     float right;
     float bottom;
-} Rectangle;
+} PhiRectangle;
 
 typedef struct {
     float x;
     float y;
-} Point;
+} PhiPoint;
 
 typedef struct {
     int p0;
     int p1;
     int p2;
-} Triangle;
+} PhiTriangle;
 
 
 #endif /* PHI_C_Types_h */

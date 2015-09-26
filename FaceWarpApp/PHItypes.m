@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PHIRectangle.h"
+#import "PHItypes.h"
 
-@implementation NSValue (Rectangle)
-+(instancetype)valueWithRectangle:(Rectangle)value {
-    return [self valueWithBytes:&value objCType:@encode(Rectangle)];
+@implementation NSValue (PhiRectangle)
++(instancetype)valueWithRectangle:(PhiRectangle)value {
+    return [self valueWithBytes:&value objCType:@encode(PhiRectangle)];
 }
-- (Rectangle) rectangleValue {
-    Rectangle value;
+- (PhiRectangle) rectangleValue {
+    PhiRectangle value;
     [self getValue:&value];
     return value;
 }

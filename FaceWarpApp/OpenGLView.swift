@@ -54,20 +54,11 @@ var Indices: [GLubyte] = [
     0, 2, 3,
 ]
 
-//func synchronize(lockObj: AnyObject!, closure: ()->()){
-//    objc_sync_enter(lockObj)
-//    closure()
-//    objc_sync_exit(lockObj)
-//}
-
-
-//helper extensions to pass arguments to GL land
 extension Array {
     func size () -> Int {
         return self.count * sizeofValue(self[0])
     }
 }
-
 
 extension Int32 {
     func __conversion() -> GLenum {
@@ -153,7 +144,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var detector : CIDetector? = nil
     
     var q_high_p : dispatch_queue_t? = nil
-    var faces : [Rectangle] = []
+    var faces : [PhiRectangle] = []
     
     let faceLock = dispatch_queue_create("com.phi.FaceLock", nil)
     
@@ -701,11 +692,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
             let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             
-            let mean_xn1 = mean_x1 / Float(1280 / smallTextureScale)
-            let mean_yn1 = mean_y1 / Float(720  / smallTextureScale)
+            let mean_xn1 = mean_x1 / Float(1280)
+            let mean_yn1 = mean_y1 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn1) * (1 + 0.3*sin(Float(120 + iter))) + mean_xn1
-            let scaled_yn = (raw_yn - mean_yn1) * (1 + 0.3*sin(Float(iter))) + mean_yn1
+            let scaled_xn = (raw_xn - mean_xn1) * 0.8 + mean_xn1
+            let scaled_yn = (raw_yn - mean_yn1) * 0.8 + mean_yn1
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -731,11 +722,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
             let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
             
-            let mean_xn2 = mean_x2 / Float(1280 / smallTextureScale)
-            let mean_yn2 = mean_y2 / Float(720  / smallTextureScale)
+            let mean_xn2 = mean_x2 / Float(1280)
+            let mean_yn2 = mean_y2 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn2) * (1 + 0.3*sin(180 + Float(iter))) + mean_xn2
-            let scaled_yn = (raw_yn - mean_yn2) * (1.0 + 0.3*sin(90 + Float(iter))) + mean_yn2
+            let scaled_xn = (raw_xn - mean_xn2) * 0.8 + mean_xn2
+            let scaled_yn = (raw_yn - mean_yn2) * 0.8 + mean_yn2
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -764,8 +755,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn3 = mean_x3 / Float(1280)
             let mean_yn3 = mean_y3 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn3) * 0.9 + mean_xn3
-            let scaled_yn = (raw_yn - mean_yn3) * 0.9 + mean_yn3
+            let scaled_xn = (raw_xn - mean_xn3) * 0.8 + mean_xn3
+            let scaled_yn = (raw_yn - mean_yn3) * 0.8 + mean_yn3
             
             let u = raw_xn
             let v = 1 - raw_yn

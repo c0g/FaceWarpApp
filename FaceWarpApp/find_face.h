@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 //#import "FaceWarpApp-Swift.h"
-#import "PHIRectangle.h"
+#import "PHItypes.h"
 
 #ifndef PHIHarleyStreet_h
 #define PHIHarleyStreet_h
@@ -29,12 +29,6 @@ typedef struct {
 
 -(NSArray *) facesPointsInBigImage:(CamImage)bigImg andSmallImage: (CamImage)_smallImg withScale: (int) scale;
 
-
-//-(NSArray *) facesInImage: (CamImage)image withScale: (float)scale;
-//-(NSArray *) facePointsInImage: (CamImage)image withRectangle: (Rectangle)box;
-//-(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat;
-
 @end
-
 
 #endif /* PHIHarleyStreet_h */
