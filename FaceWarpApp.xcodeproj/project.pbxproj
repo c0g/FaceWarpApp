@@ -26,6 +26,7 @@
 		E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
+		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
 		E2B55E541BB69F390086F719 /* triangulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = triangulator.cpp; sourceTree = "<group>"; };
+		E2B55E561BB6B9590086F719 /* Triangulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangulator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +179,7 @@
 		E2B55E501BB5DD540086F719 /* Swift */ = {
 			isa = PBXGroup;
 			children = (
+				E2B55E561BB6B9590086F719 /* Triangulator.swift */,
 			);
 			name = Swift;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
 				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
+				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,
 				E26D16701BB42F7700A0F573 /* PHIRectangle.m in Sources */,
 			);

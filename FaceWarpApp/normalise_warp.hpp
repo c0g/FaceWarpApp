@@ -22,6 +22,7 @@ dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<
     dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky * dlib::trans(rotation_matrix_cholesky);
     
     return rotation_matrix;
+
     
 };
 

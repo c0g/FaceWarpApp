@@ -13,6 +13,8 @@
 
 std::vector<triangle> triangulate(int num_faces, const std::vector<int> edge_points, const std::vector<T> &landmarks, const std::vector<T> &delaunay){
     // Delaunay is a 
+    long a = 0;
+    double b = static_cast<double>(a);
     
     std::vector<triangle> tri;
     

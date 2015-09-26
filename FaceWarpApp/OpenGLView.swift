@@ -540,11 +540,6 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         //get from cam
         let videoDevice = AVCaptureDevice.devices()[1]
-        for format in videoDevice.formats! {
-            for frameRate in format.videoSupportedFrameRateRanges! {
-                print(frameRate)
-            }
-        }
         var input : AVCaptureDeviceInput? = nil
         do {
             input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice )
