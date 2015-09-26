@@ -10,5 +10,6 @@
 #define bridging_h
 
 #import "PHIdlib.h"
+#inport "normalise_warp.hpp"
 
 #endif /* bridging_h */

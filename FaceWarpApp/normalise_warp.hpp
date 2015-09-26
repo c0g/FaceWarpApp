@@ -22,7 +22,6 @@ dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<
     dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky * dlib::trans(rotation_matrix_cholesky);
     
     return rotation_matrix;
-    
 };
 
 double cost_function_3d_rotation(dlib::matrix<double> vector, const dlib::matrix<double> &landmarks3d, const dlib::matrix<double> &landmarks){
@@ -173,9 +172,9 @@ dlib::matrix<double> find_overall_rotation_matrix(const dlib::matrix<double> &la
     return rotation_matrix_total;
 };
 
-dlib::matrix<double> return_3d_adjusted_warp(const dlib::matrix<double> &landmarks, const dlib::matrix<double> &face_flat_warp)
+double * return_3d_adjusted_warp(const dlib::matrix<double> &landmarks, const dlib::matrix<double> &face_flat_warp)
 {
-    
+    // CALLER MUST FREE MEMORY ON RETURN.
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -189,7 +188,17 @@ dlib::matrix<double> return_3d_adjusted_warp(const dlib::matrix<double> &landmar
     dlib::set_colm(new_warp_de_centered,0) = colm(new_warp_de_centered,0) + mean_landmarks(0,0);
     dlib::set_colm(new_warp_de_centered,1) = colm(new_warp_de_centered,1) + mean_landmarks(0,1);
     
-    return new_warp_de_centered;
+    double * output = (double *)malloc(new_warp_de_centered.nr()*new_warp_de_centered.nc()*sizeof(double));
+    int index = 0;
+    for (int row = 0; row < new_warp_de_centered.nr(); row++)
+    {
+        for (int col = 0; col < new_warp_de_centered.nc(); col++)
+        {
+            index++;
+            output[index] = new_warp_de_centered(row,col);
+        }
+    }
+    return output;
 };
 
 #endif /* normalise_warp_h */
