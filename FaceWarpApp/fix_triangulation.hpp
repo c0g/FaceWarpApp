@@ -12,6 +12,7 @@
 #include "face_landmarks.hpp"
 
 std::vector<triangle> triangulate(int num_faces, const std::vector<int> edge_points, const std::vector<T> &landmarks, const std::vector<T> &delaunay){
+    // Delaunay is a 
     
     std::vector<triangle> tri;
     

@@ -11,5 +11,6 @@
 
 #import "find_face.h"
 #import "Clarkson-Delaunay.h"
+#import "triangulator.h"
 
 #endif /* bridging_h */

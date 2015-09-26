@@ -162,6 +162,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var iter = 0
     
     
+    
     /* Class Methods
     ------------------------------------------*/
     
@@ -177,7 +178,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
+        UIApplication.sharedApplication().idleTimerDisabled = true
         self.setupDetector()
         
         self.setupQueues()
