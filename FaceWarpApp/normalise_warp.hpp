@@ -10,11 +10,8 @@
 #define normalise_warp_h
 
 #include <dlib/matrix/matrix.h>
-#include <dlib/optimization/optimization.h>
-#include <cmath.h>
-#include "face_landmarks.h"
-
-
+#include <dlib/optimization.h>
+#include "face_landmarks.hpp"
 
 dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<double,6,1> &vector)
 {
@@ -47,13 +44,13 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     dlib::matrix<double,2,2> rotation_matrix = dlib::rotation_matrix(angle(0,0));
     dlib::matrix<double> rotated_landmarks = centered_landmarks * rotation_matrix;
     
-    dlib::matrix<long,1,leye_dlib.size()> dlib_leye_range;
+    dlib::matrix<long> dlib_leye_range(1,leye_dlib.size());
     for (int i = 0; i < leye_dlib.size(); i++ )
     {
         dlib_leye_range(0,i) = (long)leye_dlib[i];
     }
     
-    dlib::matrix<long,1,reye_dlib.size()> dlib_reye_range;
+    dlib::matrix<long> dlib_reye_range(1,reye_dlib.size());
     for (int i = 0; i < reye_dlib.size(); i++ )
     {
         dlib_reye_range(0,i) = (long)reye_dlib[i];
@@ -68,28 +65,30 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     dlib::matrix<double> mean_leye = dlib::sum_rows(mean_leye_tmp) * (1.0/((double)leye_dlib.size()));
     dlib::matrix<double> mean_reye_tmp = dlib::rowm(rotated_landmarks, dlib_reye_range);
     dlib::matrix<double> mean_reye = dlib::sum_rows(mean_reye_tmp) * (1.0/((double)leye_dlib.size()));
+
+    double mismatch_error = std::numeric_limits<double>::max();
     
     if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
     {
-        dlib::matrix<double,1,1> mismatch_error = dlib::sqrt(dlib::pow(2, mean_leye(0,1) - mean_reye(0,1)));
+        mismatch_error = std::sqrt(std::pow(mean_leye(0,1) - mean_reye(0,1),2));
     }
     
     else if ((old_mean_leye(0,1) < old_mean_reye(0,1)) & (mean_leye(0,1) < mean_reye(0,1)))
     {
-        dlib::matrix<double,1,1> mismatch_error = dlib::sqrt(dlib::pow(2, mean_leye(0,1) - mean_reye(0,1)));
+        mismatch_error = std::sqrt(std::pow(mean_leye(0,1) - mean_reye(0,1),2));
     }
     
-    elseif (mean_leye(0,1) == mean_reye)
+    else if (mean_leye(0,1) == mean_reye)
     {
-        dlib::matrix<double,1,1> mismatch_error = 0.0;
+        mismatch_error = 0.0;
     }
     
     else
     {
-        dlib::matrix<double,1,1> mismatch_error = std::numeric_limits<double>::infinity();
-    }
+        mismatch_error = std::numeric_limits<double>::max();
+    };
     
-    return mismatch_error(0,0);
+    return mismatch_error;
     
 };
 
@@ -100,16 +99,17 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    auto cost_function_2d_rotation_wrapper = [](dlib::matrix<double,1,1> x)
+    auto cost_function_2d_rotation_wrapper = [&landmarks](dlib::matrix<double,1,1> x)
     {
         return cost_function_2d_rotation(x, landmarks);
-    }
+    };
     
-    dlib::matrix<double,1,1> angle = 0.0;
+    dlib::matrix<double,1,1> angle;
+    angle = 0.0;
     double min_f;
     double dervative_eps = 1e-7;
     
-    dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(),
+    dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
                                                  dlib::objective_delta_stop_strategy(1e-5),
                                                  cost_function_2d_rotation_wrapper,
                                                  angle,
@@ -123,7 +123,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
 //    dlib::set_subm(rotation_matrix, dlib::range(0,1), dlib::range(0,1)) = rotation_matrix_2d;
     dlib::set_subm(rotation_matrix_inv, dlib::range(0,1), dlib::range(0,1)) = rotation_matrix_2d_inv;
     
-    return rotation_matrix_inv
+    return rotation_matrix_inv;
 };
 
 dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmarks, const dlib::matrix<double> &landmarks3d)
@@ -139,16 +139,18 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     dlib::set_colm(centered_landmarks3d,1) = colm(centered_landmarks3d,1) - mean_landmarks3d(0,1);
     dlib::set_colm(centered_landmarks3d,2) = colm(centered_landmarks3d,2) - mean_landmarks3d(0,2);
     
-    auto cost_function_3d_rotation_wrapper = [](dlib::matrix<double,6,1> x)
+    auto cost_function_3d_rotation_wrapper = [&landmarks3d, &landmarks](dlib::matrix<double,6,1> x)
     {
         return cost_function_3d_rotation(x, landmarks3d, landmarks);
-    }
+    };
     
-    dlib::matrix<double,6,1> vector = 1.0, 0.0, 1.0, 0.0, 0.0, 1.0;
+    dlib::matrix<double,6,1> vector;
+    vector = 1.0, 0.0, 1.0, 0.0, 0.0, 1.0;
+    
     double min_f;
     double dervative_eps = 1e-7;
     
-    dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(),
+    dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
                                                  dlib::objective_delta_stop_strategy(1e-5),
                                                  cost_function_3d_rotation_wrapper,
                                                  vector,
@@ -168,19 +170,21 @@ dlib::matrix<double> find_overall_rotation_matrix(const dlib::matrix<double> &la
     
     dlib::matrix<double,3,3> rotation_matrix_total = rotation_matrix_3d * rotation_matrix_2d_inv;
     
-    return rotation_matrix;
+    return rotation_matrix_total;
 };
 
 dlib::matrix<double> return_3d_adjusted_warp(const dlib::matrix<double> &landmarks, const dlib::matrix<double> &face_flat_warp)
 {
+    
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    dlib::matrix<double> rotation_matrix = find_overall_rotation_matrix(landmarks, landmarks3d_dlib);
+    double *dlib_3d = landmarks3d_dlib;
+    dlib::matrix<double> rotation_matrix = find_overall_rotation_matrix(landmarks, dlib::mat(dlib_3d, 68, 3));
     
-    dlib::matrix<double> new_warp = landmarks_centered * rotation_matrix;
+    dlib::matrix<double> new_warp = centered_landmarks * rotation_matrix;
     dlib::matrix<double> new_warp_de_centered = new_warp;
     dlib::set_colm(new_warp_de_centered,0) = colm(new_warp_de_centered,0) + mean_landmarks(0,0);
     dlib::set_colm(new_warp_de_centered,1) = colm(new_warp_de_centered,1) + mean_landmarks(0,1);
