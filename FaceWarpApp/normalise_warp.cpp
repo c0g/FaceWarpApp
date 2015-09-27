@@ -394,6 +394,9 @@ double * return_3d_silly_adjusted_warp(double * landmarks_ptr)
     
     dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
     
+    dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
+    dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
+    
     double * output = (double *)malloc(_2d_landmarks_full.nr()*_2d_landmarks_full.nc()*sizeof(double));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
