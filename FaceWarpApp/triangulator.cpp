@@ -13,6 +13,7 @@
 #include <vector>
 // factorials (multiplies example)
 #include <iostream>     // std::cout
+#include <algorithm>
 #include <functional>   // std::multiplies
 #include <numeric>      // std::partial_sum
 #include <set>
@@ -31,6 +32,60 @@ bool pointInFace(PhiTriangle tri, int incL, int excU) {
     return !outSideFace;
 }
 
+int check_intersection(PhiTriangle &v11, const std::vector<int> &v22){
+    std::vector<int> v1((int*)&v11, ((int*)&v11)+3);
+    std::vector<int> v2 = v22;
+    
+    std::vector<int> v;
+    v.resize(v1.size() + v2.size());
+    std::vector<int>::iterator it;
+    
+    std::sort(v1.begin(),v1.end());
+    std::sort(v2.begin(),v2.end());
+    
+    it=std::set_intersection (v1.begin(), v1.end(), v2.begin(), v2.end(), v.begin());
+    v.resize(it-v.begin());
+    
+    return (v.size() > 0);
+};
+
+int distict_abs(const std::vector<int>& v)
+{
+    std::set<int> distinct_container;
+    
+    for(auto curr_int = v.begin(), end = v.end(); // no need to call v.end() multiple times
+        curr_int != end;
+        ++curr_int)
+    {
+        // std::set only allows single entries
+        // since that is what we want, we don't care that this fails
+        // if the second (or more) of the same value is attempted to
+        // be inserted.
+        distinct_container.insert(abs(*curr_int));
+    };
+    
+    return (int)distinct_container.size();
+};
+
+bool tri_el_not_in_interior(PhiTriangle &v11, const std::vector<int>& v22){
+    
+    std::vector<int> delaunay_el((int*)&v11, ((int*)&v11)+3);
+    std::vector<int> range_of_interior_points = v22;
+    
+    int sum = 0;
+    for (int i = 0; i < delaunay_el.size(); i++){
+        if (std::find(range_of_interior_points.begin(), range_of_interior_points.end(), delaunay_el[i]) != range_of_interior_points.end()){
+            sum += 1;
+        };
+    };
+    
+    bool flag = true;
+    if (sum > 0){
+        flag = false;
+    };
+    return flag;
+};
+
 // Needs c linkage to be imported to Swift
 extern "C" {
 PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
@@ -44,8 +99,78 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
         std::cout << "Triangulation failed" << std::endl;
     }
     
+    std::vector<int> idx_of_edge_points;
+    for (int i = 0; i < numEdges; i++)
+    {
+        idx_of_edge_points.push_back(i + numFaces*68);
+    }
+    
+    std::vector<int> range_of_end_points;
+    for( int i = 0; i < numFaces; i++ ){
+        range_of_end_points.push_back( ((i + 1) * 68) - 1 );
+    };
+    
+    std::vector<int> range_of_interior_points;
+    for (int face_num = 0; face_num < numFaces; face_num++){
+        for( int i = 27 + face_num * 68; i < 67 + face_num * 68; i++ ){
+            range_of_interior_points.push_back( i );
+        };
+    };
+    
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
+    int idx = 0;
+    PhiTriangle * finalTriResults;
+    for (int i = 0; i < numVertices / 3; i++)
+    {
+        if (check_intersection(triResults[i], idx_of_edge_points))
+        {
+            finalTriResults[idx] = triResults[i];
+            idx++;
+        }
+        else
+        {
+            std::vector<int> sums;
+            sums.resize(range_of_end_points.size());
+            std::vector<int> delaunay((int*)&triResults[i], ((int*)&triResults[i]) + 3);
+            for (int j = 0; j < range_of_end_points.size(); j++){
+                sums[j] = 0;
+                for (int k = 0; k < 3; k++)
+                {
+                    if (range_of_end_points[j] >= delaunay[k]){
+                        sums[j] += 1;
+                    };
+                }
+            };
+            if (distict_abs(sums) > 1)
+            {
+                finalTriResults[idx] = triResults[i];
+                idx++;
+            }
+            else if (tri_el_not_in_interior(triResults[i], range_of_interior_points))
+            {
+                finalTriResults[idx] = triResults[i];
+                idx++;
+            };
+        };
+    };
+    
+    int offset;
+    for (int i = 0; i < numFaces; i++)
+    {
+        offset = 68*i;
+        
+        for (int j = 0; j < 107; j++)
+        {
+            finalTriResults[idx] = infaceTri[j];
+            finalTriResults[idx].p0 += offset;
+            finalTriResults[idx].p1 += offset;
+            finalTriResults[idx].p2 += offset;
+            idx++;
+        };
+    };
+    
+    
     // wrap in vector
 //    std::vector<PhiTriangle> possibleTriang(triResults, triResults + numVertices / 3);
 //    std::cout << "Found " << numVertices / 3 << " triangles" << std::endl;
@@ -77,12 +202,13 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
 //    }
     // Now for dirty bit.
     // Set ntris to be the size of 'tidied'
-    *nTris = numVertices / 3;
+//    *nTris = numVertices / 3;
 //    //Allocate an array of PhiTriangle and copy vector into it
 //    PhiTriangle * unsafeResult = (PhiTriangle *) malloc(possibleTriang.size() * sizeof(PhiTriangle));
 //    for (int tridX = 0; tridX < possibleTriang.size(); tridX++) {
 //        unsafeResult[tridX] = possibleTriang.at(tridX);
 //    }
-    return triResults;
+    return finalTriResults;
 }
 }
+

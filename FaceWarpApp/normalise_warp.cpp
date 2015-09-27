@@ -320,8 +320,8 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr)
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
         output[row] = PhiPoint{
-            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
-            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
         };
         
     };
@@ -413,8 +413,8 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr)
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
         output[row] = PhiPoint{
-            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
-            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
         };
         
     };
