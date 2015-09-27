@@ -109,6 +109,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var written = false
     var numfaces = 0
     let faceFinder : FaceFinder = FaceFinder()
+    let warper : Warper = Warper()
     
     var frameCounter : Int = 0
     
@@ -549,13 +550,21 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         session = AVCaptureSession()
         
         //get from cam
-        let videoDevice = AVCaptureDevice.devices()[1]
+        let videoDevice = AVCaptureDevice.devices()[1] as! AVCaptureDevice
         var input : AVCaptureDeviceInput? = nil
         do {
-            input = try AVCaptureDeviceInput(device: videoDevice as! AVCaptureDevice )
+            input = try AVCaptureDeviceInput(device: videoDevice )
         } catch _ {
             print("Failed to get video input")
             exit(1);
+        }
+        do {
+            try videoDevice.lockForConfiguration()
+            videoDevice.activeVideoMaxFrameDuration = CMTimeMake(10, 240)
+            videoDevice.activeVideoMinFrameDuration = CMTimeMake(10, 240)
+            videoDevice.unlockForConfiguration()
+        } catch _ {
+            print("Could not set FPS to 24, continuing")
         }
         session?.addInput(input)
         
@@ -698,7 +707,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         for faceidx in 0..<numfaces {
             let offset = faceidx * 68
             let slice : [PhiPoint] = Array(vertices[offset..<offset + 68])
-            let tmpArray = doSillyWarp(slice)
+            let tmpArray = warper.doWarp(slice, warp: .SILLY)
             for pidx in 0..<68 {
                 let warped_point = tmpArray[pidx]
                 let unwarped_point = slice[pidx]
