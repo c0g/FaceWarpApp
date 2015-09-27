@@ -21,6 +21,8 @@ import ImageIO
 typealias ImagePosition = (CFloat, CFloat, CFloat)
 typealias TexturePosition = (CFloat, CFloat)
 //typealias Color = (CFloat, CFloat)
+//var a : CGFloat = 0
+//var b : CFloat = a
 
 
 struct Coordinate {
@@ -695,8 +697,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn1 = mean_x1 / Float(1280)
             let mean_yn1 = mean_y1 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn1) * 0.8 + mean_xn1
-            let scaled_yn = (raw_yn - mean_yn1) * 0.8 + mean_yn1
+            let scaled_xn = (raw_xn - mean_xn1) * 1.4 + mean_xn1
+            let scaled_yn = (raw_yn - mean_yn1) * 1.6 + mean_yn1
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -725,8 +727,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn2 = mean_x2 / Float(1280)
             let mean_yn2 = mean_y2 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn2) * 0.8 + mean_xn2
-            let scaled_yn = (raw_yn - mean_yn2) * 0.8 + mean_yn2
+            let scaled_xn = (raw_xn - mean_xn2) * 1.4 + mean_xn2
+            let scaled_yn = (raw_yn - mean_yn2) * 1.6 + mean_yn2
             
             let u = raw_xn
             let v = 1 - raw_yn
@@ -755,8 +757,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let mean_xn3 = mean_x3 / Float(1280)
             let mean_yn3 = mean_y3 / Float(720)
             
-            let scaled_xn = (raw_xn - mean_xn3) * 0.8 + mean_xn3
-            let scaled_yn = (raw_yn - mean_yn3) * 0.8 + mean_yn3
+            let scaled_xn = (raw_xn - mean_xn3) * 1.5 + mean_xn3
+            let scaled_yn = (raw_yn - mean_yn3) * 1.5 + mean_yn3
             
             let u = raw_xn
             let v = 1 - raw_yn
