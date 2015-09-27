@@ -11,9 +11,9 @@
 
 #include "PHI_C_Types.h"
 
-@interface NSValue (PhiRectangle)
-+(instancetype) valueWithRectangle:(PhiRectangle)value;
-@property (readonly) PhiRectangle rectangleValue;
+@interface NSValue (PhiTriangle)
++(instancetype) valueWithTriangle:(PhiTriangle)value;
+@property (readonly) PhiTriangle triangleValue;
 @end
 
 #endif /* PHITypes_h */

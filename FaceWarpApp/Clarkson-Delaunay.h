@@ -7,5 +7,16 @@
  * or modification of this software and in all copies of the supporting
  * documentation for such software.
  */
+#ifndef Clarkson_Delaunay_h
+#define Clakrson_Delaunay_h
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 unsigned int * BuildTriangleIndexList (void *pointList, float factor, int numberOfInputPoints, int numDimensions, int clockwise, int *numTriangleVertices );
+#ifdef __cplusplus 
+}
+#endif
+
+#endif /* Clarkson_Delaunay_h */

@@ -9,23 +9,14 @@
 import Foundation
 
 
-func wrapIt() {
-    var edges : [Int32] = [1, 2, 3]
-    
-    var edges32 = edges.map({Int32($0)})
-    
-//    var edges2 = edges as [Int]
-    
-    var landmarks : [Int32] = [1, 2, 3]
-    let numFaces : Int32 = 2
-    let numEdges : Int32 = 2
+func tidyIndices(edgesAndLandmarks : [CGPoint], numEdges : Int, numFaces : Int) -> [PhiTriangle] {
+    var edgesAndLandmarksMutable = edgesAndLandmarks
     var tris : Int32 = 0
-//    let ans = tidyIndices(&edges, Int32(2), &landmarks, Int32(2), &tris)
-    
-//    var safeAns : [Int] = []
-//    for idx in 0..<tris {
-//        safeAns.append(Int(ans[Int(idx)]))
-//    }
-//
-//    free(ans)
+    let ans = unsafeTidyIndices(&edgesAndLandmarksMutable, Int32(numEdges), Int32(numFaces), &tris)
+    var safeAns : [PhiTriangle] = []
+    for idx in 0..<Int(tris) {
+        safeAns.append(ans[idx])
+    }
+    free(ans)
+    return safeAns
 }

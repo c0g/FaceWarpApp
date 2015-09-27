@@ -9,22 +9,11 @@
 #ifndef PHI_C_Types_h
 #define PHI_C_Types_h
 
-typedef struct {
-    float left;
-    float top;
-    float right;
-    float bottom;
-} PhiRectangle;
 
 typedef struct {
-    float x;
-    float y;
-} PhiPoint;
-
-typedef struct {
-    int p0;
-    int p1;
-    int p2;
+    unsigned int p0;
+    unsigned int p1;
+    unsigned int p2;
 } PhiTriangle;
 
 

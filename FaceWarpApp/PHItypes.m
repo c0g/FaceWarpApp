@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "PHItypes.h"
 
-@implementation NSValue (PhiRectangle)
-+(instancetype)valueWithRectangle:(PhiRectangle)value {
-    return [self valueWithBytes:&value objCType:@encode(PhiRectangle)];
+@implementation NSValue (PhiTriangle)
++(instancetype)valueWithTriangle:(PhiTriangle)value {
+    return [self valueWithBytes:&value objCType:@encode(PhiTriangle)];
 }
-- (PhiRectangle) rectangleValue {
-    PhiRectangle value;
+- (PhiTriangle) triangleValue {
+    PhiTriangle value;
     [self getValue:&value];
     return value;
 }

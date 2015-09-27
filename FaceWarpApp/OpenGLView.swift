@@ -18,8 +18,8 @@ import AVFoundation
 
 import ImageIO
 
-typealias ImagePosition = (CFloat, CFloat, CFloat)
-typealias TexturePosition = (CFloat, CFloat)
+typealias ImagePosition = (GLfloat, GLfloat, GLfloat)
+typealias TexturePosition = (GLfloat, GLfloat)
 //typealias Color = (CFloat, CFloat)
 //var a : CGFloat = 0
 //var b : CFloat = a
@@ -40,7 +40,6 @@ var FaceIndicesSmall : [GLubyte] = [
     1, 2, 0,
     0, 2, 3,
 ]
-
 
 var FaceIndices : [GLushort] = [ 0, 36, 17,36, 18, 17,36, 37, 18,37, 19, 18,37, 38, 19,38, 20, 19,38, 39, 20,39, 21, 20,36, 41, 37,41, 40, 37,40, 38, 37,40, 39, 38,39, 27, 21,27, 22, 21,27, 42, 22,42, 23, 22,42, 43, 23,43, 24, 23,43, 44, 24,44, 25, 24,44, 45, 25,45, 26, 25,45, 16, 26,42, 47, 43,47, 44, 43,47, 46, 44,46, 45, 44,39, 28, 27,28, 42, 27,32, 33, 30,33, 34, 30,31, 30, 32,31, 30, 29,34, 35, 30,35, 29, 30,35, 28, 29,31, 29, 28, 0,  1, 36,39, 31, 28,35, 42, 28,15, 16, 45,40, 31, 39,35, 47, 42, 1, 41, 36, 1, 40, 41,15, 45, 46,15, 46, 47,35, 15, 47, 1, 31, 40, 1,  2, 31,35, 14, 15, 2, 48, 31, 3, 48,  2, 4, 48,  3,54, 14, 35,54, 13, 14,12, 13, 54, 4,  5, 48, 5, 59, 48,11, 12, 54,55, 11, 54,10, 11, 55,56, 10, 55, 9, 10, 56, 5,  6, 59, 6, 58, 59, 6,  7, 58, 7, 57, 58, 7,  8, 57,57,  9, 56, 8,  9, 57,48, 49, 31,53, 54, 35,49, 50, 31,52, 53, 35,50, 32, 31,52, 35, 34,50, 51, 32,51, 52, 34,51, 34, 33,51, 33, 32,48, 60, 49,59, 60, 48,60, 67, 61,64, 54, 53,55, 54, 64,65, 64, 63,67, 62, 61,65, 63, 62,67, 66, 62,66, 65, 62,51, 52, 63,61, 62, 51,60, 61, 49,61, 50, 49,63, 64, 53,63, 53, 52,61, 51, 50,51, 62, 63,59, 67, 60,59, 58, 67,58, 57, 67,57, 66, 67,57, 65, 66,57, 56, 65,65, 55, 56,55, 64, 65]
 
@@ -89,6 +88,19 @@ func time<O>(name: String, f : ()->O )-> O {
     let deltaT = NSDate().timeIntervalSinceDate(startTime)
     print("\(name) took \(deltaT)")
     return rez
+}
+
+func makeEdges(n: Int, scalex: CGFloat, scaley: CGFloat) -> [CGPoint] {
+    var points : [CGPoint] = []
+    for x in 0...n {
+        points.append(CGPointMake(scalex * CGFloat(x) / CGFloat(n), scaley * 0))
+        points.append(CGPointMake(scalex * CGFloat(x) / CGFloat(n), scaley * 1))
+    }
+    for y in 0...n {
+        points.append(CGPointMake(scalex * 0, scaley * CGFloat(y) / CGFloat(n)))
+        points.append(CGPointMake(scalex * 1, scaley * CGFloat(y) / CGFloat(n)))
+    }
+    return points
 }
 
 
@@ -146,9 +158,10 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var detector : CIDetector? = nil
     
     var q_high_p : dispatch_queue_t? = nil
-    var faces : [PhiRectangle] = []
     
     let faceLock = dispatch_queue_create("com.phi.FaceLock", nil)
+    
+    var edges : [CGPoint] = []
     
     var faceVertices : [Coordinate] = []
     var currentIndices : [GLushort] = []
@@ -173,7 +186,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         super.init(coder: aDecoder)
         UIApplication.sharedApplication().idleTimerDisabled = true
         self.setupDetector()
-        
+        self.setupEdges()
         self.setupQueues()
 
         self.setupLayer()
@@ -223,6 +236,10 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.eaglLayer.contentsScale = UIScreen.mainScreen().scale
         self.eaglLayer.bounds.size.width = UIScreen.mainScreen().bounds.width
         self.eaglLayer.bounds.size.height = UIScreen.mainScreen().bounds.height
+    }
+    
+    func setupEdges() {
+        edges = makeEdges(16, scalex: 1280, scaley: 720)
     }
     
     func setupContext() {
@@ -654,120 +671,159 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         let arrPoints = self.faceFinder.facesPointsInBigImage(img, andSmallImage: smallImg, withScale: Int32(smallTextureScale)) as! [[NSValue]]
         numfaces = arrPoints.count
-        faceVertices = []
-        for points in arrPoints {
-            self.fillFaceVertex(points)
-        }
-        
+//        for points in arrPoints {
+////            self.fillFaceVertex(points)
+//        }
         CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
         CVPixelBufferUnlockBaseAddress(self.flipPixelBuffer!, 0)
-        
-    }
-
-    func fillFaceVertex(points : [NSValue]) {
-        iter += 1
-        for point_idx in 0..<36 {
-            
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
-            let u = raw_xn
-            let v = 1 - raw_yn
-            let x = 2 * raw_xn - 1
-            let y = 2 * raw_yn - 1
-
-            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
-        }
-        
-        var mean_x1 : Float = 0
-        var mean_y1 : Float = 0
-        var divby1 : Float = 0
-        for point_idx in 36..<42 {
-            divby1++
-            mean_x1 += Float(points[point_idx].CGPointValue().x)
-            mean_y1 += Float(points[point_idx].CGPointValue().y)
-        }
-        mean_x1 /= divby1
-        mean_y1 /= divby1
-
-        
-        for point_idx in 36..<42 {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
-            
-            let mean_xn1 = mean_x1 / Float(1280)
-            let mean_yn1 = mean_y1 / Float(720)
-            
-            let scaled_xn = (raw_xn - mean_xn1) * 1.4 + mean_xn1
-            let scaled_yn = (raw_yn - mean_yn1) * 1.6 + mean_yn1
-            
-            let u = raw_xn
-            let v = 1 - raw_yn
-            let x = 2 * scaled_xn - 1
-            let y = 2 * scaled_yn - 1
-            
-            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
-        }
-        
-        var mean_x2 : Float = 0
-        var mean_y2 : Float = 0
-        var divby2 : Float = 0
-        for point_idx in 42..<48 {
-            divby2++
-            mean_x2 += Float(points[point_idx].CGPointValue().x)
-            mean_y2 += Float(points[point_idx].CGPointValue().y)
-        }
-        mean_x2 /= divby2
-        mean_y2 /= divby2
-        
-        
-        for point_idx in 42..<48 {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
-            
-            let mean_xn2 = mean_x2 / Float(1280)
-            let mean_yn2 = mean_y2 / Float(720)
-            
-            let scaled_xn = (raw_xn - mean_xn2) * 1.4 + mean_xn2
-            let scaled_yn = (raw_yn - mean_yn2) * 1.6 + mean_yn2
-            
-            let u = raw_xn
-            let v = 1 - raw_yn
-            let x = 2 * scaled_xn - 1
-            let y = 2 * scaled_yn - 1
-            
-            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
-        }
-        
-        var mean_x3 : Float = 0
-        var mean_y3 : Float = 0
-        var divby3 : Float = 0
-        for point_idx in 48..<points.count {
-            divby3++
-            mean_x3 += Float(points[point_idx].CGPointValue().x)
-            mean_y3 += Float(points[point_idx].CGPointValue().y)
-        }
-        mean_x3 /= divby3
-        mean_y3 /= divby3
-        
-        
-        for point_idx in 48..<points.count {
-            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
-            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
-            
-            let mean_xn3 = mean_x3 / Float(1280)
-            let mean_yn3 = mean_y3 / Float(720)
-            
-            let scaled_xn = (raw_xn - mean_xn3) * 1.5 + mean_xn3
-            let scaled_yn = (raw_yn - mean_yn3) * 1.5 + mean_yn3
-            
-            let u = raw_xn
-            let v = 1 - raw_yn
-            let x = 2 * scaled_xn - 1
-            let y = 2 * scaled_yn - 1
-            
-            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+        if arrPoints.count > 0 {
+            let (indices, coordinates) = makeTriangulation(arrPoints)
+            (currentIndices, faceVertices) = makeGLDataWithIndices(indices, Vertices: coordinates)
+        } else {
+            currentIndices = []
+            faceVertices = []
         }
     }
+    
+    func makeGLDataWithIndices(indices : [PhiTriangle], Vertices vertices : [CGPoint]) -> ([GLushort], [Coordinate]) {
+        var glindices : [GLushort] = []
+        for tri in indices {
+            glindices.append(GLushort(tri.p0))
+            glindices.append(GLushort(tri.p1))
+            glindices.append(GLushort(tri.p2))
+        }
+        
+        var glvertices : [Coordinate] = []
+        for point in vertices {
+            let xn = point.x / 1280.0
+            let yn = point.y / 720.0
+            
+            let u = GLfloat(xn)
+            let v = GLfloat(1 - yn)
+            let x = GLfloat(2 * xn - 1)
+            let y = GLfloat(2 * yn - 1)
+            let z = GLfloat(0)
+            
+            glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
+        }
+        return (glindices, glvertices)
+    }
+    
+    func makeTriangulation(rawFacePoints : [[NSValue]]) -> ([PhiTriangle], [CGPoint]) {
+        var allPoints = edges
+        for points in rawFacePoints {
+            for value in points {
+                allPoints.append(value.CGPointValue())
+            }
+        }
+        let triangulation = tidyIndices(allPoints, numEdges: edges.count, numFaces: rawFacePoints.count)
+        return (triangulation, allPoints)
+    }
+//
+//    func fillFaceVertex(points : [NSValue]) {
+//        iter += 1
+//        for point_idx in 0..<36 {
+//            
+//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
+//            let u = raw_xn
+//            let v = 1 - raw_yn
+//            let x = 2 * raw_xn - 1
+//            let y = 2 * raw_yn - 1
+//
+//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+//        }
+//        
+//        var mean_x1 : Float = 0
+//        var mean_y1 : Float = 0
+//        var divby1 : Float = 0
+//        for point_idx in 36..<42 {
+//            divby1++
+//            mean_x1 += Float(points[point_idx].CGPointValue().x)
+//            mean_y1 += Float(points[point_idx].CGPointValue().y)
+//        }
+//        mean_x1 /= divby1
+//        mean_y1 /= divby1
+//
+//        
+//        for point_idx in 36..<42 {
+//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
+//            
+//            let mean_xn1 = mean_x1 / Float(1280)
+//            let mean_yn1 = mean_y1 / Float(720)
+//            
+//            let scaled_xn = (raw_xn - mean_xn1) * 1.4 + mean_xn1
+//            let scaled_yn = (raw_yn - mean_yn1) * 1.6 + mean_yn1
+//            
+//            let u = raw_xn
+//            let v = 1 - raw_yn
+//            let x = 2 * scaled_xn - 1
+//            let y = 2 * scaled_yn - 1
+//            
+//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+//        }
+//        
+//        var mean_x2 : Float = 0
+//        var mean_y2 : Float = 0
+//        var divby2 : Float = 0
+//        for point_idx in 42..<48 {
+//            divby2++
+//            mean_x2 += Float(points[point_idx].CGPointValue().x)
+//            mean_y2 += Float(points[point_idx].CGPointValue().y)
+//        }
+//        mean_x2 /= divby2
+//        mean_y2 /= divby2
+//        
+//        
+//        for point_idx in 42..<48 {
+//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
+//            
+//            let mean_xn2 = mean_x2 / Float(1280)
+//            let mean_yn2 = mean_y2 / Float(720)
+//            
+//            let scaled_xn = (raw_xn - mean_xn2) * 1.4 + mean_xn2
+//            let scaled_yn = (raw_yn - mean_yn2) * 1.6 + mean_yn2
+//            
+//            let u = raw_xn
+//            let v = 1 - raw_yn
+//            let x = 2 * scaled_xn - 1
+//            let y = 2 * scaled_yn - 1
+//            
+//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+//        }
+//        
+//        var mean_x3 : Float = 0
+//        var mean_y3 : Float = 0
+//        var divby3 : Float = 0
+//        for point_idx in 48..<points.count {
+//            divby3++
+//            mean_x3 += Float(points[point_idx].CGPointValue().x)
+//            mean_y3 += Float(points[point_idx].CGPointValue().y)
+//        }
+//        mean_x3 /= divby3
+//        mean_y3 /= divby3
+//        
+//        
+//        for point_idx in 48..<points.count {
+//            let raw_xn = Float(points[point_idx].CGPointValue().x / CGFloat((1280)))
+//            let raw_yn = Float(points[point_idx].CGPointValue().y / CGFloat((720)))
+//            
+//            let mean_xn3 = mean_x3 / Float(1280)
+//            let mean_yn3 = mean_y3 / Float(720)
+//            
+//            let scaled_xn = (raw_xn - mean_xn3) * 1.5 + mean_xn3
+//            let scaled_yn = (raw_yn - mean_yn3) * 1.5 + mean_yn3
+//            
+//            let u = raw_xn
+//            let v = 1 - raw_yn
+//            let x = 2 * scaled_xn - 1
+//            let y = 2 * scaled_yn - 1
+//            
+//            faceVertices.append(Coordinate(xyz: (x, y, 0.0), uv: (u, v)))
+//        }
+//    }
     
     func setFaceVertices() {
         if faceVertices.count > 0 {
@@ -822,6 +878,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
 //        findLandmarksInFaces()
         findFaces()
         renderWholeImageToRenderTexture()
+        
         setFaceVertices()
         renderFaceToRenderTexture()
 
