@@ -95,66 +95,66 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     int numPoints = numEdges + numFaces * 68;
     // Result is an numVertices array of unsigned integers, in row major form representing a matrix (numVertices / 3) x 3    
     unsigned int * unsafeResultRaw = BuildTriangleIndexList((int *)edgesLandMarks, 0, numPoints, dim, 0, &numVertices);
-//    if (numVertices == 0) {
-//        std::cout << "Triangulation failed" << std::endl;
-//    }
-//    
-//    std::vector<int> idx_of_edge_points;
-//    for (int i = 0; i < numEdges; i++)
-//    {
-//        idx_of_edge_points.push_back(i + numFaces*68);
-//    }
-//    
-//    std::vector<int> range_of_end_points;
-//    for( int i = 0; i < numFaces; i++ ){
-//        range_of_end_points.push_back( ((i + 1) * 68) - 1 );
-//    };
-//    
-//    std::vector<int> range_of_interior_points;
-//    for (int face_num = 0; face_num < numFaces; face_num++){
-//        for( int i = 27 + face_num * 68; i < 67 + face_num * 68; i++ ){
-//            range_of_interior_points.push_back( i );
-//        };
-//    };
+    if (numVertices == 0) {
+        std::cout << "Triangulation failed" << std::endl;
+    }
+    
+    std::vector<int> idx_of_edge_points;
+    for (int i = 0; i < numEdges; i++)
+    {
+        idx_of_edge_points.push_back(i + numFaces*68);
+    }
+    
+    std::vector<int> range_of_end_points;
+    for( int i = 0; i < numFaces; i++ ){
+        range_of_end_points.push_back( ((i + 1) * 68) - 1 );
+    };
+    
+    std::vector<int> range_of_interior_points;
+    for (int face_num = 0; face_num < numFaces; face_num++){
+        for( int i = 27 + face_num * 68; i < 67 + face_num * 68; i++ ){
+            range_of_interior_points.push_back( i );
+        };
+    };
     
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
-//    int idx = 0;
-//    PhiTriangle * finalTriResults;
-//    for (int i = 0; i < numVertices / 3; i++)
-//    {
-//        if (check_intersection(triResults[i], idx_of_edge_points))
-//        {
-//            finalTriResults[idx] = triResults[i];
-//            idx++;
-//        }
-//        else
-//        {
-//            std::vector<int> sums;
-//            sums.resize(range_of_end_points.size());
-//            std::vector<int> delaunay((int*)&triResults[i], ((int*)&triResults[i]) + 3);
-//            for (int j = 0; j < range_of_end_points.size(); j++){
-//                sums[j] = 0;
-//                for (int k = 0; k < 3; k++)
-//                {
-//                    if (range_of_end_points[j] >= delaunay[k]){
-//                        sums[j] += 1;
-//                    };
-//                }
-//            };
-//            if (distict_abs(sums) > 1)
-//            {
-//                finalTriResults[idx] = triResults[i];
-//                idx++;
-//            }
-//            else if (tri_el_not_in_interior(triResults[i], range_of_interior_points))
-//            {
-//                finalTriResults[idx] = triResults[i];
-//                idx++;
-//            };
-//        };
-//    };
-//    
+    int idx = 0;
+    PhiTriangle * finalTriResults;
+    for (int i = 0; i < numVertices / 3; i++)
+    {
+        if (check_intersection(triResults[i], idx_of_edge_points))
+        {
+            finalTriResults[idx] = triResults[i];
+            idx++;
+        }
+        else
+        {
+            std::vector<int> sums;
+            sums.resize(range_of_end_points.size());
+            std::vector<int> delaunay((int*)&triResults[i], ((int*)&triResults[i]) + 3);
+            for (int j = 0; j < range_of_end_points.size(); j++){
+                sums[j] = 0;
+                for (int k = 0; k < 3; k++)
+                {
+                    if (range_of_end_points[j] >= delaunay[k]){
+                        sums[j] += 1;
+                    };
+                }
+            };
+            if (distict_abs(sums) > 1)
+            {
+                finalTriResults[idx] = triResults[i];
+                idx++;
+            }
+            else if (tri_el_not_in_interior(triResults[i], range_of_interior_points))
+            {
+                finalTriResults[idx] = triResults[i];
+                idx++;
+            };
+        };
+    };
+//
 //    int offset;
 //    for (int i = 0; i < numFaces; i++)
 //    {
@@ -202,12 +202,8 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
 //    }
     // Now for dirty bit.
     // Set ntris to be the size of 'tidied'
-    *nTris = numVertices / 3;
-//    //Allocate an array of PhiTriangle and copy vector into it
-//    PhiTriangle * unsafeResult = (PhiTriangle *) malloc(possibleTriang.size() * sizeof(PhiTriangle));
-//    for (int tridX = 0; tridX < possibleTriang.size(); tridX++) {
-//        unsafeResult[tridX] = possibleTriang.at(tridX);
-//    }
+//    *nTris = numVertices / 3;
+    *nTris = idx;
     return triResults;
 }
 }
