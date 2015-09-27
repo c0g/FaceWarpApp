@@ -189,11 +189,15 @@ dlib::matrix<double> find_overall_rotation_matrix(const dlib::matrix<double> &la
     return rotation_matrix_total;
 };
 
-double * return_3d_adjusted_warp(double * landmarks_ptr, double * face_flat_warp_ptr)
+PhiPoint * return_3d_adjusted_warp(int * landmarks_ptr, int * face_flat_warp_ptr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    dlib::matrix<double> landmarks = dlib::mat(landmarks_ptr, 68, 2);
-    dlib::matrix<double> face_flat_warp = dlib::mat(face_flat_warp_ptr, 68, 2);
+    dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
+    dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
+    
+    dlib::matrix<int, 68, 2> face_flat_warp_i = dlib::mat(face_flat_warp_ptr, 68, 2);
+    dlib::matrix<double, 68, 2> face_flat_warp = dlib::matrix_cast<double>(face_flat_warp_i);
+    
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -230,23 +234,28 @@ double * return_3d_adjusted_warp(double * landmarks_ptr, double * face_flat_warp
     dlib::set_colm(new_warp_de_centered,0) = colm(new_warp_de_centered,0) + mean_landmarks(0,0);
     dlib::set_colm(new_warp_de_centered,1) = colm(new_warp_de_centered,1) + mean_landmarks(0,1);
     
-    double * output = (double *)malloc(new_warp_de_centered.nr()*new_warp_de_centered.nc()*sizeof(double));
+    PhiPoint * output = (PhiPoint *)malloc(new_warp_de_centered.nr()*sizeof(PhiPoint));
     for (int row = 0; row < new_warp_de_centered.nr(); row++)
     {
-        for (int col = 0; col < new_warp_de_centered.nc(); col++)
-        {
-            output[row*2 + col] = new_warp_de_centered(row,col);
-        }
+        output[row] = PhiPoint{
+            static_cast<int>(std::lround(new_warp_de_centered(row,0))),
+            static_cast<int>(std::lround(new_warp_de_centered(row,1)))
+        };
+    
     };
     return output;
 };
 
-double * return_3d_attractive_adjusted_warp(double * landmarks_ptr)
+PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.07;
+    const double eye_scaling = 1.5;
     
-    dlib::matrix<double> landmarks = dlib::mat(landmarks_ptr, 68, 2);
+    dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
+//    std::cout << landmarks_i << std::endl;
+    dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
+//    std::cout << landmarks << std::endl;
+    
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -307,23 +316,26 @@ double * return_3d_attractive_adjusted_warp(double * landmarks_ptr)
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    double * output = (double *)malloc(_2d_landmarks_full.nr()*_2d_landmarks_full.nc()*sizeof(double));
+    PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
-        for (int col = 0; col < _2d_landmarks_full.nc(); col++)
-        {
-            output[row*2 + col] = _2d_landmarks_full(row,col);
-        }
+        output[row] = PhiPoint{
+            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+        };
+        
     };
     return output;
 };
 
-double * return_3d_silly_adjusted_warp(double * landmarks_ptr)
+PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double eye_scaling = 0.8;
     
-    dlib::matrix<double> landmarks = dlib::mat(landmarks_ptr, 68, 2);
+    dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
+    
+    dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -397,41 +409,42 @@ double * return_3d_silly_adjusted_warp(double * landmarks_ptr)
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    double * output = (double *)malloc(_2d_landmarks_full.nr()*_2d_landmarks_full.nc()*sizeof(double));
+    PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
-        for (int col = 0; col < _2d_landmarks_full.nc(); col++)
-        {
-            output[row*2 + col] = _2d_landmarks_full(row,col);
-        }
+        output[row] = PhiPoint{
+            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+        };
+        
     };
     return output;
 };
 
 // Needs c linkage to be imported to Swift
 extern "C" {
-double * return_adjusted_warp(double * landmarks, double * face_flat_warp)
+PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    double * adjusted_warp = return_3d_adjusted_warp(landmarks, face_flat_warp);
+    PhiPoint * adjusted_warp = return_3d_adjusted_warp((int *)landmarks, (int *)face_flat_warp);
     return adjusted_warp;
 }
 }
 
 extern "C" {
-double * return_attractive_adjusted_warp(double * landmarks)
+PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    double * adjusted_warp = return_3d_attractive_adjusted_warp(landmarks);
+    PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks);
     return adjusted_warp;
 }
 }
 
 extern "C" {
-double * return_silly_adjusted_warp(double * landmarks)
+PhiPoint * silly_adjusted_warp(PhiPoint * landmarks)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    double * adjusted_warp = return_3d_silly_adjusted_warp(landmarks);
+    PhiPoint * adjusted_warp = return_3d_silly_adjusted_warp((int *)landmarks);
     return adjusted_warp;
 }
 }

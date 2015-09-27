@@ -9,15 +9,17 @@
 #ifndef normalise_warp_h
 #define normalise_warp_h
 
+#include "PHI_C_Types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
     
-double * return_adjusted_warp(double * landmarks, double * face_flat_warp);
+PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp);
     
-double * return_attractive_adjusted_warp(double * landmarks);
+PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks);
     
-double * return_silly_adjusted_warp(double * landmarks);
+PhiPoint * silly_adjusted_warp(PhiPoint * landmarks);
     
 #ifdef __cplusplus
 }
