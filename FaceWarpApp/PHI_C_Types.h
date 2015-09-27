@@ -16,5 +16,8 @@ typedef struct {
     unsigned int p2;
 } PhiTriangle;
 
-
+typedef struct {
+    int x;
+    int y;
+} PhiPoint;
 #endif /* PHI_C_Types_h */

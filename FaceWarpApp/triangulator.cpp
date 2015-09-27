@@ -31,77 +31,54 @@ bool triInFaceRange(PhiTriangle tri, int incL, int excU) {
     return flag;
 }
 
-std::vector<PhiTriangle> pruneTriangulation(int numFaces, int edgesOffset, const std::vector<PhiTriangle> & delaunay) {
-    std::vector<PhiTriangle> possibleTriang = delaunay;
+// Needs c linkage to be imported to Swift
+extern "C" {
+PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
+    // CALLER TO FREE RETURN VALUE
+    int numVertices;
+    int dim = 2;
+    int numPoints = numEdges + numFaces * 68;
+    // Result is an numVertices array of unsigned integers, in row major form representing a matrix (numVertices / 3) x 3    
+    unsigned int * unsafeResultRaw = BuildTriangleIndexList((int *)edgesLandMarks, 0, numPoints, dim, 1, &numVertices);
+    if (numVertices == 0) {
+        exit(1);
+    }
+    
+    // cast to become triangles...
+    PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
+    // wrap in vector
+    std::vector<PhiTriangle> possibleTriang(triResults, triResults + numVertices / 3);
     // For each face, calculate the lower and upper indices for points entirely inside that face.
     // Append a triangle to localGoodTriang if it doesn't have three points inside that given face.
     // Assign localGoodTriang to goodTriang and repeat for the next face.
     
     for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
         std::vector<PhiTriangle> localTriang;
-        int faceLower = edgesOffset + faceIdx * 68;      // Lower (inclusive) bound
-        int faceUpper = edgesOffset + faceIdx * 68 + 68; // Upper (exclusive) bound
+        int faceLower = numEdges + faceIdx * 68;      // Lower (inclusive) bound
+        int faceUpper = numEdges + faceIdx * 68 + 68; // Upper (exclusive) bound
         for (PhiTriangle tri : possibleTriang) {
             if (!triInFaceRange(tri, faceLower, faceUpper)) {
                 localTriang.push_back(tri);
             }
         }
-        possibleTriang = localTriang;
+        std::swap(localTriang, possibleTriang);
     }
-    return possibleTriang;
-}
-
-
-
-// Needs c linkage to be imported to Swift
-extern "C" {
-PhiTriangle * unsafeTidyIndices(CGPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
-    // CALLER TO FREE RETURN VALUE
-    int numVertices;
-    int dim = 2;
-    int numPoints = numEdges + numFaces * 68;
-    // Result is an numVertices array of unsigned integers, in row major form representing a matrix (numVertices / 3) x 3
-    // Second argument, 'factor', is how much to mutiply the floats by such that when they are cast to ints they are seperable. Must be big if range is normalised.
-    //
-    
-    // we cast edgesLandMarks from cgpoint to cgfloat because BuildTriangleIndexList expects that
-    CGFloat * edgesLandMarksFloat = (CGFloat * ) edgesLandMarks;
-    int * intEdges = (int * ) malloc(numPoints * 2 * sizeof(int));
-    for (int idx = 0; idx < 2 * numPoints; ++idx) {
-        intEdges[idx] = int(edgesLandMarksFloat[idx]);
-    }
-    unsigned int * result = BuildTriangleIndexList(intEdges, 0, numPoints, dim, 1, &numVertices);
-    free(intEdges);
-    if (numVertices == 0) {
-        exit(1);
-    }
-    
-    // cast to become triangles...
-    PhiTriangle * triResults = (PhiTriangle *)(result);
-    
-    std::vector<CGPoint> edge_points(edgesLandMarks, edgesLandMarks + numEdges);
-    std::vector<CGPoint> landmarks(edgesLandMarks + numEdges, edgesLandMarks + numEdges + numFaces * 68);
-    std::vector<PhiTriangle> triVector(triResults, triResults + numVertices / 3);
-
-    // Tidy up the triangles by removing all of the inface ones
-    std::vector<PhiTriangle> tidied = pruneTriangulation(numFaces, numEdges, triVector);
+    free(unsafeResultRaw);
     
     // For each face, append the correctly incremented indexes of the inface triangulation
     for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
         int offset = faceIdx * 68 + numEdges;
         for (PhiTriangle tri : infaceTri) {
-            tidied.push_back(tri + offset);
+            possibleTriang.push_back(tri + offset);
         }
     }
-
     // Now for dirty bit.
-    
     // Set ntris to be the size of 'tidied'
-    *nTris = tidied.size();
+    *nTris = possibleTriang.size();
     //Allocate an array of PhiTriangle and copy vector into it
-    PhiTriangle * unsafeResult = (PhiTriangle *) malloc(tidied.size() * sizeof(PhiTriangle));
-    for (int tridX = 0; tridX < tidied.size(); tridX++) {
-        unsafeResult[tridX] = tidied.at(tridX);
+    PhiTriangle * unsafeResult = (PhiTriangle *) malloc(possibleTriang.size() * sizeof(PhiTriangle));
+    for (int tridX = 0; tridX < possibleTriang.size(); tridX++) {
+        unsafeResult[tridX] = possibleTriang.at(tridX);
     }
     return unsafeResult;
 }

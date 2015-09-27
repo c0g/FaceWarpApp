@@ -11,7 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    PhiTriangle * unsafeTidyIndices(CGPoint * edgesLandMarks, int nEdges, int nFaces, int * nTris);
+    PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int nEdges, int nFaces, int * nTris);
 #ifdef __cplusplus
 }
 #endif

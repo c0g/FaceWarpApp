@@ -178,9 +178,7 @@ struct tracker_rect {
         NSMutableArray * internalArr = [[NSMutableArray alloc] init];
         dlib::full_object_detection res = predictor(bigImg, faceRect);
         for (int pidx = 0; pidx < res.num_parts(); ++pidx) {
-            [internalArr addObject: [NSValue valueWithCGPoint:CGPointMake(
-                                                res.part(pidx).x(), res.part(pidx).y()
-                                    )]];
+            [internalArr addObject: [NSValue valueWithPhiPoint:PhiPoint{static_cast<int>(res.part(pidx).x()), static_cast<int>(res.part(pidx).y())}]];
         }
         [arr addObject: internalArr];
     }

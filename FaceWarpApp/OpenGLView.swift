@@ -90,15 +90,15 @@ func time<O>(name: String, f : ()->O )-> O {
     return rez
 }
 
-func makeEdges(n: Int, scalex: CGFloat, scaley: CGFloat) -> [CGPoint] {
-    var points : [CGPoint] = []
+func makeEdges(n: Int, scalex: CGFloat, scaley: CGFloat) -> [PhiPoint] {
+    var points : [PhiPoint] = []
     for x in 0...n {
-        points.append(CGPointMake(scalex * CGFloat(x) / CGFloat(n), scaley * 0))
-        points.append(CGPointMake(scalex * CGFloat(x) / CGFloat(n), scaley * 1))
+        points.append(PhiPoint(x: Int32(round(scalex * CGFloat(x) / CGFloat(n))), y: Int32(round(scaley * 0))))
+        points.append(PhiPoint(x: Int32(round(scalex * CGFloat(x) / CGFloat(n))), y: Int32(round(scaley * 1))))
     }
     for y in 0...n {
-        points.append(CGPointMake(scalex * 0, scaley * CGFloat(y) / CGFloat(n)))
-        points.append(CGPointMake(scalex * 1, scaley * CGFloat(y) / CGFloat(n)))
+        points.append(PhiPoint(x: Int32(round(scalex * 0)), y: Int32(round(scaley * CGFloat(y) / CGFloat(n)))))
+        points.append(PhiPoint(x: Int32(round(scalex * 1)), y: Int32(round(scaley * CGFloat(y) / CGFloat(n)))))
     }
     return points
 }
@@ -161,7 +161,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     let faceLock = dispatch_queue_create("com.phi.FaceLock", nil)
     
-    var edges : [CGPoint] = []
+    var edges : [PhiPoint] = []
     
     var faceVertices : [Coordinate] = []
     var currentIndices : [GLushort] = []
@@ -685,7 +685,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-    func makeGLDataWithIndices(indices : [PhiTriangle], Vertices vertices : [CGPoint]) -> ([GLushort], [Coordinate]) {
+    func makeGLDataWithIndices(indices : [PhiTriangle], Vertices vertices : [PhiPoint]) -> ([GLushort], [Coordinate]) {
         var glindices : [GLushort] = []
         for tri in indices {
             glindices.append(GLushort(tri.p0))
@@ -695,25 +695,23 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         var glvertices : [Coordinate] = []
         for point in vertices {
-            let xn = point.x / 1280.0
-            let yn = point.y / 720.0
-            
+            let xn = GLfloat(point.x) / 1280.0
+            let yn = GLfloat(point.y) / 720.0
             let u = GLfloat(xn)
             let v = GLfloat(1 - yn)
             let x = GLfloat(2 * xn - 1)
             let y = GLfloat(2 * yn - 1)
             let z = GLfloat(0)
-            
             glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
         }
         return (glindices, glvertices)
     }
     
-    func makeTriangulation(rawFacePoints : [[NSValue]]) -> ([PhiTriangle], [CGPoint]) {
+    func makeTriangulation(rawFacePoints : [[NSValue]]) -> ([PhiTriangle], [PhiPoint]) {
         var allPoints = edges
         for points in rawFacePoints {
             for value in points {
-                allPoints.append(value.CGPointValue())
+                allPoints.append(value.PhiPointValue)
             }
         }
         let triangulation = tidyIndices(allPoints, numEdges: edges.count, numFaces: rawFacePoints.count)

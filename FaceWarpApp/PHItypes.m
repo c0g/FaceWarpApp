@@ -10,11 +10,22 @@
 #import "PHItypes.h"
 
 @implementation NSValue (PhiTriangle)
-+(instancetype)valueWithTriangle:(PhiTriangle)value {
++(instancetype)valueWithPhiTriangle:(PhiTriangle)value {
     return [self valueWithBytes:&value objCType:@encode(PhiTriangle)];
 }
-- (PhiTriangle) triangleValue {
+- (PhiTriangle) PhiTriangleValue {
     PhiTriangle value;
+    [self getValue:&value];
+    return value;
+}
+@end
+
+@implementation NSValue (PhiPoint)
++(instancetype)valueWithPhiPoint:(PhiPoint)value {
+    return [self valueWithBytes:&value objCType:@encode(PhiPoint)];
+}
+- (PhiPoint) PhiPointValue {
+    PhiPoint value;
     [self getValue:&value];
     return value;
 }

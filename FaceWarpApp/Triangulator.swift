@@ -9,14 +9,13 @@
 import Foundation
 
 
-func tidyIndices(edgesAndLandmarks : [CGPoint], numEdges : Int, numFaces : Int) -> [PhiTriangle] {
-    var edgesAndLandmarksMutable = edgesAndLandmarks
+func tidyIndices(var edgesAndLandmarks : [PhiPoint], numEdges : Int, numFaces : Int) -> [PhiTriangle] {
     var tris : Int32 = 0
-    let ans = unsafeTidyIndices(&edgesAndLandmarksMutable, Int32(numEdges), Int32(numFaces), &tris)
+    let ans = unsafeTidyIndices(&edgesAndLandmarks, Int32(numEdges), Int32(numFaces), &tris)
     var safeAns : [PhiTriangle] = []
     for idx in 0..<Int(tris) {
         safeAns.append(ans[idx])
     }
-    free(ans)
+    free(ans) 
     return safeAns
 }
