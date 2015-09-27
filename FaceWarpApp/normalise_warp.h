@@ -15,6 +15,10 @@ extern "C" {
     
 double * return_adjusted_warp(double * landmarks, double * face_flat_warp);
     
+double * return_attractive_adjusted_warp(double * landmarks);
+    
+double * return_silly_adjusted_warp(double * landmarks);
+    
 #ifdef __cplusplus
 }
 #endif
