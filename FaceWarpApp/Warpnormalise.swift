@@ -15,6 +15,7 @@ func doAttractiveWarp( var landmarks : [PhiPoint]) -> [PhiPoint]{
         safeAns.append((ans[Int(idx)]))
     }
     free(ans)
+
     return safeAns
 }
 

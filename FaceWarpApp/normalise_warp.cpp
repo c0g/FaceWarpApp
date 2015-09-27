@@ -324,18 +324,28 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr)
             static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
         };
         
-    };
+    }
+//    std::cout << dlib::csv << landmarks << std::endl;
+//    std::cout << dlib::csv << _2d_landmarks_full<<std::endl;
+//    for (int row = 0; row < _2d_landmarks_full.nr(); row++)
+//    {
+//        std::cout << output[row].x << "," << output[row].y << std::endl;
+//    }
+
+    
+//    exit(1);
     return output;
 };
 
 PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 0.8;
+    const double eye_scaling = 0.5;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
     dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
+    
     dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
     dlib::matrix<double> centered_landmarks = landmarks;
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
@@ -408,7 +418,6 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr)
     
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
-    
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {

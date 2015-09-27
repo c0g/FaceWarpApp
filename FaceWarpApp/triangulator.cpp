@@ -46,43 +46,7 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
-    // wrap in vector
-//    std::vector<PhiTriangle> possibleTriang(triResults, triResults + numVertices / 3);
-//    std::cout << "Found " << numVertices / 3 << " triangles" << std::endl;
-    
-    // For each face, calculate the lower and upper indices for points entirely inside that face (excluding face surround).
-    // Append a triangle to localGoodTriang if it doesn't have any points inside that given face.
-    // Assign localGoodTriang to goodTriang and repeat for the next face.
-//    for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
-//        std::vector<PhiTriangle> localTriang;
-//        int faceLower = numEdges + faceIdx * 68 + 27;      // Lower (inclusive) bound
-//        int faceUpper = numEdges + faceIdx * 68 + 68; // Upper (exclusive) bound
-//        for (PhiTriangle tri : possibleTriang) {
-//            if (!pointInFace(tri, faceLower, faceUpper)) {
-//                localTriang.push_back(tri);
-//            }
-//        }
-//        possibleTriang = localTriang;
-//    }
-//    
-//    std::cout << "Pruned down to " << possibleTriang.size() << " triangles" << std::endl;
-//    free(unsafeResultRaw);
-    
-    // For each face, append the correctly incremented indexes of the inface triangulation
-//    for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
-//        int offset = faceIdx * 68 + numEdges;
-//        for (PhiTriangle tri : infaceTri) {
-//            possibleTriang.push_back(tri + offset);
-//        }
-//    }
-    // Now for dirty bit.
-    // Set ntris to be the size of 'tidied'
     *nTris = numVertices / 3;
-//    //Allocate an array of PhiTriangle and copy vector into it
-//    PhiTriangle * unsafeResult = (PhiTriangle *) malloc(possibleTriang.size() * sizeof(PhiTriangle));
-//    for (int tridX = 0; tridX < possibleTriang.size(); tridX++) {
-//        unsafeResult[tridX] = possibleTriang.at(tridX);
-//    }
     return triResults;
 }
 }

@@ -250,7 +250,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.context = EAGLContext(API: api)
         
         if (self.context == nil) {
-            print("Failed to initialize OpenGLES 2.0 context!")
+            print("Failed to initialize OpenGLES 3.0 context!")
             exit(1)
         }
         
@@ -669,7 +669,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(self.flipPixelBuffer!))
         let img  = CamImage(pixels: ptr, width: Int32(width), height: Int32(height), channels: Int32(4), rowSize: Int32(rowSize))
         
-        var arrPoints = self.faceFinder.facesPointsInBigImage(img, andSmallImage: smallImg, withScale: Int32(smallTextureScale)) as! [[NSValue]]
+        let arrPoints = self.faceFinder.facesPointsInBigImage(img, andSmallImage: smallImg, withScale: Int32(smallTextureScale)) as! [[NSValue]]
         numfaces = arrPoints.count
 
         CVPixelBufferUnlockBaseAddress(self.smallPixelBuffer!, 0)
@@ -693,7 +693,28 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         var glvertices : [Coordinate] = []
-        for pidx in 0..<edges.count {
+        
+        // The first group of the vertices are faces, and we want to apply the warp
+        for faceidx in 0..<numfaces {
+            let offset = faceidx * 68
+            let slice : [PhiPoint] = Array(vertices[offset..<offset + 68])
+            let tmpArray = doSillyWarp(slice)
+            for pidx in 0..<68 {
+                let warped_point = tmpArray[pidx]
+                let unwarped_point = slice[pidx]
+                let xn_w = GLfloat(warped_point.x) / 1280.0
+                let yn_w = GLfloat(warped_point.y) / 720.0
+                let xn_u = GLfloat(unwarped_point.x) / 1280.0
+                let yn_u = GLfloat(unwarped_point.y) / 720.0
+                let u = GLfloat(xn_u)
+                let v = GLfloat(1 - yn_u)
+                let x = GLfloat(2 * xn_w - 1)
+                let y = GLfloat(2 * yn_w - 1)
+                let z = GLfloat(0)
+                glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
+            }
+        }
+        for pidx in numfaces * 68..<vertices.count {
             let point = vertices[pidx]
             let xn = GLfloat(point.x) / 1280.0
             let yn = GLfloat(point.y) / 720.0
@@ -704,46 +725,47 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let z = GLfloat(0)
             glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
         }
-        var mean_x = 0.0
-        var mean_y = 0.0
-        for pidx in edges.count..<vertices.count {
-            let point = vertices[pidx]
-            mean_x += Double(point.x)
-            mean_y += Double(point.y)
-        }
-        mean_x /= (67.0 * 1280)
-        mean_y /= (67.0 * 720)
-        for pidx in edges.count..<vertices.count {
-            let point = vertices[pidx]
-            let xn = GLfloat(point.x) / 1280.0
-            let yn = GLfloat(point.y) / 720.0
-            let u = GLfloat(xn)
-            let v = GLfloat(1 - yn)
-            var x = GLfloat(2 * xn - 1)
-            x = (x - GLfloat(mean_x)) * 1.07 + GLfloat(mean_x)
-            var y = GLfloat(2 * yn - 1)
-            y = (y - GLfloat(mean_y)) * 1.07 + GLfloat(mean_y)
-            let z = GLfloat(0)
-            glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
-        }
+        
+        
+//        var mean_x = 0.0
+//        var mean_y = 0.0
+//        for pidx in edges.count..<vertices.count {
+//            let point = vertices[pidx]
+//            mean_x += Double(point.x)
+//            mean_y += Double(point.y)
+//        }
+//        mean_x /= (67.0 * 1280)
+//        mean_y /= (67.0 * 720)
+//        for pidx in edges.count..<vertices.count {
+//            let point = vertices[pidx]
+//            let xn = GLfloat(point.x) / 1280.0
+//            let yn = GLfloat(point.y) / 720.0
+//            let u = GLfloat(xn)
+//            let v = GLfloat(1 - yn)
+//            var x = GLfloat(2 * xn - 1)
+//            x = (x - GLfloat(mean_x)) * 1.07 + GLfloat(mean_x)
+//            var y = GLfloat(2 * yn - 1)
+//            y = (y - GLfloat(mean_y)) * 1.07 + GLfloat(mean_y)
+//            let z = GLfloat(0)
+//            glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
+//        }
         
         return (glindices, glvertices)
     }
 
     func makeTriangulation(rawFacePoints : [[NSValue]]) -> ([PhiTriangle], [PhiPoint]) {
-        
-        var allPoints : [PhiPoint] = edges
-        let edgesCount = allPoints.count
+        var allPoints : [PhiPoint] = []
         for points in rawFacePoints {
             allPoints.appendContentsOf(points.map {$0.PhiPointValue})
         }
-        let triangulation = tidyIndices(allPoints, numEdges: edgesCount, numFaces: rawFacePoints.count)
+        allPoints.appendContentsOf(edges)
+        let triangulation = tidyIndices(allPoints, numEdges: edges.count, numFaces: rawFacePoints.count)
         return (triangulation, allPoints)
     }
     
     func setFaceVertices() {
         if faceVertices.count > 0 {
-            print("Binding \(faceVertices.count) face vertices and \(currentIndices.count) indices")
+//            print("Binding \(faceVertices.count) face vertices and \(currentIndices.count) indices")
             glBindVertexArrayOES(VFaceAO);
             
             glBindBuffer(GLenum(GL_ARRAY_BUFFER), facePositionBuffer)
@@ -768,7 +790,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glBindVertexArrayOES(VFaceAO)
         if faceVertices.count > 0 {
     
-            print("Rendering \(faceVertices.count) face vertices and \(currentIndices.count) indices")
+//            print("Rendering \(faceVertices.count) face vertices and \(currentIndices.count) indices")
             glViewport(0, 0, GLint(CVPixelBufferGetWidth(renderPB!)), GLint(CVPixelBufferGetHeight(renderPB!)));
             glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
             
