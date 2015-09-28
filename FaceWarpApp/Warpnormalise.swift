@@ -55,12 +55,11 @@ class Warper {
         let (idx, min) = distances.enumerate().reduce((Int(-1), Float(100000000.0))) {
             $0.1 < $1.1 ? $0 : $1
         }
-        
         if min > 1000.0 {
             if face_log.count > 5 {
                 face_log.removeFirst()
             }
-            face_log.append(Face(landmarks: landmarks, parameters: [0.0, 1.0, 0.1, 0.1, 1.0, 0.1, 1.0], time: NSDate()))
+            face_log.append(Face(landmarks: landmarks, parameters: [0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0], time: NSDate()))
             return face_log.count - 1
         } else {
             return idx
