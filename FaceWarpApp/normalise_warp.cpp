@@ -114,7 +114,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     
     try {
         dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
-                                                     dlib::objective_delta_stop_strategy(1e-5),
+                                                     dlib::objective_delta_stop_strategy(1e-6),
                                                      cost_function_2d_rotation_wrapper,
                                                      angle,
                                                      min_f,
@@ -160,16 +160,25 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     }
     
     try {
+        double min_f;
+        double dervative_eps = 1e-7;
         
-        find_min_bobyqa(cost_function_3d_rotation_wrapper,
-                        vector,
-                        9,    // number of interpolation points
-                        dlib::uniform_matrix<double>(6,1, -10000),  // lower bound constraint
-                        dlib::uniform_matrix<double>(6,1, 10000),   // upper bound constraint
-                        1000,    // initial trust region radius
-                        1e-2,  // stopping trust region radius
-                        1000    // max number of objective function evaluations
-                        );
+        dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
+                                                     dlib::objective_delta_stop_strategy(1e-6),
+                                                     cost_function_3d_rotation_wrapper,
+                                                     vector,
+                                                     min_f,
+                                                     dervative_eps);
+        
+//        find_min_bobyqa(cost_function_3d_rotation_wrapper,
+//                        vector,
+//                        9,    // number of interpolation points
+//                        dlib::uniform_matrix<double>(6,1, -10000),  // lower bound constraint
+//                        dlib::uniform_matrix<double>(6,1, 10000),   // upper bound constraint
+//                        1000,    // initial trust region radius
+//                        1e-2,  // stopping trust region radius
+//                        1000    // max number of objective function evaluations
+//                        );
     }
     catch (std::exception& e)
     {
@@ -268,7 +277,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    double *dlib_3d = landmarks3d_dlib;
+    double *dlib_3d = &landmarks3d_dlib[0];
     dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
     dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
     dlib::matrix<double> centered_landmarks3d = landmarks3d;
@@ -315,8 +324,12 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     
     dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
     
-    long *exchange_list = exchange_list_nose_chin_warp;
-    dlib::matrix<long> switch_list = dlib::mat(exchange_list,1,25);
+    dlib::matrix<long> switch_list(1,exchange_list_nose_chin_warp.size());
+    for (int i = 0; i < exchange_list_nose_chin_warp.size(); i++ )
+    {
+        switch_list(0,i) = (long)exchange_list_nose_chin_warp[i];
+    }
+    
     
     dlib::set_subm(_2d_landmarks_full, switch_list, dlib::range(0,1)) = dlib::subm(flattened_2d_landmarks_full, switch_list, dlib::range(0,1));
     
@@ -347,7 +360,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
 PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.24;
+    const double eye_scaling = 1.1;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
