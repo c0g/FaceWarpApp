@@ -399,7 +399,9 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 				);
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/FaceWarpApp/dlib";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/FaceWarpApp/dlib",
+				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -434,7 +436,9 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 				);
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/FaceWarpApp/dlib";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/FaceWarpApp/dlib",
+				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
