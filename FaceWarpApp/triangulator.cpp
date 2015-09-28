@@ -6,6 +6,7 @@
 //  Copyright © 2015 Phi Research. All rights reserved.
 //
 
+#import <GTEngine.h>
 #import "triangulator.h"
 #import "Clarkson-Delaunay.h"
 #include <CoreGraphics/CoreGraphics.h>
@@ -23,12 +24,40 @@ PhiTriangle operator +(PhiTriangle tri, int offset) {
     return PhiTriangle{tri.p0 + offset, tri.p1 + offset, tri.p2 + offset};
 }
 
-bool pointInFace(PhiTriangle tri, int incL, int excU) {
-    bool outSideFace = true; // If any of the following are false, sets to false
-    outSideFace &= ((tri.p0 < incL) | (tri.p0 >= excU));
-    outSideFace &= ((tri.p1 < incL) | (tri.p1 >= excU));
-    outSideFace &= ((tri.p2 < incL) | (tri.p2 >= excU));
-    return !outSideFace;
+
+
+/*
+Delaunay triangles may not include (for a given face):
+ 1. and point outside the face, a point on the face-surround, and a 
+ */
+
+bool allFaceIndicies(int faceLower, int faceUpper, PhiTriangle tri) {
+    // faceLower : inclusive floor of face indices
+    // faceUpper : exclusive ceil of face indicies
+    // triangles : current list of assumed safe triangles
+    bool allInFace = true; // Check if each point is equal to or above faceLower and below faceUpper. If any false, this is false
+    allInFace &= ((tri.p0 >= faceLower) && (tri.p0 < faceUpper));
+    allInFace &= ((tri.p1 >= faceLower) && (tri.p1 < faceUpper));
+    allInFace &= ((tri.p2 >= faceLower) && (tri.p2 < faceUpper));
+    return allInFace;
+}
+
+std::vector<PhiTriangle> prunedTriangles(std::vector<PhiTriangle> possibleTriangles, int numFaces) {
+    std::vector<PhiTriangle> tmp;
+    for (int fidx = 0; fidx < numFaces; ++fidx) {
+        int offset = fidx * 68;
+        tmp.clear();
+        int faceLower = offset + 27;
+        int faceUpper = faceLower + 68;
+        for (PhiTriangle tri : possibleTriangles) {
+            bool inface = allFaceIndicies(faceLower, faceUpper, tri);
+            if (!inface) {
+                possibleTriangles.push_back(tri);
+            }
+        }
+        std::swap(tmp, possibleTriangles);
+    }
+    return possibleTriangles;
 }
 
 // Needs c linkage to be imported to Swift
@@ -43,6 +72,19 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     if (numVertices == 0) {
         std::cout << "Triangulation failed" << std::endl;
     }
+    
+    // get seperate pointers to edges and landmarks
+    // edges are at the END of the array
+    const PhiPoint * landmarks = edgesLandMarks;
+    const PhiPoint * edges = edgesLandMarks + numFaces * 68;
+    
+    // put landmarks into a vector
+    std::vector<PhiPoint> landmarks_vec(landmarks, landmarks + numFaces * 68);
+    
+    // prune infacetris:
+    
+    
+    
     
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);

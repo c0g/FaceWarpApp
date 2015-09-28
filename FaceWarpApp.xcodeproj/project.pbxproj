@@ -16,6 +16,7 @@
 		E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76E1BB034BC00142050 /* TextureFragment.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76F1BB034BC00142050 /* TextureVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E20FE7881BB092CF00142050 /* Accelerate.framework */; };
+		E264DF4F1BB950E40051380D /* libGTEngine.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E264DF481BB950710051380D /* libGTEngine.a */; };
 		E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E26D166F1BB42F7700A0F573 /* PHItypes.m */; settings = {ASSET_TAGS = (); }; };
 		E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */; };
 		E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E28D3A9A1BAC409000ACC953 /* Assets.xcassets */; };
@@ -31,6 +32,44 @@
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		E264DF451BB950710051380D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 74B57E8D07F3427D00913EC4;
+			remoteInfo = "Debug Static";
+		};
+		E264DF471BB950710051380D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 74D6DDFE07F342E200267169;
+			remoteInfo = "Release Static";
+		};
+		E264DF491BB950710051380D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3C64C75312569DBD00F4B0B0;
+			remoteInfo = "Debug Dynamic";
+		};
+		E264DF4B1BB950710051380D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3C64C7A41256A63100F4B0B0;
+			remoteInfo = "Release Dynamic";
+		};
+		E264DF4D1BB950DA0051380D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 74D6DDFA07F342E200267169;
+			remoteInfo = "Release Static";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		5E2897471BB578DB00166D83 /* normalise_warp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = normalise_warp.h; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
@@ -42,6 +81,7 @@
 		E20FE76E1BB034BC00142050 /* TextureFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureFragment.glsl; sourceTree = "<group>"; };
 		E20FE76F1BB034BC00142050 /* TextureVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureVertex.glsl; sourceTree = "<group>"; };
 		E20FE7881BB092CF00142050 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		E264DF3E1BB950710051380D /* GTEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTEngine.xcodeproj; path = GeometricTools/GTEngine/GTEngine.xcodeproj; sourceTree = "<group>"; };
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
 		E26D16721BB58F9B00A0F573 /* __fix_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = __fix_triangulation.hpp; sourceTree = "<group>"; };
@@ -76,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E264DF4F1BB950E40051380D /* libGTEngine.a in Frameworks */,
 				E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */,
 				E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */,
 				E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */,
@@ -85,9 +126,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E264DF3F1BB950710051380D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E264DF461BB950710051380D /* libGTEngined.a */,
+				E264DF481BB950710051380D /* libGTEngine.a */,
+				E264DF4A1BB950710051380D /* libGTEngined.dylib */,
+				E264DF4C1BB950710051380D /* libGTEngine.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		E28D3A841BAC409000ACC953 = {
 			isa = PBXGroup;
 			children = (
+				E264DF3E1BB950710051380D /* GTEngine.xcodeproj */,
 				E20FE7881BB092CF00142050 /* Accelerate.framework */,
 				E28D3ABC1BAC464700ACC953 /* source.cpp */,
 				E28D3A8F1BAC409000ACC953 /* FaceWarpApp */,
@@ -206,6 +259,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E264DF4E1BB950DA0051380D /* PBXTargetDependency */,
 			);
 			name = FaceWarpApp;
 			productName = FaceWarpApp;
@@ -240,12 +294,49 @@
 			mainGroup = E28D3A841BAC409000ACC953;
 			productRefGroup = E28D3A8E1BAC409000ACC953 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E264DF3F1BB950710051380D /* Products */;
+					ProjectRef = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E28D3A8C1BAC409000ACC953 /* FaceWarpApp */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E264DF461BB950710051380D /* libGTEngined.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGTEngined.a;
+			remoteRef = E264DF451BB950710051380D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E264DF481BB950710051380D /* libGTEngine.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libGTEngine.a;
+			remoteRef = E264DF471BB950710051380D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E264DF4A1BB950710051380D /* libGTEngined.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libGTEngined.dylib;
+			remoteRef = E264DF491BB950710051380D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E264DF4C1BB950710051380D /* libGTEngine.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libGTEngine.dylib;
+			remoteRef = E264DF4B1BB950710051380D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E28D3A8B1BAC409000ACC953 /* Resources */ = {
@@ -285,6 +376,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E264DF4E1BB950DA0051380D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Release Static";
+			targetProxy = E264DF4D1BB950DA0051380D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */ = {
@@ -401,6 +500,7 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
+					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -438,6 +538,7 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
+					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

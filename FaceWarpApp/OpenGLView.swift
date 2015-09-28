@@ -766,6 +766,13 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         var allPoints : [PhiPoint] = []
         for points in rawFacePoints {
             allPoints.appendContentsOf(points.map {$0.PhiPointValue})
+            print("np.array([")
+            for point in points {
+                let p = point.PhiPointValue
+                print("[\(p.x), \(p.y)],")
+            }
+            print("])")
+            exit(1)
         }
         allPoints.appendContentsOf(edges)
         let triangulation = tidyIndices(allPoints, numEdges: edges.count, numFaces: rawFacePoints.count)
