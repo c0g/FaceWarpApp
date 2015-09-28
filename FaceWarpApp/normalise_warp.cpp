@@ -328,8 +328,8 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
         output[row] = PhiPoint{
-            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
-            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
         };
         
     }
@@ -348,7 +348,8 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
 PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 0.7;
+
+    const double eye_scaling = 1.24;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
@@ -430,8 +431,8 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
         output[row] = PhiPoint{
-            static_cast<int>(std::lround(_2d_landmarks_full(row,0))),
-            static_cast<int>(std::lround(_2d_landmarks_full(row,1)))
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
         };
         
     };

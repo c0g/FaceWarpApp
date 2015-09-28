@@ -14,6 +14,7 @@
 #include <vector>
 // factorials (multiplies example)
 #include <iostream>     // std::cout
+#include <algorithm>
 #include <functional>   // std::multiplies
 #include <numeric>      // std::partial_sum
 #include <set>
@@ -60,6 +61,60 @@ std::vector<PhiTriangle> prunedTriangles(std::vector<PhiTriangle> possibleTriang
     return possibleTriangles;
 }
 
+int check_intersection(PhiTriangle &v11, const std::vector<int> &v22){
+    std::vector<int> v1((int*)&v11, ((int*)&v11)+3);
+    std::vector<int> v2 = v22;
+    
+    std::vector<int> v;
+    v.resize(v1.size() + v2.size());
+    std::vector<int>::iterator it;
+    
+    std::sort(v1.begin(),v1.end());
+    std::sort(v2.begin(),v2.end());
+    
+    it=std::set_intersection (v1.begin(), v1.end(), v2.begin(), v2.end(), v.begin());
+    v.resize(it-v.begin());
+    
+    return (v.size() > 0);
+};
+
+int distict_abs(const std::vector<int>& v)
+{
+    std::set<int> distinct_container;
+    
+    for(auto curr_int = v.begin(), end = v.end(); // no need to call v.end() multiple times
+        curr_int != end;
+        ++curr_int)
+    {
+        // std::set only allows single entries
+        // since that is what we want, we don't care that this fails
+        // if the second (or more) of the same value is attempted to
+        // be inserted.
+        distinct_container.insert(abs(*curr_int));
+    };
+    
+    return (int)distinct_container.size();
+};
+
+bool tri_el_not_in_interior(PhiTriangle &v11, const std::vector<int>& v22){
+    
+    std::vector<int> delaunay_el((int*)&v11, ((int*)&v11)+3);
+    std::vector<int> range_of_interior_points = v22;
+    
+    int sum = 0;
+    for (int i = 0; i < delaunay_el.size(); i++){
+        if (std::find(range_of_interior_points.begin(), range_of_interior_points.end(), delaunay_el[i]) != range_of_interior_points.end()){
+            sum += 1;
+        };
+    };
+    
+    bool flag = true;
+    if (sum > 0){
+        flag = false;
+    };
+    return flag;
+};
+
 // Needs c linkage to be imported to Swift
 extern "C" {
 PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
@@ -72,23 +127,12 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     if (numVertices == 0) {
         std::cout << "Triangulation failed" << std::endl;
     }
-    
-    // get seperate pointers to edges and landmarks
-    // edges are at the END of the array
-    const PhiPoint * landmarks = edgesLandMarks;
-    const PhiPoint * edges = edgesLandMarks + numFaces * 68;
-    
-    // put landmarks into a vector
-    std::vector<PhiPoint> landmarks_vec(landmarks, landmarks + numFaces * 68);
-    
-    // prune infacetris:
-    
-    
-    
-    
+
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
+
     *nTris = numVertices / 3;
     return triResults;
 }
 }
+
