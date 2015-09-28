@@ -25,7 +25,7 @@ PhiTriangle operator +(PhiTriangle tri, int offset) {
     return PhiTriangle{tri.p0 + offset, tri.p1 + offset, tri.p2 + offset};
 }
 
-
+ConstrainedDelaunay2 del;
 
 /*
 Delaunay triangles may not include (for a given face):
@@ -126,13 +126,123 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     unsigned int * unsafeResultRaw = BuildTriangleIndexList((int *)edgesLandMarks, 0, numPoints, dim, 0, &numVertices);
     if (numVertices == 0) {
         std::cout << "Triangulation failed" << std::endl;
+        PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
+        return triResults;
     }
 
+    else
+    {
+    
+//    std::vector<int> idx_of_edge_points;
+//    for (int i = 0; i < numEdges; i++)
+//    {
+//        idx_of_edge_points.push_back(i + numFaces*68);
+//    }
+//    
+//    std::vector<int> range_of_end_points;
+//    for( int i = 0; i < numFaces; i++ ){
+//        range_of_end_points.push_back( ((i + 1) * 68) - 1 );
+//    };
+//    
+//    std::vector<int> range_of_interior_points;
+//    for (int face_num = 0; face_num < numFaces; face_num++){
+//        for( int i = 27 + face_num * 68; i < 67 + face_num * 68; i++ ){
+//            range_of_interior_points.push_back( i );
+//        };
+//    };
+    
     // cast to become triangles...
     PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
-
+//    std::vector<PhiTriangle> possibleTriang(triResults, triResults + numVertices / 3);
+//    std::vector<PhiTriangle> finalTriResults;
+//    int idx = 0;
+//    for (int i = 0; i < numVertices / 3; i++)
+//    {
+//        if (check_intersection(possibleTriang[i], idx_of_edge_points))
+//        {
+//            finalTriResults.push_back(possibleTriang[i]);
+//            idx++;
+//        }
+//        else
+//        {
+//            std::vector<int> sums;
+//            sums.resize(range_of_end_points.size());
+//            std::vector<int> delaunay((int*)(triResults + i), (int*)(triResults + i + 1));
+//            for (int j = 0; j < range_of_end_points.size(); j++){
+//                sums[j] = 0;
+//                for (int k = 0; k < 3; k++)
+//                {
+//                    if (range_of_end_points[j] >= delaunay[k]){
+//                        sums[j] += 1;
+//                    };
+//                }
+//            };
+//            if (distict_abs(sums) > 1)
+//            {
+//                finalTriResults.push_back(possibleTriang[i]);
+//                idx++;
+//            }
+//            else if (tri_el_not_in_interior(possibleTriang[i], range_of_interior_points))
+//            {
+//                finalTriResults.push_back(possibleTriang[i]);
+//                idx++;
+//            };
+//        };
+//    };
+//
+//    int offset;
+//    for (int i = 0; i < numFaces; i++)
+//    {
+//        offset = 68*i;
+//        
+//        for (int j = 0; j < 107; j++)
+//        {
+//            finalTriResults[idx] = infaceTri[j];
+//            finalTriResults[idx].p0 += offset;
+//            finalTriResults[idx].p1 += offset;
+//            finalTriResults[idx].p2 += offset;
+//            idx++;
+//        };
+//    };
+//    
+    
+    // wrap in vector
+//    std::vector<PhiTriangle> possibleTriang(triResults, triResults + numVertices / 3);
+//    std::cout << "Found " << numVertices / 3 << " triangles" << std::endl;
+    
+    // For each face, calculate the lower and upper indices for points entirely inside that face (excluding face surround).
+    // Append a triangle to localGoodTriang if it doesn't have any points inside that given face.
+    // Assign localGoodTriang to goodTriang and repeat for the next face.
+//    for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
+//        std::vector<PhiTriangle> localTriang;
+//        int faceLower = numEdges + faceIdx * 68 + 27;      // Lower (inclusive) bound
+//        int faceUpper = numEdges + faceIdx * 68 + 68; // Upper (exclusive) bound
+//        for (PhiTriangle tri : possibleTriang) {
+//            if (!pointInFace(tri, faceLower, faceUpper)) {
+//                localTriang.push_back(tri);
+//            }
+//        }
+//        possibleTriang = localTriang;
+//    }
+//    
+//    std::cout << "Pruned down to " << possibleTriang.size() << " triangles" << std::endl;
+//    free(unsafeResultRaw);
+    
+    // For each face, append the correctly incremented indexes of the inface triangulation
+//    for (int faceIdx = 0; faceIdx < numFaces; ++faceIdx) {
+//        int offset = faceIdx * 68 + numEdges;
+//        for (PhiTriangle tri : infaceTri) {
+//            possibleTriang.push_back(tri + offset);
+//        }
+//    }
+    // Now for dirty bit.
+    // Set ntris to be the size of 'tidied'
     *nTris = numVertices / 3;
-    return triResults;
+    
+//    *nTris = idx;
+        return triResults;
+//    return (PhiTriangle*)(&finalTriResults[0]);
+    }
 }
 }
 
