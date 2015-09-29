@@ -828,7 +828,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
 //        findFacesInImage()
 //        findLandmarksInFaces()
         
-//        renderWholeImageToRenderTexture()
+        renderWholeImageToRenderTexture()
         
         findFaces()
         setFaceVertices()
