@@ -507,7 +507,6 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
-					CDT_ONLY,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
@@ -547,7 +546,6 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
-					CDT_ONLY,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",

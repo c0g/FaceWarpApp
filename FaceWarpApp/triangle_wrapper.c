@@ -19,6 +19,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
+unsigned int * rectify(int idx, int nFaces) {
+    return 0;
+}
+
 PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, int nFaces, int * nTris)
 {
     struct triangulateio in, mid, vorout;
@@ -35,39 +39,50 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     int * edgesLandMarksInt = (int*) edgesLandMarks;
     for (i = 0; i < in.numberofpoints * 2; i++)
     {
-        //in.pointlist[i] = (REAL)*((int*)(edgesLandMarks) + i);
+
         in.pointlist[i] = (REAL)edgesLandMarksInt[i];
     }
     
-    
-    in.numberofsegments = nFaces*28*2;// + 2*6 + 9 + 8 + 12;
-    in.segmentlist = (int *) malloc(in.numberofsegments * sizeof(int));
+
+    // segments are a list of pairs of points -
+    // [p0, p1], [p1, p2], [p2, p3]....
+    in.numberofsegments = nFaces * 27 * 2;
+    in.segmentlist = (int *) malloc(in.numberofsegments * 2 * sizeof(int));
+
     for (fac = 0; fac < nFaces; fac++)
     {
-        for (i = 0; i < 28; i++)
+        for (i = 0; i < 27; i++)
         {
-            in.segmentlist[fac*28*2 + 2*i] = dlib_face_outline[i] + fac * 68;
-            in.segmentlist[fac*28*2 + 2*i + 1] = dlib_face_outline[i + 1] + fac * 68;
+            in.segmentlist[fac*27 + i * 2 + 0] = dlib_face_outline[i + 0] + fac * 68;
+            in.segmentlist[fac*27 + i * 2 + 1] = dlib_face_outline[i + 1] + fac * 68;
         }
     }
     
     in.pointmarkerlist = (int*)NULL;
     in.segmentmarkerlist = (int*)NULL;
 
-    
     in.numberofholes = nFaces;
     in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
+    for (int hidx = 0; hidx < in.numberofholes; ++hidx) {
+        PhiPoint facePoint = edgesLandMarks[hidx * 68 + 33];
+        REAL x = facePoint.x;
+        REAL y = facePoint.y;
+        in.holelist[hidx * 2 + 0] = x;
+        in.holelist[hidx * 2 + 1] = y;
+    }
+    
 
     in.numberofregions = 0;
-    
-    for (int hole = 0; hole < in.numberofholes; hole++)
-    {
-        PhiPoint pointInHole = edgesLandMarks[68 * hole + 33]; // nose!
-        double xInHole = pointInHole.x;
-        double yInHole = pointInHole.y;
-        in.holelist[2 * hole + 0] = xInHole;
-        in.holelist[2 * hole + 1] = yInHole;
-    };
+//    
+//    for (int hole = 0; hole < in.numberofholes; hole++)
+//    {
+//        PhiPoint pointInHole = edgesLandMarks[68 * hole + 10]; // nose!
+//        REAL xInHole = pointInHole.x;
+//        REAL yInHole = pointInHole.y;
+//        in.holelist[2 * hole + 0] = xInHole;
+//        in.holelist[2 * hole + 1] = yInHole;
+//    };
+
 
     
     
@@ -101,7 +116,8 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pczqBD", &in, &mid, &vorout);
+
+    triangulate("pczB", &in, &mid, &vorout);
 
 
     
@@ -124,6 +140,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
             outTris[inneroffset + tridx] = tri;
         }
     }
+
     
 //    /* Define input points. */
 //    
@@ -229,8 +246,6 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
 //    }
 
 
-    /* Free all allocated arrays, including those allocated by Triangle. */
-    
     free(in.pointlist);
     free(in.segmentlist);
     free(in.holelist);
@@ -250,7 +265,8 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     free(vorout.edgelist);
     free(vorout.normlist);
 
-    *nTris = mid.numberoftriangles + nFaces * 107;
+    *nTris = mid.numberoftriangles;// + nFaces * 107;
+
     return outTris;
 }
 

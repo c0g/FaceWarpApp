@@ -362,7 +362,7 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 {
     // CALLER MUST FREE MEMORY ON RETURN.
 
-    const double eye_scaling = 1.1;
+    const double eye_scaling = 1.5;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
