@@ -37,11 +37,6 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
         in.pointlist[i] = (REAL)*((int*)(edgesLandMarks) + i);
     }
     
-    in.pointmarkerlist = (int *) malloc(in.numberofpoints * sizeof(int));
-    in.pointmarkerlist[0] = 0;
-    in.pointmarkerlist[1] = 2;
-    in.pointmarkerlist[2] = 0;
-    in.pointmarkerlist[3] = 0;
     
     in.numberofsegments = nFaces*28;// + 2*6 + 9 + 8 + 12;
     in.segmentlist = (int *) malloc(in.numberofsegments * 2 * sizeof(int));
