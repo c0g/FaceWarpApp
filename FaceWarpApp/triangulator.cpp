@@ -27,112 +27,48 @@ PhiTriangle operator +(PhiTriangle tri, int offset) {
 
 
 
-/*
-Delaunay triangles may not include (for a given face):
- 1. and point outside the face, a point on the face-surround, and a 
- */
-
-bool allFaceIndicies(int faceLower, int faceUpper, PhiTriangle tri) {
-    // faceLower : inclusive floor of face indices
-    // faceUpper : exclusive ceil of face indicies
-    // triangles : current list of assumed safe triangles
-    bool allInFace = true; // Check if each point is equal to or above faceLower and below faceUpper. If any false, this is false
-    allInFace &= ((tri.p0 >= faceLower) && (tri.p0 < faceUpper));
-    allInFace &= ((tri.p1 >= faceLower) && (tri.p1 < faceUpper));
-    allInFace &= ((tri.p2 >= faceLower) && (tri.p2 < faceUpper));
-    return allInFace;
-}
-
-std::vector<PhiTriangle> prunedTriangles(std::vector<PhiTriangle> possibleTriangles, int numFaces) {
-    std::vector<PhiTriangle> tmp;
-    for (int fidx = 0; fidx < numFaces; ++fidx) {
-        int offset = fidx * 68;
-        tmp.clear();
-        int faceLower = offset + 27;
-        int faceUpper = faceLower + 68;
-        for (PhiTriangle tri : possibleTriangles) {
-            bool inface = allFaceIndicies(faceLower, faceUpper, tri);
-            if (!inface) {
-                possibleTriangles.push_back(tri);
-            }
-        }
-        std::swap(tmp, possibleTriangles);
-    }
-    return possibleTriangles;
-}
-
-int check_intersection(PhiTriangle &v11, const std::vector<int> &v22){
-    std::vector<int> v1((int*)&v11, ((int*)&v11)+3);
-    std::vector<int> v2 = v22;
-    
-    std::vector<int> v;
-    v.resize(v1.size() + v2.size());
-    std::vector<int>::iterator it;
-    
-    std::sort(v1.begin(),v1.end());
-    std::sort(v2.begin(),v2.end());
-    
-    it=std::set_intersection (v1.begin(), v1.end(), v2.begin(), v2.end(), v.begin());
-    v.resize(it-v.begin());
-    
-    return (v.size() > 0);
-};
-
-int distict_abs(const std::vector<int>& v)
-{
-    std::set<int> distinct_container;
-    
-    for(auto curr_int = v.begin(), end = v.end(); // no need to call v.end() multiple times
-        curr_int != end;
-        ++curr_int)
-    {
-        // std::set only allows single entries
-        // since that is what we want, we don't care that this fails
-        // if the second (or more) of the same value is attempted to
-        // be inserted.
-        distinct_container.insert(abs(*curr_int));
-    };
-    
-    return (int)distinct_container.size();
-};
-
-bool tri_el_not_in_interior(PhiTriangle &v11, const std::vector<int>& v22){
-    
-    std::vector<int> delaunay_el((int*)&v11, ((int*)&v11)+3);
-    std::vector<int> range_of_interior_points = v22;
-    
-    int sum = 0;
-    for (int i = 0; i < delaunay_el.size(); i++){
-        if (std::find(range_of_interior_points.begin(), range_of_interior_points.end(), delaunay_el[i]) != range_of_interior_points.end()){
-            sum += 1;
-        };
-    };
-    
-    bool flag = true;
-    if (sum > 0){
-        flag = false;
-    };
-    return flag;
-};
-
 // Needs c linkage to be imported to Swift
 extern "C" {
 PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
     // CALLER TO FREE RETURN VALUE
+    gte::ConstrainedDelaunay2<float,  gte::BSNumber<gte::UIntegerAP32>> del;
     int numVertices;
     int dim = 2;
     int numPoints = numEdges + numFaces * 68;
-    // Result is an numVertices array of unsigned integers, in row major form representing a matrix (numVertices / 3) x 3    
-    unsigned int * unsafeResultRaw = BuildTriangleIndexList((int *)edgesLandMarks, 0, numPoints, dim, 0, &numVertices);
-    if (numVertices == 0) {
-        std::cout << "Triangulation failed" << std::endl;
+    
+    std::vector<gte::Vector2<float>> a;
+    for (int idx = 0; idx < numPoints; ++idx) {
+        a.push_back(gte::Vector2<float>{
+            static_cast<float>(edgesLandMarks[idx].x),
+            static_cast<float>(edgesLandMarks[idx].y)
+        });
     }
-
-    // cast to become triangles...
-    PhiTriangle * triResults = (PhiTriangle *)(unsafeResultRaw);
-
-    *nTris = numVertices / 3;
-    return triResults;
+    
+    auto thedel = del(static_cast<int>(a.size()), a.data(), 0.001f);
+    
+    for (int fidx = 0; fidx < numFaces; fidx++) {
+        int offset = fidx * 68;
+        for (const auto tri : infaceTri) {
+            std::vector<int> out;
+            std::array<int, 2>   one{static_cast<int>(tri.p0) + offset, static_cast<int>(tri.p1) + offset};
+            del.Insert(one, out);
+            std::array<int, 2>   two{static_cast<int>(tri.p1) + offset, static_cast<int>(tri.p2) + offset};
+            del.Insert(two, out);
+            std::array<int, 2> three{static_cast<int>(tri.p2) + offset, static_cast<int>(tri.p0) + offset};
+            del.Insert(three, out);
+        }
+    }
+    
+    std::vector<int> indices = del.GetIndices();
+    
+    *nTris = del.GetNumTriangles();
+    PhiTriangle * unsafeResult = (PhiTriangle * )malloc(sizeof(PhiTriangle) * del.GetNumTriangles());
+    for (int idx = 0; idx < del.GetNumTriangles(); ++idx) {
+        unsafeResult[idx].p0 = indices.at(idx * 3 + 0);
+        unsafeResult[idx].p1 = indices.at(idx * 3 + 1);
+        unsafeResult[idx].p2 = indices.at(idx * 3 + 2);
+    }
+    return unsafeResult;
 }
 }
 

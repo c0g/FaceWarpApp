@@ -4077,7 +4077,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Include/GTEnginePCH.h";
 				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
@@ -4085,6 +4085,7 @@
 				HEADER_SEARCH_PATHS = "$(inherited /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include ${SRCROOT}/Include";
 				"HEADER_SEARCH_PATHS[arch=*]" = "$(inherited /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include ${SRCROOT}/Include";
 				LIBRARY_STYLE = STATIC;
+				LLVM_LTO = YES;
 				PRODUCT_NAME = GTEngined;
 				SDKROOT = macosx;
 				SHARED_PRECOMPS_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/DebugStatic";
@@ -4104,7 +4105,7 @@
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Include/GTEnginePCH.h";
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
@@ -4114,6 +4115,7 @@
 					"${SRCROOT}/Include",
 				);
 				LIBRARY_STYLE = STATIC;
+				LLVM_LTO = YES;
 				PRODUCT_NAME = GTEngine;
 				SHARED_PRECOMPS_DIR = "$(BUILD_DIR)/$(CONFIGURATION)/ReleaseStatic";
 				WARNING_CFLAGS = "";
@@ -4146,7 +4148,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Include/GTEnginePCH.h";
 				GCC_PREPROCESSOR_DEFINITIONS = _DEBUG;
@@ -4157,6 +4159,7 @@
 					"${SRCROOT}/Include",
 				);
 				INSTALL_PATH = "${SRCROOT}/Library/DebugDLL";
+				LLVM_LTO = YES;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x10000000,
@@ -4180,6 +4183,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_CPP_RTTI = YES;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "${SRCROOT}/Include/GTEnginePCH.h";
 				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
@@ -4189,6 +4193,7 @@
 					"${SRCROOT}/Include",
 				);
 				INSTALL_PATH = "${SRCROOT}/Library/ReleaseDLL";
+				LLVM_LTO = YES;
 				OTHER_LDFLAGS = (
 					"-seg1addr",
 					0x10000000,
