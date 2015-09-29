@@ -248,6 +248,11 @@
 /*                                                                           */
 /*****************************************************************************/
 
+#ifndef REAL
+#define REAL double
+#endif
+
+
 struct triangulateio {
   REAL *pointlist;                                               /* In / out */
   REAL *pointattributelist;                                      /* In / out */
