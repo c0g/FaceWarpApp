@@ -112,7 +112,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pz", &in, &mid, &vorout);
+    triangulate("pcz", &in, &mid, &vorout);
 
 
     
@@ -156,7 +156,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     free(vorout.edgelist);
     free(vorout.normlist);
 
-    *nTris = mid.numberoftriangles + nFaces * 107;
+    *nTris = mid.numberoftriangles;// + nFaces * 107;
     return outTris;
 }
 
