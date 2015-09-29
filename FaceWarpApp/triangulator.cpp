@@ -46,7 +46,12 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     }
     
     std::vector<int> outer;
-    for (int fidx = 0; )
+    for (int fidx = 0; fidx < numFaces; ++fidx) {
+        offset = fidx * 68;
+        for (int pNum = 0; pNum < 27; ++pNum) {
+            outer.push_back(pNum + offset);
+        }
+    }
     
     Triangulator::Polygon outer = { (int)mOuter.size(), &mOuter[0] };
     std::vector<Triangulator::Polygon> inners(2);
