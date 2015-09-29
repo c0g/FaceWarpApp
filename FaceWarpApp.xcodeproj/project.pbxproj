@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5E386AFB1BBA04CD003EDAEB /* triangle.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E386AFA1BBA04CD003EDAEB /* triangle.o */; settings = {ASSET_TAGS = (); }; };
+		5E386AFD1BBA04EC003EDAEB /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle.c */; settings = {ASSET_TAGS = (); }; };
 		5ED3AB891BB6BF250092A7CE /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; settings = {ASSET_TAGS = (); }; };
 		5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; settings = {ASSET_TAGS = (); }; };
 		E20FE7671BB0326C00142050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7661BB0326C00142050 /* ViewController.swift */; settings = {ASSET_TAGS = (); }; };
@@ -72,6 +74,9 @@
 
 /* Begin PBXFileReference section */
 		5E2897471BB578DB00166D83 /* normalise_warp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = normalise_warp.h; sourceTree = "<group>"; };
+		5E386AF91BBA04CD003EDAEB /* triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle.h; sourceTree = "<group>"; };
+		5E386AFA1BBA04CD003EDAEB /* triangle.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = triangle.o; sourceTree = "<group>"; };
+		5E386AFC1BBA04EC003EDAEB /* triangle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle.c; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -118,6 +123,7 @@
 			files = (
 				E264DF4F1BB950E40051380D /* libGTEngine.a in Frameworks */,
 				E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */,
+				5E386AFB1BBA04CD003EDAEB /* triangle.o in Frameworks */,
 				E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */,
 				E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */,
 			);
@@ -180,6 +186,9 @@
 				E28D3AC01BAC5BF800ACC953 /* find_face.mm */,
 				5E2897471BB578DB00166D83 /* normalise_warp.h */,
 				5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */,
+				5E386AF91BBA04CD003EDAEB /* triangle.h */,
+				5E386AFA1BBA04CD003EDAEB /* triangle.o */,
+				5E386AFC1BBA04EC003EDAEB /* triangle.c */,
 				E28D3AC21BAC5C0E00ACC953 /* find_face.h */,
 				E26D166F1BB42F7700A0F573 /* PHItypes.m */,
 				E26D16711BB42F8400A0F573 /* PHItypes.h */,
@@ -360,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
+				5E386AFD1BBA04EC003EDAEB /* triangle.c in Sources */,
 				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
 				5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */,
 				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
