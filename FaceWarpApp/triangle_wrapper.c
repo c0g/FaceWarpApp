@@ -32,15 +32,14 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     in.pointlist = (REAL *) malloc(in.numberofpoints * 2 * sizeof(REAL));
     int i, fac;
     
+    int * edgesLandMarksInt = (int*) edgesLandMarks;
     for (i = 0; i < in.numberofpoints * 2; i++)
     {
-        in.pointlist[i] = *(double*)((int*)(edgesLandMarks) + i);
+        in.pointlist[i] = edgesLandMarksInt[i];
     }
     
     in.numberofsegments = nFaces*28;// + 2*6 + 9 + 8 + 12;
     in.segmentlist = (int *) malloc(in.numberofsegments * 2 * sizeof(int));
-    
-    
     for (fac = 0; fac < nFaces; fac++)
     {
         for (i = 0; i < 28; i++)
@@ -49,13 +48,18 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
         }
     }
     
-    in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
+    
     
     in.numberofholes = nFaces;
+    in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
+
     for (int hole = 0; hole < in.numberofholes; hole++)
     {
-        in.holelist[2*i] = *(double*)((int*)(edgesLandMarks) + 67 + (136*hole));
-        in.holelist[2*i + 1] = *(double*)((int*)(edgesLandMarks) + 68 + (136*hole));
+        PhiPoint pointInHole = edgesLandMarks[68 * nFaces];
+        double xInHole = pointInHole.x;
+        double yInHole = pointInHole.y;
+        in.holelist[2 * hole + 0] = xInHole;
+        in.holelist[2 * hole + 1] = yInHole;
     }
 
     
@@ -89,24 +93,29 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pczqAevn", &in, &mid, &vorout);
+    triangulate("pczqAeB", &in, &mid, &vorout);
+
     
-    int * tris; // Returns a points to an Nx3 array of ints, in format: t0_p0, t0_p1, t0_p2, t1_p0, t1_p1, ....
-    
-    for (int t = 0; t < mid.numberoftriangles*3; t++)
-    {
-        *(tris + t) = mid.trianglelist[t];
-    };
-    
-    for (fac = 0; fac < nFaces; fac++)
-    {
-        for (i = 0; i < 107*3; i++)
-        {
-            *(tris + fac*107*3 + mid.numberoftriangles*3 + i) = infaceTri[i];
+    PhiTriangle * outTris = (PhiTriangle *) malloc(sizeof(PhiTriangle) * (mid.numberoftriangles + nFaces * 107));
+    for (int idx = 0; idx < mid.numberoftriangles; ++idx) {
+        PhiTriangle tri;
+        tri.p0 = mid.trianglelist[idx * 3 + 0];
+        tri.p1 = mid.trianglelist[idx * 3 + 1];
+        tri.p2 = mid.trianglelist[idx * 3 + 2];
+        outTris[idx] = tri;
+    }
+    int offset = mid.numberoftriangles;
+    for (int fidx = 0; fidx < nFaces; ++fidx) {
+        int inneroffset = offset + fidx * 107;
+        for (int tridx = 0; tridx < 107; ++tridx ) {
+            PhiTriangle tri;
+            tri.p0 = infaceTri[tridx * 3 + 0];
+            tri.p1 = infaceTri[tridx * 3 + 1];
+            tri.p2 = infaceTri[tridx * 3 + 2];
+            outTris[inneroffset + tridx] = tri;
         }
     }
     
-    PhiTriangle * outTris = (PhiTriangle *)tris;
     
 
     /* Free all allocated arrays, including those allocated by Triangle. */
