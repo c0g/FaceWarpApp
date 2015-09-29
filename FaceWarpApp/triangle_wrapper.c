@@ -40,13 +40,14 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     }
     
     
-    in.numberofsegments = nFaces*28;// + 2*6 + 9 + 8 + 12;
+    in.numberofsegments = nFaces*28*2;// + 2*6 + 9 + 8 + 12;
     in.segmentlist = (int *) malloc(in.numberofsegments * sizeof(int));
     for (fac = 0; fac < nFaces; fac++)
     {
         for (i = 0; i < 28; i++)
         {
-            in.segmentlist[fac*28 + i] = dlib_face_outline[i] + fac * 68;
+            in.segmentlist[fac*28*2 + 2*i] = dlib_face_outline[i] + fac * 68;
+            in.segmentlist[fac*28*2 + 2*i + 1] = dlib_face_outline[i + 1] + fac * 68;
         }
     }
     
