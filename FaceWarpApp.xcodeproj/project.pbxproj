@@ -286,7 +286,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 2WHKXWB6SD;
+						DevelopmentTeam = S559Q4PGN4;
 					};
 				};
 			};
@@ -507,6 +507,7 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
+					CDT_ONLY,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
@@ -546,6 +547,7 @@
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
+					CDT_ONLY,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",

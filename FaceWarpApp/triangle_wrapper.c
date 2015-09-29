@@ -61,7 +61,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     
     for (int hole = 0; hole < in.numberofholes; hole++)
     {
-        PhiPoint pointInHole = edgesLandMarks[68 * nFaces + 33]; // nose!
+        PhiPoint pointInHole = edgesLandMarks[68 * nFaces]; // nose!
         double xInHole = pointInHole.x;
         double yInHole = pointInHole.y;
         in.holelist[2 * hole + 0] = xInHole;
