@@ -16,6 +16,6 @@ func tidyIndices(var edgesAndLandmarks : [PhiPoint], numEdges : Int, numFaces : 
     for idx in 0..<Int(tris) {
         safeAns.append(ans[idx])
     }
-    free(ans) 
+    free(ans)
     return safeAns
 }

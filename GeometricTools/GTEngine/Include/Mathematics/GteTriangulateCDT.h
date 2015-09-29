@@ -457,7 +457,9 @@ void TriangulateCDT<InputType, ComputeType>::PackPoints(Tree const& tree,
             Tree const* inner = outer->child[c];
             for (int i = 0; i < inner->polygon.numIndices; ++i)
             {
-                points[numPoints++] = mPoints[inner->polygon.indices[i]];
+                auto val = mPoints[inner->polygon.indices[i]];
+                points[numPoints++] = val;
+                
             }
 
             int numGrandChildren = static_cast<int>(inner->child.size());

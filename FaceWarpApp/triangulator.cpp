@@ -37,31 +37,78 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     typedef gte::BSNumber<gte::UIntegerAP32> Rational;
     typedef gte::TriangulateCDT<float, Rational> Triangulator;
     
+    
+    std::vector<int> outerPoints;
+    //push the edges to outer
+    int edgesOffset = numFaces * 68;
+    for (int eidx = 0; eidx < numEdges; ++eidx) {
+        outerPoints.push_back(edgesOffset + eidx);
+    }
+    Triangulator::Polygon outer = {(int)outerPoints.size(), outerPoints.data()};
+    
+    std::vector<std::vector<int>> innerPoints;
+    for (int fidx = 0; fidx < numFaces; fidx++) {
+        int offset = fidx * 68;
+        std::vector<int> innerInnerPoints;
+        for (int idx = 0; idx < 27; ++idx) {
+            innerInnerPoints.push_back(idx + offset);
+        }
+        innerPoints.push_back(innerInnerPoints);
+    }
+    
+//    for (const auto p : outerPoints) {
+//        std::cout << p << ", ";
+//    }
+//    std::cout << std::endl;
+//    for (const auto pvec : innerPoints) {
+//        for (const auto p : pvec) {
+//            std::cout << p << ", ";
+//        }
+//    }
+//    std::cout << std::endl;
+    
+//    std::vector<Triangulator::Polygon> inners;
+//    for (auto points : innerPoints) {
+    Triangulator::Polygon inner = {(int)innerPoints[0].size(), innerPoints[0].data()};
+//        inners.push_back(poly);
+//    }
+//    
     std::vector<gte::Vector2<float>> positions;
-    for (int idx = 0; idx < numPoints; ++idx) {
+    for (int pidx = 0; pidx < numPoints; pidx++) {
         positions.push_back(gte::Vector2<float> {
-            static_cast<float>(edgesLandMarks[idx].x),
-            static_cast<float>(edgesLandMarks[idx].y)
+            static_cast<float>(edgesLandMarks[pidx].x),
+            static_cast<float>(edgesLandMarks[pidx].y)
         });
     }
     
-    std::vector<int> outer;
+//    std::cout << positions.size() << std::endl;
+    
+    Triangulator triangulator{(int)positions.size(), positions.data()};
+    triangulator(outer, inner);
+    std::vector<std::array<int, 3>> triangles = triangulator.GetTriangles();
+//    for (const auto tri : triangles) {
+//        std::cout << tri[0] << ", " << tri[1] << ", " << tri[2] << std::endl;
+//    }
+    
+    *nTris = numFaces * infaceTri.size() + triangles.size();
+    
+    PhiTriangle * faceTris = (PhiTriangle *) malloc(sizeof(PhiTriangle) * nTris[0]);
     for (int fidx = 0; fidx < numFaces; ++fidx) {
-        offset = fidx * 68;
-        for (int pNum = 0; pNum < 27; ++pNum) {
-            outer.push_back(pNum + offset);
+        int offset = fidx * 107;
+        for (int idx = 0; idx < infaceTri.size(); idx++) {
+            faceTris[offset + idx] = infaceTri.at(idx) + offset;
         }
     }
+    int edgeOffset = numFaces * 107;
+    for (int idx = 0; idx < triangles.size(); ++idx) {
+        faceTris[edgeOffset + idx] = PhiTriangle{
+            static_cast<unsigned int>(triangles.at(idx)[0]),
+            static_cast<unsigned int>(triangles.at(idx)[1]),
+            static_cast<unsigned int>(triangles.at(idx)[2])
+        };
+    }
     
-    Triangulator::Polygon outer = { (int)mOuter.size(), &mOuter[0] };
-    std::vector<Triangulator::Polygon> inners(2);
-    inners[0] = { (int)mInner0.size(), &mInner0[0] };
-    inners[1] = { (int)mInner1.size(), &mInner1[0] };
-    Triangulator triangulator((int)mPositions.size(), &mPositions[0]);
-    triangulator(outer, inners);
-    mTriangles = triangulator.GetTriangles();
-
-    return unsafeResult;
+    return faceTris;
 }
 }
 
