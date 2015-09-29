@@ -39,6 +39,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     int * edgesLandMarksInt = (int*) edgesLandMarks;
     for (i = 0; i < in.numberofpoints * 2; i++)
     {
+
         in.pointlist[i] = (REAL)edgesLandMarksInt[i];
     }
     
@@ -52,6 +53,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
         {
             in.segmentlist[fac*27 + i * 2 + 0] = dlib_face_outline[i + 0] + fac * 68;
             in.segmentlist[fac*27 + i * 2 + 1] = dlib_face_outline[i + 1] + fac * 68;
+
         }
     }
     
@@ -79,6 +81,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
 //        in.holelist[2 * hole + 0] = xInHole;
 //        in.holelist[2 * hole + 1] = yInHole;
 //    };
+
 
     
     
@@ -112,7 +115,8 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pcz", &in, &mid, &vorout);
+
+    triangulate("pczB", &in, &mid, &vorout);
 
 
     
@@ -135,8 +139,112 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
             outTris[inneroffset + tridx] = tri;
         }
     }
-     /* Free all allocated arrays, including those allocated by Triangle. */
+
     
+//    /* Define input points. */
+//    
+//    in.numberofpoints = nFaces * 27 + nEdges;
+//    in.numberofpointattributes = 0;
+//    in.pointlist = (REAL *) malloc(in.numberofpoints * 2 * sizeof(REAL));
+//    int i, fac;
+//    
+//    int * edgesLandMarksInt = (int*) edgesLandMarks;
+//    
+//    for (fac = 0; fac < nFaces; fac++)
+//    {
+//        for (i = 0; i < 27; i++)
+//        {
+//            int idx1 = dlib_face_outline[i];
+//            in.pointlist[2*fac*27 + 2*i] =  (REAL)edgesLandMarksInt[2*fac*68 + 2*idx1];
+//            in.pointlist[2*fac*27 + 2*i + 1] =  (REAL)edgesLandMarksInt[2*fac*68 + 2*idx1 + 1];
+//        }
+//    }
+//    
+//    in.numberofsegments = nFaces*28;// + 2*6 + 9 + 8 + 12;
+//    in.segmentlist = (int *) malloc(in.numberofsegments * 2 * sizeof(int));
+//    for (fac = 0; fac < nFaces; fac++)
+//    {
+//        for (i = 0; i < 28; i++)
+//        {
+//            in.segmentlist[fac*28 + i] = dlib_face_outline[i] + fac * 27;
+//        }
+//    }
+//    
+//    in.pointmarkerlist = (int*)NULL;
+//    in.segmentmarkerlist = (int*)NULL;
+//    
+//    
+//    in.numberofholes = nFaces;
+//    in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
+//    
+//    in.numberofregions = 0;
+//    
+//    for (int hole = 0; hole < in.numberofholes; hole++)
+//    {
+//        PhiPoint pointInHole = edgesLandMarks[68 * hole + 33]; // nose!
+//        float xInHole = pointInHole.x;
+//        float yInHole = pointInHole.y;
+//        in.holelist[2 * hole + 0] = xInHole;
+//        in.holelist[2 * hole + 1] = yInHole;
+//    };
+//    
+//    
+//    
+//    /* Make necessary initializations so that Triangle can return a */
+//    /*   triangulation in `mid' and a voronoi diagram in `vorout'.  */
+//    
+//    mid.pointlist = (REAL *) NULL;            /* Not needed if -N switch used. */
+//    /* Not needed if -N switch used or number of point attributes is zero: */
+//    mid.pointattributelist = (REAL *) NULL;
+//    mid.pointmarkerlist = (int *) NULL; /* Not needed if -N or -B switch used. */
+//    mid.trianglelist = (int *) NULL;          /* Not needed if -E switch used. */
+//    /* Not needed if -E switch used or number of triangle attributes is zero: */
+//    mid.triangleattributelist = (REAL *) NULL;
+//    mid.neighborlist = (int *) NULL;         /* Needed only if -n switch used. */
+//    /* Needed only if segments are output (-p or -c) and -P not used: */
+//    mid.segmentlist = (int *) NULL;
+//    /* Needed only if segments are output (-p or -c) and -P and -B not used: */
+//    mid.segmentmarkerlist = (int *) NULL;
+//    mid.edgelist = (int *) NULL;             /* Needed only if -e switch used. */
+//    mid.edgemarkerlist = (int *) NULL;   /* Needed if -e used and -B not used. */
+//    
+//    vorout.pointlist = (REAL *) NULL;        /* Needed only if -v switch used. */
+//    /* Needed only if -v switch used and number of attributes is not zero: */
+//    vorout.pointattributelist = (REAL *) NULL;
+//    vorout.edgelist = (int *) NULL;          /* Needed only if -v switch used. */
+//    vorout.normlist = (REAL *) NULL;         /* Needed only if -v switch used. */
+//    
+//    /* Triangulate the points.  Switches are chosen to read and write a  */
+//    /*   PSLG (p), preserve the convex hull (c), number everything from  */
+//    /*   zero (z), assign a regional attribute to each element (A), and  */
+//    /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
+//    /*   neighbor list (n).                                              */
+//    
+//    triangulate("pczBD", &in, &mid, &vorout);
+//    
+//    
+//    
+//    PhiTriangle * outTris = (PhiTriangle *) malloc(sizeof(PhiTriangle) * (mid.numberoftriangles + nFaces * 107));
+//    for (int idx = 0; idx < mid.numberoftriangles; ++idx) {
+//        PhiTriangle tri;
+//        tri.p0 = mid.trianglelist[idx * 3 + 0];
+//        tri.p1 = mid.trianglelist[idx * 3 + 1];
+//        tri.p2 = mid.trianglelist[idx * 3 + 2];
+//        outTris[idx] = tri;
+//    }
+//    int offset = mid.numberoftriangles;
+//    for (int fidx = 0; fidx < nFaces; ++fidx) {
+//        int inneroffset = offset + fidx * 107;
+//        for (int tridx = 0; tridx < 107; ++tridx ) {
+//            PhiTriangle tri;
+//            tri.p0 = infaceTri[tridx * 3 + 0] + fidx * 68;
+//            tri.p1 = infaceTri[tridx * 3 + 1] + fidx * 68;
+//            tri.p2 = infaceTri[tridx * 3 + 2] + fidx * 68;
+//            outTris[inneroffset + tridx] = tri;
+//        }
+//    }
+
+
     free(in.pointlist);
     free(in.segmentlist);
     free(in.holelist);
@@ -157,6 +265,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     free(vorout.normlist);
 
     *nTris = mid.numberoftriangles;// + nFaces * 107;
+
     return outTris;
 }
 
