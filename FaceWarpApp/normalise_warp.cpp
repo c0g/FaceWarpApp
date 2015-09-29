@@ -362,9 +362,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 {
     // CALLER MUST FREE MEMORY ON RETURN.
 
-    const double eye_scaling_x = 1.5;
-    const double eye_scaling_y = 1.7;
-    const double mouth_scaling_x = 0.7;
+    const double eye_scaling_x = 1.2;
+    const double eye_scaling_y = 1.2;
+    const double mouth_scaling_x = 0.8;
     const double mouth_scaling_y = 1;
     
     
