@@ -25,7 +25,7 @@ PhiTriangle operator +(PhiTriangle tri, int offset) {
     return PhiTriangle{tri.p0 + offset, tri.p1 + offset, tri.p2 + offset};
 }
 
-ConstrainedDelaunay2 del;
+//ConstrainedDelaunay2 del;
 
 /*
 Delaunay triangles may not include (for a given face):
