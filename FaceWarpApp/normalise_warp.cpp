@@ -125,7 +125,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
         std::cout << e.what() << std::endl;
     };
     
-    startAngle[0] = angle;
+    angle(0) = (angle(0) + startAngle[0]) / 2;
     dlib::matrix<double,2,2> rotation_matrix_2d = dlib::rotation_matrix(angle);
     dlib::matrix<double,2,2> rotation_matrix_2d_inv = dlib::inv(rotation_matrix_2d);
     //    dlib::matrix<double,3,3> rotation_matrix = dlib::identity_matrix<double>(3);
@@ -185,7 +185,8 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
         std::cout << "Optimisation failed with " << e.what() << std::endl;
     };
     for (int i = 0; i < 6; ++i) {
-        matrixParams[i] = vector(i);
+        vector(i) = (vector(i) + matrixParams[i]) / 2; // Average
+        matrixParams[i] = vector(i); // Average
     }
     dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector);
     
@@ -360,6 +361,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
 PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
+
     const double eye_scaling = 1.1;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);

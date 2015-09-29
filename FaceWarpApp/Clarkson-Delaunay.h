@@ -8,7 +8,7 @@
  * documentation for such software.
  */
 #ifndef Clarkson_Delaunay_h
-#define Clakrson_Delaunay_h
+#define Clarkson_Delaunay_h
 
 
 #ifdef __cplusplus
