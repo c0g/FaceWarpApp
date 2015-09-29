@@ -35,7 +35,7 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     int numPoints = numEdges + 68 * numFaces;
     
     typedef gte::BSNumber<gte::UIntegerAP32> Rational;
-    typedef gte::TriangulateCDT<float, Rational> Triangulator;
+    typedef gte::TriangulateCDT<float, float> Triangulator;
     
     
     std::vector<int> outerPoints;
@@ -44,6 +44,7 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     for (int eidx = 0; eidx < numEdges; ++eidx) {
         outerPoints.push_back(edgesOffset + eidx);
     }
+//    outerPoints.push_back(edgesOffset);
     Triangulator::Polygon outer = {(int)outerPoints.size(), outerPoints.data()};
     
     std::vector<std::vector<int>> innerPoints;
@@ -53,6 +54,7 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
         for (int idx = 0; idx < 27; ++idx) {
             innerInnerPoints.push_back(idx + offset);
         }
+//        innerInnerPoints.push_back(offset);
         innerPoints.push_back(innerInnerPoints);
     }
     
@@ -85,7 +87,7 @@ PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, i
     
     Triangulator triangulator{(int)positions.size(), positions.data()};
     triangulator(outer, inner);
-    std::vector<std::array<int, 3>> triangles = triangulator.GetTriangles();
+    std::vector<std::array<int, 3>> triangles = triangulator.GetOutsideTriangles();
 //    for (const auto tri : triangles) {
 //        std::cout << tri[0] << ", " << tri[1] << ", " << tri[2] << std::endl;
 //    }
