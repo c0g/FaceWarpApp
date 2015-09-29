@@ -57,7 +57,11 @@ var Indices: [GLubyte] = [
 
 extension Array {
     func size () -> Int {
-        return self.count * sizeofValue(self[0])
+        if self.count > 0 {
+            return self.count * sizeofValue(self[0])
+        } else {
+            return 0
+        }
     }
 }
 
@@ -96,7 +100,7 @@ func makeEdges(n: Int, scalex: CGFloat, scaley: CGFloat) -> [PhiPoint] {
         points.append(PhiPoint(x: Int32(round(scalex * CGFloat(x) / CGFloat(n))), y: Int32(round(scaley * 0))))
         points.append(PhiPoint(x: Int32(round(scalex * CGFloat(x) / CGFloat(n))), y: Int32(round(scaley * 1))))
     }
-    for y in 0...n {
+    for y in 1..<n {
         points.append(PhiPoint(x: Int32(round(scalex * 0)), y: Int32(round(scaley * CGFloat(y) / CGFloat(n)))))
         points.append(PhiPoint(x: Int32(round(scalex * 1)), y: Int32(round(scaley * CGFloat(y) / CGFloat(n)))))
     }

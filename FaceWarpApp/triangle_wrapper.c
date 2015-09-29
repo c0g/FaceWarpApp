@@ -44,18 +44,21 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     {
         for (i = 0; i < 28; i++)
         {
-            in.segmentlist[fac*28 + i] = dlib_face_outline[i];
+            in.segmentlist[fac*28 + i] = dlib_face_outline[i] + fac * 68;
         }
     }
     
-    
+    in.pointmarkerlist = (int*)NULL;
+    in.segmentmarkerlist = (int*)NULL;
     
     in.numberofholes = nFaces;
     in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
 
+    in.numberofregions = 0;
+    
     for (int hole = 0; hole < in.numberofholes; hole++)
     {
-        PhiPoint pointInHole = edgesLandMarks[68 * nFaces];
+        PhiPoint pointInHole = edgesLandMarks[68 * nFaces + 33]; // nose!
         double xInHole = pointInHole.x;
         double yInHole = pointInHole.y;
         in.holelist[2 * hole + 0] = xInHole;
@@ -93,7 +96,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pczqAeB", &in, &mid, &vorout);
+    triangulate("pczBD", &in, &mid, &vorout);
 
     
     PhiTriangle * outTris = (PhiTriangle *) malloc(sizeof(PhiTriangle) * (mid.numberoftriangles + nFaces * 107));
@@ -109,9 +112,9 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
         int inneroffset = offset + fidx * 107;
         for (int tridx = 0; tridx < 107; ++tridx ) {
             PhiTriangle tri;
-            tri.p0 = infaceTri[tridx * 3 + 0];
-            tri.p1 = infaceTri[tridx * 3 + 1];
-            tri.p2 = infaceTri[tridx * 3 + 2];
+            tri.p0 = infaceTri[tridx * 3 + 0] + fidx * 68;
+            tri.p1 = infaceTri[tridx * 3 + 1] + fidx * 68;
+            tri.p2 = infaceTri[tridx * 3 + 2] + fidx * 68;
             outTris[inneroffset + tridx] = tri;
         }
     }
@@ -121,15 +124,14 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /* Free all allocated arrays, including those allocated by Triangle. */
     
     free(in.pointlist);
-    free(in.pointattributelist);
-    free(in.pointmarkerlist);
-    free(in.regionlist);
+    free(in.segmentlist);
+    free(in.holelist);
     free(mid.pointlist);
     free(mid.pointattributelist);
     free(mid.pointmarkerlist);
     free(mid.trianglelist);
     free(mid.triangleattributelist);
-    free(mid.trianglearealist);
+//    free(mid.trianglearealist);
     free(mid.neighborlist);
     free(mid.segmentlist);
     free(mid.segmentmarkerlist);
@@ -140,7 +142,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     free(vorout.edgelist);
     free(vorout.normlist);
 
-    
+    *nTris = mid.numberoftriangles;
     return outTris;
 }
 
