@@ -34,8 +34,14 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     
     for (i = 0; i < in.numberofpoints * 2; i++)
     {
-        in.pointlist[i] = *(double*)((int*)(edgesLandMarks) + i);
+        in.pointlist[i] = (REAL)*((int*)(edgesLandMarks) + i);
     }
+    
+    in.pointmarkerlist = (int *) malloc(in.numberofpoints * sizeof(int));
+    in.pointmarkerlist[0] = 0;
+    in.pointmarkerlist[1] = 2;
+    in.pointmarkerlist[2] = 0;
+    in.pointmarkerlist[3] = 0;
     
     in.numberofsegments = nFaces*28;// + 2*6 + 9 + 8 + 12;
     in.segmentlist = (int *) malloc(in.numberofsegments * 2 * sizeof(int));
@@ -49,15 +55,17 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
         }
     }
     
+    in.numberofholes = nFaces;
     in.holelist = (REAL *) malloc(in.numberofholes * 2 * sizeof(REAL));
     
-    in.numberofholes = nFaces;
+    
     for (int hole = 0; hole < in.numberofholes; hole++)
     {
-        in.holelist[2*i] = *(double*)((int*)(edgesLandMarks) + 67 + (136*hole));
-        in.holelist[2*i + 1] = *(double*)((int*)(edgesLandMarks) + 68 + (136*hole));
+        in.holelist[2*hole] = (REAL)*((int*)(edgesLandMarks) + 67 + (136*hole));
+        in.holelist[2*hole + 1] = (REAL)*((int*)(edgesLandMarks) + 68 + (136*hole));
     }
 
+    
     
     /* Make necessary initializations so that Triangle can return a */
     /*   triangulation in `mid' and a voronoi diagram in `vorout'.  */
@@ -89,7 +97,7 @@ PhiTriangle * triangulate_wrapper(const PhiPoint * edgesLandMarks, int nEdges, i
     /*   produce an edge list (e), a Voronoi diagram (v), and a triangle */
     /*   neighbor list (n).                                              */
     
-    triangulate("pczqAevn", &in, &mid, &vorout);
+    triangulate("pczqAevnN", &in, &mid, &vorout);
     
     int * tris; // Returns a points to an Nx3 array of ints, in format: t0_p0, t0_p1, t0_p2, t1_p0, t1_p1, ....
     

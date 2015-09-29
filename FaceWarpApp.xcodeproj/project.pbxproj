@@ -34,34 +34,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5E386B141BBAC0F9003EDAEB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 74B57E8D07F3427D00913EC4;
-			remoteInfo = "Debug Static";
-		};
-		5E386B161BBAC0F9003EDAEB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 74D6DDFE07F342E200267169;
-			remoteInfo = "Release Static";
-		};
-		5E386B181BBAC0F9003EDAEB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3C64C75312569DBD00F4B0B0;
-			remoteInfo = "Debug Dynamic";
-		};
-		5E386B1A1BBAC0F9003EDAEB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3C64C7A41256A63100F4B0B0;
-			remoteInfo = "Release Dynamic";
-		};
 		E264DF451BB950710051380D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
@@ -105,7 +77,6 @@
 		5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle_wrapper.c; sourceTree = "<group>"; };
 		5E386AFE1BBABBAA003EDAEB /* triangle_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle_wrapper.h; sourceTree = "<group>"; };
 		5E386AFF1BBABE28003EDAEB /* triangle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle.c; sourceTree = "<group>"; };
-		5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTEngine.xcodeproj; path = GeometricTools/GTEngine/GTEngine.xcodeproj; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -159,17 +130,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5E386B0E1BBAC0F9003EDAEB /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5E386B151BBAC0F9003EDAEB /* libGTEngined.a */,
-				5E386B171BBAC0F9003EDAEB /* libGTEngine.a */,
-				5E386B191BBAC0F9003EDAEB /* libGTEngined.dylib */,
-				5E386B1B1BBAC0F9003EDAEB /* libGTEngine.dylib */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		E264DF3F1BB950710051380D /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,7 +144,6 @@
 		E28D3A841BAC409000ACC953 = {
 			isa = PBXGroup;
 			children = (
-				5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */,
 				E20FE7881BB092CF00142050 /* Accelerate.framework */,
 				E28D3ABC1BAC464700ACC953 /* source.cpp */,
 				E28D3A8F1BAC409000ACC953 /* FaceWarpApp */,
@@ -347,10 +306,6 @@
 					ProductGroup = E264DF3F1BB950710051380D /* Products */;
 					ProjectRef = E264DF3E1BB950710051380D /* GTEngine.xcodeproj */;
 				},
-				{
-					ProductGroup = 5E386B0E1BBAC0F9003EDAEB /* Products */;
-					ProjectRef = 5E386B0D1BBAC0F9003EDAEB /* GTEngine.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -360,34 +315,6 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		5E386B151BBAC0F9003EDAEB /* libGTEngined.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libGTEngined.a;
-			remoteRef = 5E386B141BBAC0F9003EDAEB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		5E386B171BBAC0F9003EDAEB /* libGTEngine.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libGTEngine.a;
-			remoteRef = 5E386B161BBAC0F9003EDAEB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		5E386B191BBAC0F9003EDAEB /* libGTEngined.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libGTEngined.dylib;
-			remoteRef = 5E386B181BBAC0F9003EDAEB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		5E386B1B1BBAC0F9003EDAEB /* libGTEngine.dylib */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libGTEngine.dylib;
-			remoteRef = 5E386B1A1BBAC0F9003EDAEB /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		E264DF461BB950710051380D /* libGTEngined.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
