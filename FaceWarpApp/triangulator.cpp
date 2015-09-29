@@ -31,43 +31,31 @@ PhiTriangle operator +(PhiTriangle tri, int offset) {
 extern "C" {
 PhiTriangle * unsafeTidyIndices(const PhiPoint * edgesLandMarks, int numEdges, int numFaces, int * nTris) {
     // CALLER TO FREE RETURN VALUE
-    gte::ConstrainedDelaunay2<float,  gte::BSNumber<gte::UIntegerAP32>> del;
-    int numVertices;
-    int dim = 2;
-    int numPoints = numEdges + numFaces * 68;
+//    gte::ConstrainedDelaunay2<float,  gte::BSNumber<gte::UIntegerAP32>> del;
+    int numPoints = numEdges + 68 * numFaces;
     
-    std::vector<gte::Vector2<float>> a;
+    typedef gte::BSNumber<gte::UIntegerAP32> Rational;
+    typedef gte::TriangulateCDT<float, Rational> Triangulator;
+    
+    std::vector<gte::Vector2<float>> positions;
     for (int idx = 0; idx < numPoints; ++idx) {
-        a.push_back(gte::Vector2<float>{
+        positions.push_back(gte::Vector2<float> {
             static_cast<float>(edgesLandMarks[idx].x),
             static_cast<float>(edgesLandMarks[idx].y)
         });
     }
     
-    auto thedel = del(static_cast<int>(a.size()), a.data(), 0.001f);
+    std::vector<int> outer;
+    for (int fidx = 0; )
     
-    for (int fidx = 0; fidx < numFaces; fidx++) {
-        int offset = fidx * 68;
-        for (const auto tri : infaceTri) {
-            std::vector<int> out;
-            std::array<int, 2>   one{static_cast<int>(tri.p0) + offset, static_cast<int>(tri.p1) + offset};
-            del.Insert(one, out);
-            std::array<int, 2>   two{static_cast<int>(tri.p1) + offset, static_cast<int>(tri.p2) + offset};
-            del.Insert(two, out);
-            std::array<int, 2> three{static_cast<int>(tri.p2) + offset, static_cast<int>(tri.p0) + offset};
-            del.Insert(three, out);
-        }
-    }
-    
-    std::vector<int> indices = del.GetIndices();
-    
-    *nTris = del.GetNumTriangles();
-    PhiTriangle * unsafeResult = (PhiTriangle * )malloc(sizeof(PhiTriangle) * del.GetNumTriangles());
-    for (int idx = 0; idx < del.GetNumTriangles(); ++idx) {
-        unsafeResult[idx].p0 = indices.at(idx * 3 + 0);
-        unsafeResult[idx].p1 = indices.at(idx * 3 + 1);
-        unsafeResult[idx].p2 = indices.at(idx * 3 + 2);
-    }
+    Triangulator::Polygon outer = { (int)mOuter.size(), &mOuter[0] };
+    std::vector<Triangulator::Polygon> inners(2);
+    inners[0] = { (int)mInner0.size(), &mInner0[0] };
+    inners[1] = { (int)mInner1.size(), &mInner1[0] };
+    Triangulator triangulator((int)mPositions.size(), &mPositions[0]);
+    triangulator(outer, inners);
+    mTriangles = triangulator.GetTriangles();
+
     return unsafeResult;
 }
 }
