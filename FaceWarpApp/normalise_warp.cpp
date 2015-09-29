@@ -362,7 +362,11 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 {
     // CALLER MUST FREE MEMORY ON RETURN.
 
-    const double eye_scaling = 1.5;
+    const double eye_scaling_x = 1.5;
+    const double eye_scaling_y = 1.7;
+    const double mouth_scaling_x = 0.7;
+    const double mouth_scaling_y = 1;
+    
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
@@ -398,8 +402,8 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib_leye_mean[0] = dlib::mean(dlib::colm(dlib_leye,0));
     dlib_leye_mean[1] = dlib::mean(dlib::colm(dlib_leye,1));
     
-    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_scaling) + dlib_leye_mean[0];
-    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_scaling) + dlib_leye_mean[1];
+    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_scaling_x) + dlib_leye_mean[0];
+    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_scaling_y) + dlib_leye_mean[1];
     
     dlib::matrix<long> dlib_reye_range(1,reye_dlib.size());
     for (int i = 0; i < reye_dlib.size(); i++ )
@@ -412,8 +416,8 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib_reye_mean[0] = dlib::mean(dlib::colm(dlib_reye,0));
     dlib_reye_mean[1] = dlib::mean(dlib::colm(dlib_reye,1));
     
-    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_scaling) + dlib_reye_mean[0];
-    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_scaling) + dlib_reye_mean[1];
+    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_scaling_x) + dlib_reye_mean[0];
+    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_scaling_y) + dlib_reye_mean[1];
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
@@ -430,8 +434,8 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib_mouth_mean[0] = dlib::mean(dlib::colm(dlib_mouth,0));
     dlib_mouth_mean[1] = dlib::mean(dlib::colm(dlib_mouth,1));
     
-    dlib::set_colm(dlib_mouth,0) = ((dlib::colm(dlib_mouth,0) - dlib_mouth_mean[0]) * eye_scaling) + dlib_mouth_mean[0];
-    dlib::set_colm(dlib_mouth,1) = ((dlib::colm(dlib_mouth,1) - dlib_mouth_mean[1]) * eye_scaling) + dlib_mouth_mean[1];
+    dlib::set_colm(dlib_mouth,0) = ((dlib::colm(dlib_mouth,0) - dlib_mouth_mean[0]) * mouth_scaling_x) + dlib_mouth_mean[0];
+    dlib::set_colm(dlib_mouth,1) = ((dlib::colm(dlib_mouth,1) - dlib_mouth_mean[1]) * mouth_scaling_y) + dlib_mouth_mean[1];
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2)) = dlib_mouth;
     //
