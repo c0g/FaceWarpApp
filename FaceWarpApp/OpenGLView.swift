@@ -711,7 +711,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         for faceidx in 0..<numfaces {
             let offset = faceidx * 68
             let slice : [PhiPoint] = Array(vertices[offset..<offset + 68])
-            let tmpArray = warper.doWarp(slice, warp: .SILLY)
+            let tmpArray = warper.doWarp(slice, warp: .PRETTY)
             for pidx in 0..<68 {
                 let warped_point = tmpArray[pidx]
                 let unwarped_point = slice[pidx]
