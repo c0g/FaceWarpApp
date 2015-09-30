@@ -28,6 +28,9 @@
 		E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3ABE1BAC480500ACC953 /* libjpeg.a */; settings = {ASSET_TAGS = (); }; };
 		E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* find_face.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
 		E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */; };
+		E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56241BBC31B700358D16 /* GaussianFragment.glsl */; settings = {ASSET_TAGS = (); }; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
@@ -108,6 +111,9 @@
 		E28D3AC21BAC5C0E00ACC953 /* find_face.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = find_face.h; sourceTree = "<group>"; };
 		E28D3AC31BAC5D0500ACC953 /* bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridging.h; sourceTree = "<group>"; };
 		E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = shape_predictor.dat; sourceTree = "<group>"; };
+		E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianHorizontalVertex.glsl; sourceTree = "<group>"; };
+		E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianVerticalVertex.glsl; sourceTree = "<group>"; };
+		E28E56241BBC31B700358D16 /* GaussianFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianFragment.glsl; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -210,6 +216,9 @@
 				E28D3AC31BAC5D0500ACC953 /* bridging.h */,
 				E28D3A9F1BAC409000ACC953 /* Info.plist */,
 				E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */,
+				E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */,
+				E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */,
+				E28E56241BBC31B700358D16 /* GaussianFragment.glsl */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -352,10 +361,13 @@
 			files = (
 				E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
+				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
+				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
 				E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */,
+				E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
