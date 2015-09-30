@@ -10,6 +10,7 @@ std::vector<int> face_half_dlib {0, 1, 2, 3, 4, 5, 6, 7, 8};
 std::vector<int> leyebrow_dlib {17, 18, 19, 20, 21};
 std::vector<int> reyebrow_dlib {22, 23, 24, 25, 26};
 std::vector<int> nose_dlib {27, 28, 29, 30, 31, 32, 33, 34, 35};
+std::vector<int> nose_dlib_edge {31, 32, 33, 34, 35};
 std::vector<int> leye_dlib {36, 37, 38, 39, 40, 41};
 std::vector<int> leye_dlib_mid {37, 38, 39, 41};
 std::vector<int> reye_dlib {42, 43, 44, 45, 46, 47};

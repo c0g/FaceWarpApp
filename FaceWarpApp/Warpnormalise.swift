@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, SILLY
+    case PRETTY, PRETTY2, SILLY
 }
 
 class Warper {
@@ -27,6 +27,8 @@ class Warper {
         switch warp {
         case .PRETTY:
             return doAttractiveWarp(landmarks, initParam: &face_log[idx].parameters)
+        case .PRETTY2:
+            return doAttractiveWarp2(landmarks, initParam: &face_log[idx].parameters)
         case .SILLY:
             return doSillyWarp(landmarks, initParam: &face_log[idx].parameters)
         }
@@ -76,6 +78,19 @@ class Warper {
 //        print("warped")
         free(ans)
 
+        return safeAns
+    }
+    
+    func doAttractiveWarp2( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> [PhiPoint]{
+        let ans = attractive_adjusted_warp2(&landmarks, &initParam);
+        var safeAns : [PhiPoint] = [];
+        for idx in 0..<landmarks.count {
+            //            print("\(idx) Delta x: \(landmarks[idx].x - ans[Int(idx)].x), Delta y: \(landmarks[idx].y - ans[Int(idx)].y)")
+            safeAns.append((ans[Int(idx)]))
+        }
+        //        print("warped")
+        free(ans)
+        
         return safeAns
     }
 
