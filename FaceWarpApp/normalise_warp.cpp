@@ -113,12 +113,12 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     double dervative_eps = 1e-7;
     
     try {
-        dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
+        dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
                                                      dlib::objective_delta_stop_strategy(1e-6),
                                                      cost_function_2d_rotation_wrapper,
                                                      angle,
                                                      min_f,
-                                                     dervative_eps);
+                                                     1e-7);
     }
     catch (std::exception &e)
     {
@@ -160,25 +160,28 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     }
     
     try {
-        double min_f;
-        double dervative_eps = 1e-7;
+//        double min_f;
+//        double dervative_eps = 1e-7;
         
-        dlib::find_min_using_approximate_derivatives(dlib::lbfgs_search_strategy(5),
-                                                     dlib::objective_delta_stop_strategy(1e-6),
+        dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
+                                                     dlib::objective_delta_stop_strategy(1e-7),
                                                      cost_function_3d_rotation_wrapper,
                                                      vector,
-                                                     min_f,
-                                                     dervative_eps);
+                                                     1e-5);
+        
+        
         
 //        find_min_bobyqa(cost_function_3d_rotation_wrapper,
 //                        vector,
-//                        9,    // number of interpolation points
-//                        dlib::uniform_matrix<double>(6,1, -10000),  // lower bound constraint
-//                        dlib::uniform_matrix<double>(6,1, 10000),   // upper bound constraint
-//                        1000,    // initial trust region radius
+//                        15,    // number of interpolation points
+//                        dlib::uniform_matrix<double>(6,1, -100),  // lower bound constraint
+//                        dlib::uniform_matrix<double>(6,1, 100),   // upper bound constraint
+//                        10,    // initial trust region radius
 //                        1e-2,  // stopping trust region radius
 //                        1000    // max number of objective function evaluations
 //                        );
+        
+    std::cout << dlib::csv << return_rotation_matrix_from_flat_vector(vector) << std::endl;
     }
     catch (std::exception& e)
     {
@@ -266,7 +269,7 @@ PhiPoint * return_3d_adjusted_warp(int * landmarks_ptr, int * face_flat_warp_ptr
 PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.07;
+    const double eye_scaling = 1.1;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
 //    std::cout << landmarks_i << std::endl;
@@ -278,7 +281,9 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    double *dlib_3d = &landmarks3d_dlib[0];
+//    double *dlib_3d = landmarks3d_dlib;
+    double *dlib_3d = landmarks3d_female;
+    
     dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
     dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
     dlib::matrix<double> centered_landmarks3d = landmarks3d;
@@ -322,17 +327,38 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
+
     
-    dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
-    
-    dlib::matrix<long> switch_list(1,exchange_list_nose_chin_warp.size());
-    for (int i = 0; i < exchange_list_nose_chin_warp.size(); i++ )
+    dlib::matrix<long> switch_list(1,exchange_list_nose_warp.size());
+    for (int i = 0; i < exchange_list_nose_warp.size(); i++ )
     {
-        switch_list(0,i) = (long)exchange_list_nose_chin_warp[i];
+        switch_list(0,i) = (long)exchange_list_nose_warp[i];
     }
     
     
-    dlib::set_subm(_2d_landmarks_full, switch_list, dlib::range(0,1)) = dlib::subm(flattened_2d_landmarks_full, switch_list, dlib::range(0,1));
+//    exchange_list_nose_warp
+//    dlib::matrix<long> switch_list(1,exchange_list_nose_chin_warp.size());
+//    for (int i = 0; i < exchange_list_nose_chin_warp.size(); i++ )
+//    {
+//        switch_list(0,i) = (long)exchange_list_nose_chin_warp[i];
+//    }
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, switch_list, dlib::range(0,1)) = dlib::subm(centered_landmarks3d, switch_list, dlib::range(0,1));
+    
+    dlib::matrix<double, 68,2> _2d_landmarks_full;
+    _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
+    
+    
+    
+//    std::cout << dlib::csv << dlib::range(0,5) <<std::endl;
+//    std::cout << dlib::csv << switch_list << std::endl;
+//    std::cout << "\n" << "\n";
+    
+    
+//    dlib::set_subm(_2d_landmarks_full, switch_list, dlib::range(0,1)) = dlib::subm(flattened_2d_landmarks_full, switch_list, dlib::range(0,1));
+    
+//    dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
+//    dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
@@ -351,7 +377,11 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
 //    for (int row = 0; row < _2d_landmarks_full.nr(); row++)
 //    {
 //        std::cout << output[row].x << "," << output[row].y << std::endl;
+//        std::cout << landmarks(row,0) << "," << landmarks(row,1) << std::endl;
+//        std::cout << "\n";
 //    }
+//    std::cout << "\n";
+//    std::cout << "\n";
 
     
 //    exit(1);
@@ -362,9 +392,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 {
     // CALLER MUST FREE MEMORY ON RETURN.
 
-    const double eye_scaling_x = 1.5;
-    const double eye_scaling_y = 1.7;
-    const double mouth_scaling_x = 0.7;
+    const double eye_scaling_x = 1.3;
+    const double eye_scaling_y = 1.5;
+    const double mouth_scaling_x = 0.8;
     const double mouth_scaling_y = 1;
     
     
@@ -440,7 +470,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2)) = dlib_mouth;
     //
     
-    dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
+    dlib::matrix<double,68,3> tmp = flattened_2d_landmarks_full_rotated * rotation_matrix;
+    dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(tmp, dlib::range(0,67), dlib::range(0,1));
+    
     
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
