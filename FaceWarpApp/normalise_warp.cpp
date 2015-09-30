@@ -511,10 +511,10 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double eye_scaling_x = 1.2;
-    const double eye_scaling_y = 1.2;
+    const double eye_scaling_y = 1.7;
 
-    const double mouth_scaling_x = 0.8;
-    const double mouth_scaling_y = 1;
+    const double mouth_scaling_x = 0.7;
+    const double mouth_scaling_y = 0.9;
     
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
@@ -647,7 +647,7 @@ extern "C" {
     PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp2((int *)landmarks, parameters);
         return adjusted_warp;
     }
 }
