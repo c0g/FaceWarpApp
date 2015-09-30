@@ -70,25 +70,25 @@ double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<
     
     double mismatch_error = 68*2*100000;//std::numeric_limits<double>::max();
     
-    if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
-    {
+//    if ((old_mean_leye(0,1) > old_mean_reye(0,1)) & (mean_leye(0,1) > mean_reye(0,1)))
+//    {
         mismatch_error = std::sqrt(std::pow(mean_leye(0,1) - mean_reye(0,1),2));
-    }
-    
-    else if ((old_mean_leye(0,1) < old_mean_reye(0,1)) & (mean_leye(0,1) < mean_reye(0,1)))
-    {
-        mismatch_error = std::sqrt(std::pow(mean_leye(0,1) - mean_reye(0,1),2));
-    }
-    
-    else if (mean_leye(0,1) == mean_reye)
-    {
-        mismatch_error = 0.0;
-    }
-    
-    else
-    {
-        mismatch_error = 68*2*100000;//std::numeric_limits<double>::max();
-    };
+//    }
+//    
+//    else if ((old_mean_leye(0,1) < old_mean_reye(0,1)) & (mean_leye(0,1) < mean_reye(0,1)))
+//    {
+//        mismatch_error = std::sqrt(std::pow(mean_leye(0,1) - mean_reye(0,1),2));
+//    }
+//    
+//    else if (mean_leye(0,1) == mean_reye)
+//    {
+//        mismatch_error = 0.0;
+//    }
+//    
+//    else
+//    {
+//        mismatch_error = 68*2*100000;//std::numeric_limits<double>::max();
+//    };
 //    std::cout << "error_2d: " << mismatch_error << "\n";
     
     return mismatch_error;
@@ -102,30 +102,50 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    auto cost_function_2d_rotation_wrapper = [&centered_landmarks](dlib::matrix<double,1,1> x)
+    auto cost_function_2d_rotation_wrapper = [&centered_landmarks](double x)
     {
-        return cost_function_2d_rotation(x, centered_landmarks);
+        dlib::matrix<double, 1, 1> arse;
+        arse = x;
+        auto cost = cost_function_2d_rotation(arse, centered_landmarks);
+//        std::cout << "Cost: "<< cost << " for x: " << x <<std::endl;
+        return cost;
     };
     
-    column_vector angle(1);
-    angle = startAngle[0];
+//    column_vector angle(1);
+    double angle = startAngle[0];
     double min_f;
     double dervative_eps = 1e-7;
     
+//    const double begin = -1e200,
+//    const double end = 1e200,
+//    const double eps = 1e-3,
+//    const long max_iter = 100,
+//    const double initial_search_radius = 1
     try {
-        dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
-                                                     dlib::objective_delta_stop_strategy(1e-6),
-                                                     cost_function_2d_rotation_wrapper,
-                                                     angle,
-                                                     min_f,
-                                                     1e-7);
+        dlib::find_min_single_variable(
+                                    cost_function_2d_rotation_wrapper,
+                                    angle,
+                                    -3.1,
+                                    3.1,
+                                       1e-7,
+                                       100,
+                                       1e-2);
+//        dlib::find_min_using_approximate_derivatives(dlib::cg_search_strategy(),
+//                                                     dlib::gradient_norm_stop_strategy(1e-7),
+//                                                     cost_function_2d_rotation_wrapper,
+//                                                     angle,
+//                                                     min_f,
+//                                                     1e-9);
+//        std::cout << dlib::csv << angle << std::endl;
     }
     catch (std::exception &e)
     {
         std::cout << e.what() << std::endl;
     };
-    
-    angle(0) = (angle(0) + startAngle[0]) / 2;
+    std::cout << "started with " << startAngle[0] << " ended with " << angle << std::endl;
+    angle = (angle + startAngle[0]) / 2;
+    startAngle[0] = angle;
+//    dlib::matrix<double> 
     dlib::matrix<double,2,2> rotation_matrix_2d = dlib::rotation_matrix(angle);
     dlib::matrix<double,2,2> rotation_matrix_2d_inv = dlib::inv(rotation_matrix_2d);
     //    dlib::matrix<double,3,3> rotation_matrix = dlib::identity_matrix<double>(3);
@@ -164,7 +184,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
 //        double dervative_eps = 1e-7;
         
         dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
-                                                     dlib::objective_delta_stop_strategy(1e-7),
+                                                     dlib::objective_delta_stop_strategy(1e-3),
                                                      cost_function_3d_rotation_wrapper,
                                                      vector,
                                                      1e-5);
@@ -180,8 +200,8 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
 //                        1e-2,  // stopping trust region radius
 //                        1000    // max number of objective function evaluations
 //                        );
-        
-    std::cout << dlib::csv << return_rotation_matrix_from_flat_vector(vector) << std::endl;
+//        
+//    std::cout << dlib::csv << return_rotation_matrix_from_flat_vector(vector) << std::endl;
     }
     catch (std::exception& e)
     {
@@ -282,7 +302,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
 //    double *dlib_3d = landmarks3d_dlib;
-    double *dlib_3d = landmarks3d_female;
+    double *dlib_3d = landmarks3d_male;
     
     dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
     dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
@@ -329,10 +349,10 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
 
     
-    dlib::matrix<long> switch_list(1,exchange_list_nose_warp.size());
-    for (int i = 0; i < exchange_list_nose_warp.size(); i++ )
+    dlib::matrix<long> switch_list(1,exchange_list_nose_chin_warp.size());
+    for (int i = 0; i < exchange_list_nose_chin_warp.size(); i++ )
     {
-        switch_list(0,i) = (long)exchange_list_nose_warp[i];
+        switch_list(0,i) = (long)exchange_list_nose_chin_warp[i];
     }
     
     
