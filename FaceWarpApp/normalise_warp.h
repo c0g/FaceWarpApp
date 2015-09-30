@@ -19,6 +19,8 @@ PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp, double
     
 PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters);
     
+PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters);
+    
 PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters);
     
 #ifdef __cplusplus
