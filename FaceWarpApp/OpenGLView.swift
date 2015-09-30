@@ -241,6 +241,19 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.eaglLayer.contentsScale = UIScreen.mainScreen().scale
         self.eaglLayer.bounds.size.width = UIScreen.mainScreen().bounds.width
         self.eaglLayer.bounds.size.height = UIScreen.mainScreen().bounds.height
+        
+        // Add a fucken button
+//        UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//        [button addTarget:self
+//            action:@selector(aMethod:)
+//        forControlEvents:UIControlEventTouchUpInside];
+//        [button setTitle:@"Show View" forState:UIControlStateNormal];
+//        button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
+//        [view addSubview:button];
+        let button = UIButton(type: UIButtonType.RoundedRect)
+        button.setTitle("Fucken button", forState: UIControlState.Normal)
+        button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0)
+        self.addSubview(button)
     }
     
     func setupEdges() {
@@ -711,7 +724,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         for faceidx in 0..<numfaces {
             let offset = faceidx * 68
             let slice : [PhiPoint] = Array(vertices[offset..<offset + 68])
-            let tmpArray = warper.doWarp(slice, warp: .PRETTY)
+            let tmpArray = warper.doWarp(slice, warp: .SILLY)
             for pidx in 0..<68 {
                 let warped_point = tmpArray[pidx]
                 let unwarped_point = slice[pidx]
