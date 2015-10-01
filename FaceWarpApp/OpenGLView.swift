@@ -42,17 +42,7 @@ var FaceIndicesSmall : [GLubyte] = [
 ]
 
 
-var Vertices = [
-    Coordinate(xyz : (-1, -1, 0), uv : (0, 1)),
-    Coordinate(xyz : (-1,  1, 0), uv : (0, 0)),
-    Coordinate(xyz : ( 1,  1, 0), uv : (1, 0)),
-    Coordinate(xyz : ( 1, -1, 0), uv : (1, 1)),
-]
 
-var Indices: [GLubyte] = [
-    1, 2, 0,
-    0, 2, 3,
-]
 
 extension Array {
     func size () -> Int {
