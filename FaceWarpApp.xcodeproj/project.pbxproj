@@ -31,6 +31,8 @@
 		E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56241BBC31B700358D16 /* GaussianFragment.glsl */; settings = {ASSET_TAGS = (); }; };
+		E28E563D1BBD5EE700358D16 /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E563C1BBD5EE700358D16 /* MultiSelector.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56421BBD604F00358D16 /* ControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56411BBD604F00358D16 /* ControlViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
@@ -114,6 +116,8 @@
 		E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianVerticalVertex.glsl; sourceTree = "<group>"; };
 		E28E56241BBC31B700358D16 /* GaussianFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianFragment.glsl; sourceTree = "<group>"; };
+		E28E563C1BBD5EE700358D16 /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
+		E28E56411BBD604F00358D16 /* ControlViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlViewController.swift; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -228,6 +232,8 @@
 			children = (
 				E20FE7681BB032A800142050 /* OpenGLView.swift */,
 				E20FE7661BB0326C00142050 /* ViewController.swift */,
+				E28E563C1BBD5EE700358D16 /* MultiSelector.swift */,
+				E28E56411BBD604F00358D16 /* ControlViewController.swift */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -387,7 +393,9 @@
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
 				E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */,
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,
+				E28E56421BBD604F00358D16 /* ControlViewController.swift in Sources */,
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
+				E28E563D1BBD5EE700358D16 /* MultiSelector.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				5E386B001BBABE28003EDAEB /* triangle.c in Sources */,

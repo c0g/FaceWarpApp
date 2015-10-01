@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -15,12 +16,81 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="FaceWarpApp" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sDR-7T-yBH">
+                                <rect key="frame" x="500" y="0.0" width="100" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <segue destination="ijh-je-PGR" kind="embed" id="mUb-gP-fOj"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" red="1" green="0.52648174316488017" blue="0.48974023977280912" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="sDR-7T-yBH" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="7MH-rK-aHJ"/>
+                            <constraint firstItem="sDR-7T-yBH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="trailing" constant="-100" id="Wsd-Q1-9eJ"/>
+                            <constraint firstItem="sDR-7T-yBH" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="wz9-8t-GRR"/>
+                            <constraint firstAttribute="trailing" secondItem="sDR-7T-yBH" secondAttribute="trailing" id="yK4-Yq-8BM"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="448" y="370"/>
+        </scene>
+        <!--Control View Controller-->
+        <scene sceneID="jpV-al-Ttd">
+            <objects>
+                <viewController id="ijh-je-PGR" customClass="ControlViewController" customModule="FaceWarpApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4Cz-w2-rpl">
+                        <rect key="frame" x="0.0" y="0.0" width="100" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q21-cy-TeR">
+                                <rect key="frame" x="52" y="285" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Capture">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <pickerView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9dI-hK-M8E">
+                                <rect key="frame" x="0.0" y="20" width="100" height="246"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="246" id="mKx-Ne-H8l"/>
+                                </constraints>
+                            </pickerView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="iUQ-tj-hyd">
+                                <rect key="frame" x="15" y="323" width="121" height="29"/>
+                                <animations/>
+                                <segments>
+                                    <segment title="Still"/>
+                                    <segment title="Video"/>
+                                </segments>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </segmentedControl>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="9dI-hK-M8E" firstAttribute="top" secondItem="4Cz-w2-rpl" secondAttribute="topMargin" constant="-5" id="1mi-hG-D8o"/>
+                            <constraint firstItem="iUQ-tj-hyd" firstAttribute="top" secondItem="q21-cy-TeR" secondAttribute="bottom" constant="8" symbolic="YES" id="EF7-Aq-yt9"/>
+                            <constraint firstItem="q21-cy-TeR" firstAttribute="centerX" secondItem="iUQ-tj-hyd" secondAttribute="centerX" id="Ewx-jy-yTY"/>
+                            <constraint firstItem="9dI-hK-M8E" firstAttribute="centerX" secondItem="iUQ-tj-hyd" secondAttribute="centerX" id="IdM-aR-iuB"/>
+                            <constraint firstAttribute="trailing" secondItem="9dI-hK-M8E" secondAttribute="trailing" id="av4-R8-mYX"/>
+                            <constraint firstItem="9dI-hK-M8E" firstAttribute="leading" secondItem="4Cz-w2-rpl" secondAttribute="leading" id="oOc-Oa-RDG"/>
+                            <constraint firstItem="q21-cy-TeR" firstAttribute="centerY" secondItem="4Cz-w2-rpl" secondAttribute="centerY" id="ony-of-JqB"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="picker" destination="9dI-hK-M8E" id="o6E-rd-Bgd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dgW-TI-Jcb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1113.5" y="160"/>
         </scene>
     </scenes>
 </document>

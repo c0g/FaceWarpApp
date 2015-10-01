@@ -257,10 +257,10 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
 //        [button setTitle:@"Show View" forState:UIControlStateNormal];
 //        button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0);
 //        [view addSubview:button];
-        let button = UIButton(type: UIButtonType.RoundedRect)
-        button.setTitle("Fucken button", forState: UIControlState.Normal)
-        button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0)
-        self.addSubview(button)
+//        let button = UIButton(type: UIButtonType.RoundedRect)
+//        button.setTitle("Fucken button", forState: UIControlState.Normal)
+//        button.frame = CGRectMake(80.0, 210.0, 160.0, 40.0)
+//        self.addSubview(button)
     }
     
     func setupEdges() {
@@ -924,10 +924,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         renderWholeImageToFlipTexture()
         
         renderWholeImageToRenderTexture()
-        
-        findFaces()
+        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            self.findFaces()
+        }
         setFaceVertices()
-        activateHorizontalBlurShader()
+//        activateHorizontalBlurShader()
         setScaleInShader(gaussianHorizontalProgramHandle, toValue: 1)
         renderFaceToRenderTexture()
 
