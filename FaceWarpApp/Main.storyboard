@@ -15,8 +15,19 @@
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="FaceWarpApp" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jDl-01-BjN">
+                                <rect key="frame" x="20" y="28" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" red="1" green="0.52648174316488017" blue="0.48974023977280912" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="jDl-01-BjN" secondAttribute="bottom" constant="178" id="LPI-x8-Ynr"/>
+                            <constraint firstItem="jDl-01-BjN" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="262" id="OlI-f9-pWh"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
