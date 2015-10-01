@@ -81,6 +81,14 @@ class TextureManager {
             print("CVOpenGLESTextureCacheCreateTextureFromImage failed with code \(ret)")
             exit(1)
         }
+        glBindTexture(
+            CVOpenGLESTextureGetTarget(videoTexture!),
+            CVOpenGLESTextureGetName(videoTexture!)
+        )
+    }
+    
+    func bindVideoTextureToSlot(textureSlot: GLint) {
+        glUniform1i(textureSlot, GL_TEXTURE0)
     }
     
     // MARK: output buffers for iOS

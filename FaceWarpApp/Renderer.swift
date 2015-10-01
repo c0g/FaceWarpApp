@@ -63,12 +63,6 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     var vertexManager : VertexManager?
     let faceDetector : FaceFinder = FaceFinder()
     
-    var VAO:GLuint = GLuint()
-    var indexBuffer: GLuint = GLuint()
-    var positionBuffer: GLuint = GLuint()
-    var uvBuffer: GLuint = GLuint()
-    
-    
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
@@ -77,13 +71,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         super.init()
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
-        
+        self.vertexManager = VertexManager()
         setupPassThrough()
     }
     
     func setupPassThrough() {
         let (xyzloc, uvloc, _) = shaderManager!.activatePassThroughShader()
-        vertexManager?.setupPassVBO(withPositionSlot: xyzloc, andUVSlot: uvloc)
+        vertexManager!.setupPassVBO(withPositionSlot: xyzloc, andUVSlot: uvloc)
     }
     
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef, fromConnection connection: AVCaptureConnection) {
@@ -93,36 +87,10 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func passThroughRender() {
-        let (positionSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        shaderManager!.activatePassThroughShader()
+        let (num, type) = vertexManager!.bindPassVBO()
         glViewport(0, 0, GLint(1000) , GLint(1000));
-        
-        glGenVertexArraysOES(1, &VAO);
-        glBindVertexArrayOES(VAO);
-        
-        glGenBuffers(1, &positionBuffer)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), positionBuffer)
-        glBufferData(GLenum(GL_ARRAY_BUFFER), Vertices.size(), Vertices, GLenum(GL_STATIC_DRAW))
-        
-        glEnableVertexAttribArray(positionSlot)
-        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
-        
-        glGenBuffers(1, &uvBuffer)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), uvBuffer)
-        glBufferData(GLenum(GL_ARRAY_BUFFER), Vertices.size(), Vertices, GLenum(GL_STATIC_DRAW))
-        
-        glEnableVertexAttribArray(uvSlot)
-        glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
-        
-        glGenBuffers(1, &indexBuffer)
-        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), indexBuffer)
-        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), Indices.size(), Indices, GLenum(GL_STATIC_DRAW))
-        
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-        glActiveTexture(GLenum(GL_TEXTURE0))
-        glBindTexture(CVOpenGLESTextureGetTarget(textureManager!.videoTexture!), CVOpenGLESTextureGetName(textureManager!.videoTexture!))
-        glUniform1i(textureSlot, 0)
-        
-        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
     }
     
     func render() {

@@ -64,7 +64,7 @@ class VertexManager {
     
     
     func setupPassVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint ) -> ([Coordinate],[GLubyte]) {
-        let (vertices, indices) = makeSquareVertices()
+        let (vertices, indices) = makeSquareVertices(withFlip: .HORIZONTAL, andRotate90: true)
         
         glGenVertexArraysOES(1, &passAO);
         glBindVertexArrayOES(passAO);
@@ -92,11 +92,12 @@ class VertexManager {
         return (vertices, indices)
     }
     
-    func bindPassVBO() {
-        glGenVertexArraysOES(1, &passAO);
+    func bindPassVBO() -> (GLint, GLenum) {
+        glBindVertexArrayOES(passAO);
+        return (GLint(6), GLenum(GL_UNSIGNED_BYTE))
     }
-    
-    func UV(uv : (GLfloat, GLfloat), ForFlip flip : ImgFlip = .NONE, AndRotate90 rotate : Bool = false) -> (GLfloat, GLfloat) {
+
+    func UV(uv : (GLfloat, GLfloat), ForFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> (GLfloat, GLfloat) {
         let rot_u = rotate ? uv.1 : uv.0
         let rot_v = rotate ? uv.0 : uv.1
         switch flip {
@@ -111,12 +112,14 @@ class VertexManager {
         }
     }
     
+    
+    
     func makeSquareVertices(withFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> ([Coordinate],[GLubyte]) {
         let vertices = [
-            Coordinate(xyz : (-1, -1, 0), uv : UV((0, 0), ForFlip: flip, AndRotate90: rotate)),
-            Coordinate(xyz : (-1,  1, 0), uv : UV((0, 1), ForFlip: flip, AndRotate90: rotate)),
-            Coordinate(xyz : ( 1,  1, 0), uv : UV((1, 1), ForFlip: flip, AndRotate90: rotate)),
-            Coordinate(xyz : ( 1, -1, 0), uv : UV((1, 0), ForFlip: flip, AndRotate90: rotate)),
+            Coordinate(xyz : (-1, -1, 0), uv : UV((0, 0), ForFlip: flip, andRotate90: rotate)),
+            Coordinate(xyz : (-1,  1, 0), uv : UV((0, 1), ForFlip: flip, andRotate90: rotate)),
+            Coordinate(xyz : ( 1,  1, 0), uv : UV((1, 1), ForFlip: flip, andRotate90: rotate)),
+            Coordinate(xyz : ( 1, -1, 0), uv : UV((1, 0), ForFlip: flip, andRotate90: rotate)),
         ]
         
         let indices: [GLubyte] = [
