@@ -125,6 +125,10 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var coordSlot : GLuint = GLuint()
     var coordBuffer : GLuint = GLuint()
     
+    var programHandle : GLuint = GLuint()
+    var gaussianVerticalProgramHandle : GLuint = GLuint()
+    var gaussianHorizontalProgramHandle : GLuint = GLuint()
+    
     var indexBuffer: GLuint = GLuint()
     var positionBuffer: GLuint = GLuint()
     var uvBuffer: GLuint = GLuint()
@@ -147,6 +151,8 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     var session : AVCaptureSession? = nil
     var textureCache : CVOpenGLESTextureCacheRef? = nil
     var videoTexture : CVOpenGLESTextureRef? = nil
+    
+    var scaleSlot : GLint = GLint()
     
     var pixelBuffer : CVImageBuffer? = nil
     
@@ -207,6 +213,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.setupSmallTexture()
 
         self.compileShaders()
+        self.compileBlurShaders()
 
         self.setupTextureCache()
 
@@ -489,7 +496,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         let fragmentShader: GLuint = self.compileShader("TextureFragment", shaderType: GLenum(GL_FRAGMENT_SHADER))
         
         // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
-        let programHandle: GLuint = glCreateProgram()
+        self.programHandle = glCreateProgram()
         glAttachShader(programHandle, vertexShader)
         glAttachShader(programHandle, fragmentShader)
         glLinkProgram(programHandle)
@@ -505,7 +512,11 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             print(String.fromCString(&infolog))
             exit(1);
         }
-        
+
+        activateStandardShader()
+    }
+    
+    func activateStandardShader() {
         // Call glUseProgram to tell OpenGL to actually use this program when given vertex info.
         glUseProgram(programHandle)
         
@@ -515,12 +526,107 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.uvSlot = GLuint(glGetAttribLocation(programHandle, "TexSource"))
         glEnableVertexAttribArray(self.positionSlot)
         glEnableVertexAttribArray(self.uvSlot)
-
-        
         
         self.textureSlot = GLint(glGetUniformLocation(programHandle, "TextureSampler"));
         //Attach uniform in textureSlot to TEXTURE0
         glUniform1i(self.textureSlot, 0);
+    }
+    
+    func compileBlurShaders() {
+        
+        // Compile our vertex and fragment shaders.
+        let gaussianHorizontalVertexShader: GLuint = self.compileShader("GaussianHorizontalVertex", shaderType: GLenum(GL_VERTEX_SHADER))
+        let gaussianVerticalVertexShader: GLuint = self.compileShader("GaussianVerticalVertex", shaderType: GLenum(GL_VERTEX_SHADER))
+        let gaussianFragment: GLuint = self.compileShader("GaussianFragment", shaderType: GLenum(GL_FRAGMENT_SHADER))
+        
+        // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
+        gaussianHorizontalProgramHandle = glCreateProgram()
+        glAttachShader(gaussianHorizontalProgramHandle, gaussianHorizontalVertexShader)
+        glAttachShader(gaussianHorizontalProgramHandle, gaussianFragment)
+        glLinkProgram(gaussianHorizontalProgramHandle)
+        
+        // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
+        gaussianVerticalProgramHandle = glCreateProgram()
+        glAttachShader(gaussianVerticalProgramHandle, gaussianVerticalVertexShader)
+        glAttachShader(gaussianVerticalProgramHandle, gaussianFragment)
+        glLinkProgram(gaussianVerticalProgramHandle)
+        
+        // Check for any errors.
+        var linkSuccess: GLint = GLint()
+        glGetProgramiv(gaussianHorizontalProgramHandle, GLenum(GL_LINK_STATUS), &linkSuccess)
+        if (linkSuccess == GL_FALSE) {
+            print("Failed to create Gaussian Horizontal shader program!")
+            var infolog = [GLchar](count: 100, repeatedValue: 0)
+            var length : GLsizei = GLsizei()
+            glGetProgramInfoLog(gaussianHorizontalProgramHandle, 100, &length, &infolog)
+            print(String.fromCString(&infolog))
+            exit(1);
+        }
+        
+        // Call glCreateProgram, glAttachShader, and glLinkProgram to link the vertex and fragment shaders into a complete program.
+        gaussianVerticalProgramHandle = glCreateProgram()
+        glAttachShader(gaussianVerticalProgramHandle, gaussianHorizontalVertexShader)
+        glAttachShader(gaussianVerticalProgramHandle, gaussianFragment)
+        glLinkProgram(gaussianVerticalProgramHandle)
+        
+        // Check for any errors.
+        linkSuccess = GLint()
+        glGetProgramiv(gaussianVerticalProgramHandle, GLenum(GL_LINK_STATUS), &linkSuccess)
+        if (linkSuccess == GL_FALSE) {
+            print("Failed to create Gaussian Vertical shader program!")
+            var infolog = [GLchar](count: 100, repeatedValue: 0)
+            var length : GLsizei = GLsizei()
+            glGetProgramInfoLog(gaussianVerticalProgramHandle, 100, &length, &infolog)
+            print(String.fromCString(&infolog))
+            exit(1);
+        }
+        
+    }
+    
+    func activateHorizontalBlurShader() {
+        // Call glUseProgram to tell OpenGL to actually use this program when given vertex info.
+        glUseProgram(gaussianHorizontalProgramHandle)
+        
+        // Finally, call glGetAttribLocation to get a pointer to the input values for the vertex shader, so we
+        //  can set them in code. Also call glEnableVertexAttribArray to enable use of these arrays (they are disabled by default).
+        self.positionSlot = GLuint(glGetAttribLocation(gaussianHorizontalProgramHandle, "Position"))
+        self.uvSlot = GLuint(glGetAttribLocation(gaussianHorizontalProgramHandle, "TexSource"))
+        glEnableVertexAttribArray(self.positionSlot)
+        glEnableVertexAttribArray(self.uvSlot)
+        
+        self.scaleSlot = GLint(glGetUniformLocation(gaussianHorizontalProgramHandle, "Scale"));
+        setScaleInShader(gaussianHorizontalProgramHandle, toValue: 0.1)
+        
+        self.textureSlot = GLint(glGetUniformLocation(gaussianHorizontalProgramHandle, "TextureSampler"));
+        //Attach uniform in textureSlot to TEXTURE0
+        glUniform1i(self.textureSlot, 0);
+    }
+    
+    func activateVerticalBlurShader() {
+        // Call glUseProgram to tell OpenGL to actually use this program when given vertex info.
+        glUseProgram(gaussianVerticalProgramHandle)
+        
+        // Finally, call glGetAttribLocation to get a pointer to the input values for the vertex shader, so we
+        //  can set them in code. Also call glEnableVertexAttribArray to enable use of these arrays (they are disabled by default).
+        self.positionSlot = GLuint(glGetAttribLocation(gaussianVerticalProgramHandle, "Position"))
+        self.uvSlot = GLuint(glGetAttribLocation(gaussianVerticalProgramHandle, "TexSource"))
+        glEnableVertexAttribArray(self.positionSlot)
+        glEnableVertexAttribArray(self.uvSlot)
+        
+        self.scaleSlot = GLint(glGetUniformLocation(gaussianVerticalProgramHandle, "Scale"));
+        setScaleInShader(gaussianVerticalProgramHandle, toValue: 1)
+        
+        self.textureSlot = GLint(glGetUniformLocation(gaussianVerticalProgramHandle, "TextureSampler"));
+        //Attach uniform in textureSlot to TEXTURE0
+        glUniform1i(self.textureSlot, 0);
+    }
+    
+    func setScaleInShader(shader : GLuint, toValue v : Float32) {
+        let loc : GLint = glGetUniformLocation(shader, "Scale");
+        if (loc != -1)
+        {
+            glUniform1f(loc, v);
+        }
     }
     
     // Setup Vertex Buffer Objects
@@ -751,31 +857,6 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
             let z = GLfloat(0)
             glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
         }
-        
-        
-//        var mean_x = 0.0
-//        var mean_y = 0.0
-//        for pidx in edges.count..<vertices.count {
-//            let point = vertices[pidx]
-//            mean_x += Double(point.x)
-//            mean_y += Double(point.y)
-//        }
-//        mean_x /= (67.0 * 1280)
-//        mean_y /= (67.0 * 720)
-//        for pidx in edges.count..<vertices.count {
-//            let point = vertices[pidx]
-//            let xn = GLfloat(point.x) / 1280.0
-//            let yn = GLfloat(point.y) / 720.0
-//            let u = GLfloat(xn)
-//            let v = GLfloat(1 - yn)
-//            var x = GLfloat(2 * xn - 1)
-//            x = (x - GLfloat(mean_x)) * 1.07 + GLfloat(mean_x)
-//            var y = GLfloat(2 * yn - 1)
-//            y = (y - GLfloat(mean_y)) * 1.07 + GLfloat(mean_y)
-//            let z = GLfloat(0)
-//            glvertices.append(Coordinate(xyz: (x, y, z), uv: (u, v)))
-//        }
-        
         return (glindices, glvertices)
     }
 
@@ -829,6 +910,7 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func renderRenderTextureToScreen() {
         glBindVertexArrayOES(VAO)
+        
         glViewport(0, 0, GLint(self.frame.size.width * self.contentScaleFactor) , GLint(self.frame.size.height * self.contentScaleFactor));
         glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
         glBindTexture(CVOpenGLESTextureGetTarget(renderTex!), CVOpenGLESTextureGetName(renderTex!))
@@ -836,17 +918,20 @@ class OpenGLView: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
         glBindVertexArrayOES(0)
     }
     func render() {
+        activateStandardShader()
+        
         renderWholeImageToSmallTexture()
         renderWholeImageToFlipTexture()
-//        findFacesInImage()
-//        findLandmarksInFaces()
         
         renderWholeImageToRenderTexture()
         
         findFaces()
         setFaceVertices()
+        activateHorizontalBlurShader()
+        setScaleInShader(gaussianHorizontalProgramHandle, toValue: 1)
         renderFaceToRenderTexture()
 
+        activateStandardShader()
         renderRenderTextureToScreen()
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }

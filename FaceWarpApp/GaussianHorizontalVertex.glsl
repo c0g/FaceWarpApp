@@ -1,28 +1,29 @@
 /* Gaussian Horizontal*/
-uniform float scale;
+uniform float Scale;
 
-attribute vec4 a_position;
-attribute vec2 a_texCoord;
+attribute vec4 Position;
+attribute vec2 TexSource;
 
-varying vec2 v_texCoord;
-varying vec2 v_blurTexCoords[14];
+varying vec2 UV;
+
+varying vec2 v_blurTexCoords[4];
 
 void main()
 {
-    gl_Position = a_position;
-    v_texCoord = a_texCoord;
-    v_blurTexCoords[ 0] = v_texCoord + vec2(-0.028 * scale, 0.0);
-    v_blurTexCoords[ 1] = v_texCoord + vec2(-0.024 * scale, 0.0);
-    v_blurTexCoords[ 2] = v_texCoord + vec2(-0.020 * scale, 0.0);
-    v_blurTexCoords[ 3] = v_texCoord + vec2(-0.016 * scale, 0.0);
-    v_blurTexCoords[ 4] = v_texCoord + vec2(-0.012 * scale, 0.0);
-    v_blurTexCoords[ 5] = v_texCoord + vec2(-0.008 * scale, 0.0);
-    v_blurTexCoords[ 6] = v_texCoord + vec2(-0.004 * scale, 0.0);
-    v_blurTexCoords[ 7] = v_texCoord + vec2( 0.004 * scale, 0.0);
-    v_blurTexCoords[ 8] = v_texCoord + vec2( 0.008 * scale, 0.0);
-    v_blurTexCoords[ 9] = v_texCoord + vec2( 0.012 * scale, 0.0);
-    v_blurTexCoords[10] = v_texCoord + vec2( 0.016 * scale, 0.0);
-    v_blurTexCoords[11] = v_texCoord + vec2( 0.020 * scale, 0.0);
-    v_blurTexCoords[12] = v_texCoord + vec2( 0.024 * scale, 0.0);
-    v_blurTexCoords[13] = v_texCoord + vec2( 0.028 * scale, 0.0);
+    gl_Position = Position;
+    UV = TexSource;
+    v_blurTexCoords[ 0] = UV + vec2(-0.028 * Scale, 0.0);
+    v_blurTexCoords[ 1] = UV + vec2(-0.024 * Scale, 0.0);
+    v_blurTexCoords[ 2] = UV + vec2(-0.020 * Scale, 0.0);
+    v_blurTexCoords[ 3] = UV + vec2(-0.016 * Scale, 0.0);
+//    v_blurTexCoords[ 4] = UV + vec2(-0.012 * Scale, 0.0);
+//    v_blurTexCoords[ 5] = UV + vec2(-0.008 * Scale, 0.0);
+//    v_blurTexCoords[ 6] = UV + vec2(-0.004 * Scale, 0.0);
+//    v_blurTexCoords[ 7] = UV + vec2( 0.004 * Scale, 0.0);
+//    v_blurTexCoords[ 8] = UV + vec2( 0.008 * Scale, 0.0);
+//    v_blurTexCoords[ 9] = UV + vec2( 0.012 * Scale, 0.0);
+//    v_blurTexCoords[10] = UV + vec2( 0.016 * Scale, 0.0);
+//    v_blurTexCoords[11] = UV + vec2( 0.020 * Scale, 0.0);
+//    v_blurTexCoords[12] = UV + vec2( 0.024 * Scale, 0.0);
+//    v_blurTexCoords[13] = UV + vec2( 0.028 * Scale, 0.0);
 }

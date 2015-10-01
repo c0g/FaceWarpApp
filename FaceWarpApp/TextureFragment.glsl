@@ -1,5 +1,5 @@
 // Interpolated values from the vertex shaders
-varying highp vec2 UV;
+varying lowp vec2 UV;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D TextureSampler;
