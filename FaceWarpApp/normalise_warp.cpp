@@ -142,7 +142,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     {
         std::cout << e.what() << std::endl;
     };
-    std::cout << "started with " << startAngle[0] << " ended with " << angle << std::endl;
+//    std::cout << "started with " << startAngle[0] << " ended with " << angle << std::endl;
     angle = (angle + startAngle[0]) / 2;
     startAngle[0] = angle;
 //    dlib::matrix<double> 
@@ -516,6 +516,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     const double mouth_scaling_x = 0.8;
     const double mouth_scaling_y = 1;
     
+    const double nose_scaling_x = 0.75;
+    const double nose_scaling_y = 0.85;
+    
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
@@ -604,6 +607,22 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2)) = dlib_mouth_inner;
     
+    //
+    dlib::matrix<long> dlib_nose_range(1,nose_dlib_edge.size());
+    for (int i = 0; i < nose_dlib_edge.size(); i++ )
+    {
+        dlib_nose_range(0,i) = (long)nose_dlib_edge[i];
+    }
+    dlib::matrix<double> dlib_nose = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2));
+    
+    double dlib_nose_mean[2];
+    dlib_nose_mean[0] = dlib_nose(2,0);
+    dlib_nose_mean[1] = dlib_nose(2,1);
+    
+    dlib::set_colm(dlib_nose,0) = ((dlib::colm(dlib_nose,0) - dlib_nose_mean[0]) * nose_scaling_x) + dlib_nose_mean[0];
+    dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_scaling_y) + dlib_nose_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
     //
     
     dlib::matrix<double,68,3> tmp = flattened_2d_landmarks_full_rotated * rotation_matrix;
