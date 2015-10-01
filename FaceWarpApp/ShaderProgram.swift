@@ -88,7 +88,6 @@ class ShaderProgram {
             print(String.fromCString(&infolog))
             throw ShaderError.COMPILE_ERROR
         }
-        
         return shaderHandle
     }
 }

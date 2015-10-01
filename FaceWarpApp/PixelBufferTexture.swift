@@ -10,6 +10,7 @@
 
 import Foundation
 import CoreVideo
+import CoreMedia
 
 enum LockError: ErrorType {
     case LOCK
@@ -18,6 +19,10 @@ enum LockError: ErrorType {
 class PixelBufferTexture {
     var pixelBuffer : CVPixelBufferRef? = nil
     var textureRef : CVOpenGLESTextureRef? = nil
+    
+    init?(fromSampleBuffer sampleBuffer : CMSampleBuffer) {
+        
+    }
     
     init?(WithSize size : CGSize, andEAGLContext context : CVEAGLContext) {
         
@@ -101,4 +106,12 @@ class PixelBufferTexture {
     }
 
     
+}
+
+func uiImageFromPixelBuffer(pixelBuffer: CVPixelBufferRef) -> UIImage {
+    let ciImage = CIImage(CVPixelBuffer: pixelBuffer)
+    let temporaryContext = CIContext()
+    let cgImage = temporaryContext.createCGImage(ciImage, fromRect: CGRectMake(0, 0, CGFloat(CVPixelBufferGetWidth(pixelBuffer)), CGFloat(CVPixelBufferGetHeight(pixelBuffer))))
+    let uiImage = UIImage(CGImage: cgImage)
+    return uiImage
 }

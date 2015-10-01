@@ -38,6 +38,7 @@
 		E28E56361BBD26CF00358D16 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56351BBD26CF00358D16 /* Texture.swift */; settings = {ASSET_TAGS = (); }; };
 		E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56371BBD279600358D16 /* PixelBufferTexture.swift */; settings = {ASSET_TAGS = (); }; };
 		E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56391BBD324700358D16 /* ShaderProgram.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56471BBD7A1100358D16 /* Renderer.swift */; settings = {ASSET_TAGS = (); }; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
@@ -128,6 +129,7 @@
 		E28E56351BBD26CF00358D16 /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 		E28E56371BBD279600358D16 /* PixelBufferTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelBufferTexture.swift; sourceTree = "<group>"; };
 		E28E56391BBD324700358D16 /* ShaderProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderProgram.swift; sourceTree = "<group>"; };
+		E28E56471BBD7A1100358D16 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				E28E56351BBD26CF00358D16 /* Texture.swift */,
 				E28E56371BBD279600358D16 /* PixelBufferTexture.swift */,
 				E28E56391BBD324700358D16 /* ShaderProgram.swift */,
+				E28E56471BBD7A1100358D16 /* Renderer.swift */,
 			);
 			name = OpenGL;
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
 				E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */,
 				E28E562E1BBD247700358D16 /* VertexManager.swift in Sources */,
+				E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */,
 				5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */,
 				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
 				E28E56341BBD254900358D16 /* CaptureManager.swift in Sources */,

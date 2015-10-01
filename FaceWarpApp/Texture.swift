@@ -18,12 +18,6 @@ class Texture {
         target = 0
     }
     
-    init(withName _name: GLuint, andTarget _target: GLuint) {
-        // We already have a texture, just want to wrap it
-        name = _name;
-        target = _target;
-    }
-    
     func attachToTextureUnit() {
         
     }
