@@ -28,6 +28,7 @@ class Warper {
         case .PRETTY:
             return doAttractiveWarp(landmarks, initParam: &face_log[idx].parameters)
         case .PRETTY2:
+            print("Calling attractive warp 2")
             return doAttractiveWarp2(landmarks, initParam: &face_log[idx].parameters)
         case .SILLY:
             return doSillyWarp(landmarks, initParam: &face_log[idx].parameters)
@@ -82,6 +83,7 @@ class Warper {
     }
     
     func doAttractiveWarp2( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> [PhiPoint]{
+        print("Really calling attractive warp 2")
         let ans = attractive_adjusted_warp2(&landmarks, &initParam);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
