@@ -67,13 +67,15 @@ class VertexManager {
     var passUVBuffer : GLuint = GLuint()
     var passIndexBuffer : GLuint = GLuint()
     
+    var preprocessPositionBuffer : GLuint = GLuint()
+    var preprocessUVBuffer : GLuint = GLuint()
+    var preprocessIndexBuffer : GLuint = GLuint()
     
     func setupPassVBO() {
         glGenVertexArraysOES(1, &passAO);
         glGenBuffers(1, &passPositionBuffer)
         glGenBuffers(1, &passIndexBuffer)
         glGenBuffers(1, &passUVBuffer)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
     }
     
     func fillPassVBO(forFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) {
@@ -87,6 +89,9 @@ class VertexManager {
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), passUVBuffer)
         glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.size(), vertices, GLenum(GL_STATIC_DRAW))
         
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), passIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), squareIndices.size(), squareIndices, GLenum(GL_STATIC_DRAW))
+        
         glBindVertexArrayOES(0)
     }
     
@@ -98,10 +103,7 @@ class VertexManager {
         
         glEnableVertexAttribArray(uvSlot)
         glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
-        
-        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), passIndexBuffer)
-        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), squareIndices.size(), squareIndices, GLenum(GL_STATIC_DRAW))
-        
+
         return (GLint(squareIndices.count), GLenum(GL_UNSIGNED_BYTE))
     }
 

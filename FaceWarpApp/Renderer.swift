@@ -63,7 +63,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     var vertexManager : VertexManager?
     let faceDetector : FaceFinder = FaceFinder()
     
-    var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
+    var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
+    var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
         context = c
@@ -72,14 +73,10 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
-        
-        
-        
         setupPassThrough()
     }
     
     func setupPassThrough() {
-        shaderManager!.activatePassThroughShader()
         vertexManager!.setupPassVBO()
     }
     
@@ -94,9 +91,11 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func passThroughRender() {
-        let (xyzloc, uvloc, _) = shaderManager!.activatePassThroughShader()
+        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
 
         switch orientation {
+        case pastOrientation:
+            break
         case .LandscapeLeft:
             vertexManager!.fillPassVBO(forFlip: .VERTICAL, andRotate90: false)
         case .LandscapeRight:
@@ -110,7 +109,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         
-        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzloc, andUVSlot: uvloc)
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        textureManager!.bindVideoTextureToSlot(textureSlot)
         setFullViewport()
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
     }
@@ -135,6 +135,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func render() {
+        pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
         passThroughRender()
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))

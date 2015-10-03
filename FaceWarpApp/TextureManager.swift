@@ -86,10 +86,12 @@ class TextureManager {
             CVOpenGLESTextureGetTarget(videoTexture!),
             CVOpenGLESTextureGetName(videoTexture!)
         )
+        glActiveTexture(0)
     }
     
     func bindVideoTextureToSlot(textureSlot: GLint) {
-        glUniform1i(textureSlot, GL_TEXTURE0)
+//        glActiveTexture(GLenum(GL_TEXTURE0))
+        glUniform1i(textureSlot, 0)
     }
     
     func saveVideoTexture() {
