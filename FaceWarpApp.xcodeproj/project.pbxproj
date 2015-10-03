@@ -301,7 +301,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = S559Q4PGN4;
+						DevelopmentTeam = 2WHKXWB6SD;
 					};
 				};
 			};
@@ -522,7 +522,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				GCC_FAST_MATH = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
@@ -561,7 +561,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				GCC_FAST_MATH = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,

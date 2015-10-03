@@ -208,7 +208,7 @@
 /*   recommend double precision unless you want to generate a mesh for which */
 /*   you do not have enough memory.                                          */
 
-/* #define SINGLE */
+#define SINGLE
 
 #ifdef SINGLE
 #define REAL float
@@ -12521,12 +12521,15 @@ char *polyfilename;
       if ((end1 < b->firstnumber) ||
           (end1 >= b->firstnumber + m->invertices)) {
         if (!b->quiet) {
+            
+            printf("fuckity tficckt: %d \n", b->firstnumber + m->invertices);
           printf("Warning:  Invalid first endpoint of segment %d in %s.\n",
                  b->firstnumber + i, polyfilename);
         }
       } else if ((end2 < b->firstnumber) ||
                  (end2 >= b->firstnumber + m->invertices)) {
         if (!b->quiet) {
+            printf("fuckity tficckt: %d \n", b->firstnumber + m->invertices);
           printf("Warning:  Invalid second endpoint of segment %d in %s.\n",
                  b->firstnumber + i, polyfilename);
         }

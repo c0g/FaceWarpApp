@@ -97,7 +97,7 @@ struct tracker_rect {
                                         cvMat.rows,                                 //height
                                         8,                                          //bits per component
                                         8 * cvMat.elemSize(),                       //bits per pixel
-                                        cvMat.step[0],                            //bytesPerRow
+                                        cvMat.step[0],                              //bytesPerRow
                                         colorSpace,                                 //colorspace
                                         kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
                                         provider,                                   //CGDataProviderRef
