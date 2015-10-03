@@ -26,8 +26,9 @@ class TextureManager {
     var videoTexture : CVOpenGLESTextureRef? = nil
     var videoPixelBuffer : CVPixelBufferRef? = nil
     
-    // References to Rotated render and textures (re-draw camera output here)
-    
+    // References to Rotated render and textures - re-draw camera output here - live inside TEXTURE1
+    var uprightTexture : CVOpenGLESTextureRef? = nil
+    var uprightPixelBuffer : CVPixelBufferRef? = nil
     
     // References to textures
     var rotatedTexture : Texture? = nil // Re-draw the input into this texture. Used as the source for other draw calls, and for dlib face point localisation.
@@ -48,7 +49,7 @@ class TextureManager {
             return nil
         }
         
-        setupOutputBuffers()
+        setupScreen()
     }
     
     
@@ -91,8 +92,12 @@ class TextureManager {
         glUniform1i(textureSlot, GL_TEXTURE0)
     }
     
+    func saveVideoTexture() {
+        savePixelBuffer(videoPixelBuffer!)
+    }
+    
     // MARK: output buffers for iOS
-    func setupOutputBuffers() {
+    func setupScreen() {
         glGenRenderbuffers(1, &outputRenderBuffer)
         glBindRenderbuffer(GLenum(GL_RENDERBUFFER), outputRenderBuffer)
         context.renderbufferStorage(Int(GL_RENDERBUFFER), fromDrawable:self.layer)
@@ -100,66 +105,84 @@ class TextureManager {
         glBindFramebuffer(GLenum(GL_FRAMEBUFFER), outputFrameBuffer);
         glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), outputRenderBuffer)
     }
-    func bindOutputBuffer() {
+    func bindScreen() {
         glBindFramebuffer(GLenum(GL_FRAMEBUFFER), outputFrameBuffer);
         glViewport(0,0, GLsizei(size.width * self.layer.contentsScale), GLsizei(size.height * self.layer.contentsScale));
+    }
+    
+    // MARK: generate buffer for flipped textures
+    func makeUprightPixelBufferWidthWidth(width : Int, andHeight height : Int) {
+        let size = CGSizeMake(CGFloat(width), CGFloat(height))
+        glActiveTexture(GLenum(GL_TEXTURE1))
+        generatePixelBuffer(&uprightPixelBuffer, andTexture: &uprightTexture, withSize: size)
+        glBindTexture(CVOpenGLESTextureGetTarget(uprightTexture!), CVOpenGLESTextureGetName(uprightTexture!))
+    }
+    
+    func bindUprightTextureAsOutput() {
+        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(uprightTexture!), 0);
+        glViewport(0, 0, GLsizei(CVPixelBufferGetWidth(uprightPixelBuffer!)), GLsizei(CVPixelBufferGetHeight(uprightPixelBuffer!)));
+    }
+    
+    func bindUprightTextureToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, GL_TEXTURE1)
+    }
+    
+    func generatePixelBuffer(inout buffer : CVPixelBufferRef?, inout andTexture texture : CVOpenGLESTextureRef?, withSize size : CGSize) {
+        let options = [
+            kCVPixelBufferCGImageCompatibilityKey as String: false,
+            kCVPixelBufferCGBitmapContextCompatibilityKey as String: false,
+            kCVPixelFormatOpenGLESCompatibility as String: true,
+            kCVPixelBufferIOSurfacePropertiesKey as String: [NSObject: NSObject]()
+        ]
+    
+        let height = size.height
+        let width = size.width
+        
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(height), Int(width), kCVPixelFormatType_32BGRA, options, &buffer)
+        if status != kCVReturnSuccess {
+            print("Pixel buffer with image failed creating CVPixelBuffer with error \(status)")
+            exit(1)
+        }
+        guard let _ = uprightPixelBuffer else {
+            print("Pixel buffer did not allocate")
+            exit(1)
+        }
+        let res = CVOpenGLESTextureCacheCreateTextureFromImage(
+            kCFAllocatorDefault,
+            textureCache!,
+            buffer!,
+            nil,
+            GLenum(GL_TEXTURE_2D),
+            GLint(GL_RGBA),
+            GLsizei(height),
+            GLsizei(width),
+            GLenum(GL_BGRA),
+            GLenum(GL_UNSIGNED_BYTE),
+            0,
+            &texture)
+        guard res == kCVReturnSuccess else {
+            print("Create texture from image failed with code \(res)")
+            exit(1)
+        }
+    }
+    
+    
+    // MARK: Save a given pixel buffer to camera roll
+    func savePixelBuffer(pb : CVPixelBufferRef) {
+        let ciImage = CIImage(CVPixelBuffer: pb)
+        let tmpContext = CIContext()
+        let width = CGFloat(CVPixelBufferGetWidth(pb))
+        let height = CGFloat(CVPixelBufferGetHeight(pb))
+        let videoImage = tmpContext.createCGImage(ciImage, fromRect: CGRectMake(0, 0, width, height))
+        let uiImage = UIImage(CGImage: videoImage)
+        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
     }
     
 }
 
 
 
-//
-//
-//func setupRenderTexture() {
-//    let options = [
-//        kCVPixelBufferCGImageCompatibilityKey as String: false,
-//        kCVPixelBufferCGBitmapContextCompatibilityKey as String: false,
-//        kCVPixelFormatOpenGLESCompatibility as String: true,
-//        kCVPixelBufferIOSurfacePropertiesKey as String: [NSObject: NSObject]()
-//    ]
-//    
-//    let height = UIScreen.mainScreen().bounds.height * self.contentScaleFactor
-//    let width = UIScreen.mainScreen().bounds.width * self.contentScaleFactor
-//    
-//    let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(height), Int(width), kCVPixelFormatType_32BGRA, options, &renderPB)
-//    if status != kCVReturnSuccess {
-//        print("Pixel buffer with image failed creating CVPixelBuffer with error \(status)")
-//        exit(1)
-//    }
-//    guard let _ = renderPB else {
-//        print("Pixel buffer did not allocate")
-//        exit(1)
-//    }
-//    
-//    var texCacheRef : CVOpenGLESTextureCacheRef?
-//    let cacheStatus = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, nil, self.context, nil, &texCacheRef)
-//    if cacheStatus != kCVReturnSuccess {
-//        print("Creating texture cache failed with error \(cacheStatus)")
-//        exit(1)
-//    }
-//    
-//    let res = CVOpenGLESTextureCacheCreateTextureFromImage(
-//        kCFAllocatorDefault,
-//        texCacheRef!,
-//        renderPB!,
-//        nil,
-//        GLenum(GL_TEXTURE_2D),
-//        GLint(GL_RGBA),
-//        GLsizei(height),
-//        GLsizei(width),
-//        GLenum(GL_BGRA),
-//        GLenum(GL_UNSIGNED_BYTE),
-//        0,
-//        &renderTex)
-//    guard res == kCVReturnSuccess else {
-//        print("Create texture from image failed with code \(res)")
-//        exit(1)
-//    }
-//    
-//    renderTexName = CVOpenGLESTextureGetName(renderTex!)
-//    glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
-//}
+
 //
 //func setupFlipTexture() {
 //    let options = [

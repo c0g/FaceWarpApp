@@ -51,6 +51,11 @@ enum ImgFlip {
     case NONE, HORIZONTAL, VERTICAL, BOTH
 }
 
+let squareIndices: [GLubyte] = [
+    1, 2, 0,
+    0, 2, 3,
+]
+
 class VertexManager {
     
     var preprocessAO : GLuint = GLuint()  // Used to rotate the input video to the correct orientation for dlib
@@ -62,39 +67,78 @@ class VertexManager {
     var passUVBuffer : GLuint = GLuint()
     var passIndexBuffer : GLuint = GLuint()
     
+    var preprocessPositionBuffer : GLuint = GLuint()
+    var preprocessUVBuffer : GLuint = GLuint()
+    var preprocessIndexBuffer : GLuint = GLuint()
     
-    func setupPassVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint ) -> ([Coordinate],[GLubyte]) {
-        let (vertices, indices) = makeSquareVertices(withFlip: .HORIZONTAL, andRotate90: true)
-        
+    
+    func setupPassVBO() {
         glGenVertexArraysOES(1, &passAO);
         glBindVertexArrayOES(passAO);
         
         glGenBuffers(1, &passPositionBuffer)
+        glGenBuffers(1, &passIndexBuffer)
+        glGenBuffers(1, &passUVBuffer)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+        let vertices = makeSquareVertices()
+
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), passPositionBuffer)
         glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.size(), vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), passUVBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.size(), vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), passIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), squareIndices.size(), squareIndices, GLenum(GL_STATIC_DRAW))
+        
+        glBindVertexArrayOES(0)
+    }
+    func bindPassVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint) -> (GLint, GLenum) {
+        glBindVertexArrayOES(passAO);
         
         glEnableVertexAttribArray(positionSlot)
         glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
         
-        glGenBuffers(1, &passUVBuffer)
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), passUVBuffer)
+        glEnableVertexAttribArray(uvSlot)
+        glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
+        
+        return (GLint(squareIndices.count), GLenum(GL_UNSIGNED_BYTE))
+    }
+    
+    func setupPreprocessVBO() {
+        glGenVertexArraysOES(1, &preprocessAO);
+        glBindVertexArrayOES(preprocessAO);
+        glGenBuffers(1, &preprocessPositionBuffer)
+        glGenBuffers(1, &preprocessIndexBuffer)
+        glGenBuffers(1, &preprocessUVBuffer)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    func fillPreprocessVBO(forFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) {
+        let vertices = makeSquareVertices(withFlip: flip, andRotate90: rotate)
+        
+        glBindVertexArrayOES(preprocessAO);
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), preprocessPositionBuffer)
         glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.size(), vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), preprocessUVBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.size(), vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), passIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), squareIndices.size(), squareIndices, GLenum(GL_STATIC_DRAW))
+        
+        glBindVertexArrayOES(0)
+    }
+    func bindPreprocessVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint) -> (GLint, GLenum) {
+        glBindVertexArrayOES(preprocessAO);
+        
+        glEnableVertexAttribArray(positionSlot)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
         
         glEnableVertexAttribArray(uvSlot)
         glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
         
-        glGenBuffers(1, &passIndexBuffer)
-        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), passIndexBuffer)
-        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), indices.size(), indices, GLenum(GL_STATIC_DRAW))
-        
-        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
-        glBindVertexArrayOES(0)
-        return (vertices, indices)
-    }
-    
-    func bindPassVBO() -> (GLint, GLenum) {
-        glBindVertexArrayOES(passAO);
-        return (GLint(6), GLenum(GL_UNSIGNED_BYTE))
+        return (GLint(squareIndices.count), GLenum(GL_UNSIGNED_BYTE))
     }
 
     func UV(uv : (GLfloat, GLfloat), ForFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> (GLfloat, GLfloat) {
@@ -114,19 +158,14 @@ class VertexManager {
     
     
     
-    func makeSquareVertices(withFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> ([Coordinate],[GLubyte]) {
+    func makeSquareVertices(withFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> [Coordinate] {
         let vertices = [
             Coordinate(xyz : (-1, -1, 0), uv : UV((0, 0), ForFlip: flip, andRotate90: rotate)),
             Coordinate(xyz : (-1,  1, 0), uv : UV((0, 1), ForFlip: flip, andRotate90: rotate)),
             Coordinate(xyz : ( 1,  1, 0), uv : UV((1, 1), ForFlip: flip, andRotate90: rotate)),
             Coordinate(xyz : ( 1, -1, 0), uv : UV((1, 0), ForFlip: flip, andRotate90: rotate)),
         ]
-        
-        let indices: [GLubyte] = [
-            1, 2, 0,
-            0, 2, 3,
-        ]
-        return (vertices, indices)
+        return vertices
     }
     
     

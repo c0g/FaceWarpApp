@@ -64,6 +64,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
+    var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
         context = c
@@ -72,40 +73,86 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
-        setupPassThrough()
-    }
-    
-    func setupPassThrough() {
-        let (xyzloc, uvloc, _) = shaderManager!.activatePassThroughShader()
-        vertexManager!.setupPassVBO(withPositionSlot: xyzloc, andUVSlot: uvloc)
+        self.vertexManager?.setupPassVBO()
+        self.vertexManager?.setupPreprocessVBO()
+
     }
     
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef, fromConnection connection: AVCaptureConnection) {
         print("Capture output called!")
         textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
+        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
+        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
+        print("Video is \(width) x \(height)")
+        print("Layer claims to be \(self.layer.bounds.width * self.layer.contentsScale) x \(self.layer.bounds.height * self.layer.contentsScale)")
         render()
     }
     
-    func passThroughRender() {
-        shaderManager!.activatePassThroughShader()
-        let (num, type) = vertexManager!.bindPassVBO()
-        glViewport(0, 0, GLint(1000) , GLint(1000));
+    func videoToUpright() {
+        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
+        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
+        
+        switch orientation {
+        case .LandscapeLeft:
+            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+        case .LandscapeRight:
+            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+        case .Portrait:
+            vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: true)
+            textureManager!.makeUprightPixelBufferWidthWidth(height, andHeight: width)
+        case .PortraitUpsideDown:
+            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
+            textureManager!.makeUprightPixelBufferWidthWidth(height, andHeight: width)
+        case _:
+            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+        }
+        
+        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        
+        textureManager!.bindVideoTextureToSlot(textureSlot)
+        textureManager!.bindUprightTextureAsOutput()
+        
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
     }
     
-    func render() {
-        orientation = UIApplication.sharedApplication().statusBarOrientation
+    func uprightToScreen() {
+        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        textureManager!.bindUprightTextureToSlot(textureSlot)
+        textureManager!.bindScreen()
+        setFullViewport()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+    }
+    
+    func setFullViewport() {
+        
+        let width = GLsizei(self.layer.bounds.width * self.layer.contentsScale)
+        let height = GLsizei(self.layer.bounds.height * self.layer.contentsScale)
+        
         switch orientation {
-            case .Unknown: print("Unknown")
-            case .Portrait: print("Portrait")
-            case .PortraitUpsideDown: print("Portrait, upside down")
-            case .LandscapeLeft: print("Landscape, left")
-            case .LandscapeRight: print("Landscape, right")
+        case .LandscapeLeft:
+            glViewport(0, 0, width, height)
+        case .LandscapeRight:
+            glViewport(0, 0, width, height)
+        case .Portrait:
+            glViewport(0, 0, height, width)
+        case .PortraitUpsideDown:
+            glViewport(0, 0, height, width)
+        case _:
+            glViewport(0, 0, width, height)
         }
-        
-        passThroughRender()
+    }
+    
+    func render() {
+        pastOrientation = orientation
+        orientation = UIApplication.sharedApplication().statusBarOrientation
+        videoToUpright()
+        uprightToScreen()
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-        
     }
 }
 //

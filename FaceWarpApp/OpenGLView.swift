@@ -96,9 +96,17 @@ class OpenGLView: UIView  {
         }
         
         self.captureManager?.start()
+        
+        let singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("singleTap:"))
+        self.addGestureRecognizer(singleFingerTap)
     }
     
+    /* Gesture recogniser
+    ------------------------------------------*/
     
+    func singleTap(rec : UITapGestureRecognizer) {
+        self.renderer!.textureManager!.saveVideoTexture()
+    }
     
     
     /* Instance Methods
