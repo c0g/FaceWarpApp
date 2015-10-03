@@ -64,7 +64,6 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
-    var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Portrait
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
         context = c
@@ -73,9 +72,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
-        self.vertexManager?.setupPassVBO()
-        self.vertexManager?.setupPreprocessVBO()
-
+        
+        
+        
+        setupPassThrough()
+    }
+    
+    func setupPassThrough() {
+        shaderManager!.activatePassThroughShader()
+        vertexManager!.setupPassVBO()
     }
     
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef, fromConnection connection: AVCaptureConnection) {
@@ -88,42 +93,24 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         render()
     }
     
-    func videoToUpright() {
-        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
-        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
-        
+    func passThroughRender() {
+        let (xyzloc, uvloc, _) = shaderManager!.activatePassThroughShader()
+
         switch orientation {
         case .LandscapeLeft:
-            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+            vertexManager!.fillPassVBO(forFlip: .VERTICAL, andRotate90: false)
         case .LandscapeRight:
-            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: false)
         case .Portrait:
-            vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: true)
-            textureManager!.makeUprightPixelBufferWidthWidth(height, andHeight: width)
+            vertexManager!.fillPassVBO(forFlip: .HORIZONTAL, andRotate90: true)
         case .PortraitUpsideDown:
-            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
-            textureManager!.makeUprightPixelBufferWidthWidth(height, andHeight: width)
+            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: true)
         case _:
-            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWidthWidth(width, andHeight: height)
+            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: false)
         }
         
-        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-        let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
         
-        textureManager!.bindVideoTextureToSlot(textureSlot)
-        textureManager!.bindUprightTextureAsOutput()
-        
-        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
-    }
-    
-    func uprightToScreen() {
-        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
-        textureManager!.bindUprightTextureToSlot(textureSlot)
-        textureManager!.bindScreen()
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzloc, andUVSlot: uvloc)
         setFullViewport()
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
     }
@@ -148,10 +135,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func render() {
-        pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
-        videoToUpright()
-        uprightToScreen()
+        passThroughRender()
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
 }
