@@ -28,6 +28,7 @@ typealias TexturePosition = (GLfloat, GLfloat)
 struct Coordinate {
     var xyz : ImagePosition
     var uv : TexturePosition
+    var alpha : GLfloat
 }
 
 
@@ -84,6 +85,17 @@ class OpenGLView: UIView  {
         self.setupContext()
         
         let device = CaptureManager.devices()[1]
+        do {
+            try device.lockForConfiguration()
+            for f in device.formats as! [AVCaptureDeviceFormat] {
+                device.activeFormat = f
+            }
+            device.unlockForConfiguration()
+        } catch {
+            print("Could not set config")
+        }
+
+        
         self.captureManager = CaptureManager(withDevice: device)
         
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
@@ -98,6 +110,7 @@ class OpenGLView: UIView  {
         self.captureManager?.start()
         
         let singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("singleTap:"))
+        singleFingerTap.numberOfTapsRequired = 1
         self.addGestureRecognizer(singleFingerTap)
     }
     
@@ -105,9 +118,13 @@ class OpenGLView: UIView  {
     ------------------------------------------*/
     
     func singleTap(rec : UITapGestureRecognizer) {
-        self.renderer!.textureManager!.saveIntermediateTexture()
-        self.renderer!.textureManager!.saveSmallTexture()
+        self.renderer!.doFaceBlur = !(self.renderer!.doFaceBlur)
+        self.renderer!.scheduleSave()
     }
+//    
+//    func doubleTap(rec : UITapGestureRecognizer) {
+//        
+//    }
     
     
     /* Instance Methods

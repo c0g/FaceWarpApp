@@ -4,6 +4,7 @@ varying lowp vec2 v_blurTexCoords[14];
 
 // Interpolated values from the vertex shaders
 varying lowp vec2 UV;
+varying lowp float Alpha;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D TextureSampler;
@@ -26,4 +27,5 @@ void main()
     gl_FragColor += texture2D(TextureSampler, v_blurTexCoords[11])*0.0215963866053;
     gl_FragColor += texture2D(TextureSampler, v_blurTexCoords[12])*0.00895781211794;
     gl_FragColor += texture2D(TextureSampler, v_blurTexCoords[13])*0.0044299121055113265;
+    gl_FragColor.a = Alpha;
 }

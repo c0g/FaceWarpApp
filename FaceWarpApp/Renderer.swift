@@ -10,18 +10,6 @@ import Foundation
 import AVFoundation
 import CoreVideo
 
-var Vertices = [
-    Coordinate(xyz : (-1, -1, 0), uv : (0, 1)),
-    Coordinate(xyz : (-1,  1, 0), uv : (0, 0)),
-    Coordinate(xyz : ( 1,  1, 0), uv : (1, 0)),
-    Coordinate(xyz : ( 1, -1, 0), uv : (1, 1)),
-]
-
-var Indices: [GLubyte] = [
-    1, 2, 0,
-    0, 2, 3,
-]
-
 extension Array {
     func size () -> Int {
         if self.count > 0 {
@@ -55,13 +43,21 @@ extension Int {
 
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
+    
+    
     let context : EAGLContext
     let layer : CAEAGLLayer
+    
+    var doFaceBlur : Bool = true
+    var captureNext : Bool = false
     
     var textureManager : TextureManager?
     var shaderManager : ShaderManager?
     var vertexManager : VertexManager?
     let faceDetector : FaceFinder = FaceFinder()
+    let warper : Warper = Warper()
+    
+    let scale = 4 // how much we shrink small image by
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -73,18 +69,18 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
+        
     }
 
     func captureOutput(
-        captureOutput : AVCaptureOutput,
-        didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
-        fromConnection connection: AVCaptureConnection
-        ) {
+                    captureOutput : AVCaptureOutput,
+                    didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
+                    fromConnection connection: AVCaptureConnection) {
         textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
         render()
     }
     
-    func setupForOrientation() {
+    func setupForOrientation(withScale scale : Int = 2) {
         
         let vwidth = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
         let vheight = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
@@ -95,34 +91,49 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         case .LandscapeLeft:
             vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
             vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWithWidth(vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBufferWithWidth(vwidth, andHeight: vheight, andScale: 8)
+            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .LandscapeRight:
             vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
             vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWithWidth(vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBufferWithWidth(vwidth, andHeight: vheight, andScale: 8)
+            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .Portrait:
             vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
             vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWithWidth(vheight, andHeight: vwidth)
-            textureManager!.makeSmallerPixelBufferWithWidth(vheight, andHeight: vwidth, andScale: 8)
+            textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+            textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+            textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+            textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .PortraitUpsideDown:
             vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
             vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: true)
-            textureManager!.makeUprightPixelBufferWithWidth(vheight, andHeight: vwidth)
-            textureManager!.makeSmallerPixelBufferWithWidth(vheight, andHeight: vwidth, andScale: 8)
+            textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+            textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+            textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+            textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .Unknown:
             vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
             vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false)
-            textureManager!.makeUprightPixelBufferWithWidth(vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBufferWithWidth(vwidth, andHeight: vheight, andScale: 8)
+            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         }
     }
     
     func preprocessRender() {
-        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-        let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         textureManager!.bindVideoTextureToSlot(textureSlot)
         
         // Render real size, upright
@@ -135,15 +146,176 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         textureManager!.setViewPortForSmallerTexture()
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         
-        vertexManager!.unbindPreprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        vertexManager!.unbindPreprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
     
     func hblurRender() {
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateHBlurShader(withScale: 1.0)
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
+        textureManager!.bindSmallerTextureToSlot(textureSlot)
+        textureManager!.bindHBlurTextureAsOutput()
+        textureManager!.setViewPortForHBlurTexture()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
     }
     
+    func vblurRender() {
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateVBlurShader(withScale: 1.0)
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
+        textureManager!.bindHBlurTextureToSlot(textureSlot)
+        textureManager!.bindVBlurTextureAsOutput()
+        textureManager!.setViewPortForVBlurTexture()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+    }
+    
+    func blurRender() {
+        hblurRender()
+        vblurRender()
+    }
+    
+    func blurToOutput() {
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateVBlurShader(withScale: 1.0)
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        textureManager!.bindVBlurTextureToSlot(textureSlot)
+        textureManager!.bindOutputTextureAsOutput()
+        textureManager!.setViewPortForOutputTexture()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+    }
+    
+    func clearToOutput() {
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        textureManager!.bindUprightTextureToSlot(textureSlot)
+        textureManager!.bindOutputTextureAsOutput()
+        textureManager!.setViewPortForOutputTexture()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+    }
+    
+    func findFaces() {
+        // Functions return a 'tidyUp' closure which we call to release the pixel buffer
+        var facePoints : [[NSValue]] = []
+        let (bigCamImg, bigTidyUp) = textureManager!.uprightPixelBufferAsCamImg()
+        let (smallCamImg, smallTidyUp) = textureManager!.smallPixelBufferAsCamImg()
+        if let big = bigCamImg, let small = smallCamImg {
+            facePoints = faceDetector.facesPointsInBigImage(big, andSmallImage: small, withScale: Int32(scale)) as! [[NSValue]]
+        }
+        bigTidyUp()
+        smallTidyUp()
+        
+        let numFaces = facePoints.count
+        guard numFaces > 0 else {
+            return
+        }
+        
+        for pointArray in facePoints {
+            let uvPoints = pointArray.map {
+                return $0.PhiPointValue
+            }
+            let xyPoints = doWarp(uvPoints)
+            drawBlurFace(XY: xyPoints, UV: uvPoints)
+            drawClearFace(XY: xyPoints, UV: uvPoints)
+            drawRightEye(XY: xyPoints, UV: uvPoints)
+            drawLeftEye(XY: xyPoints, UV: uvPoints)
+            drawMouth(XY: xyPoints, UV: uvPoints)
+        }
+    }
+    
+    func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: 1.0, outFaceAlpha: 1.0, aroundEyesAlpha: 1.0, aroundMouthAlpha: 1.0)
+            vertexManager!.selectFacePart(FacePart.SKIN)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindVBlurTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            glDisable(GLenum(GL_BLEND))
+        }
+    }
+    
+    func drawClearFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: 0.6, outFaceAlpha: 1.0, aroundEyesAlpha: 0.9, aroundMouthAlpha: 0.9)
+            vertexManager!.selectFacePart(FacePart.SKIN)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            glDisable(GLenum(GL_BLEND))
+        }
+    }
+    
+    func drawMouth(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
+            vertexManager!.selectFacePart(FacePart.ALL_MOUTH)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        }
+    }
+    
+    func drawRightEye(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
+            vertexManager!.selectFacePart(FacePart.RIGHT_EYE)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        }
+    }
+    func drawLeftEye(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
+            vertexManager!.selectFacePart(FacePart.LEFT_EYE)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        }
+    }
+    
+    func doWarp(uv : [PhiPoint]) -> [PhiPoint] {
+        return warper.doWarp(uv, warp: WarpType.SILLY)
+    }
+    
+    func scheduleSave() {
+        captureNext = true
+    }
+    
     func renderToScreen() {
-        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
         
         textureManager!.bindScreen()
         
@@ -163,128 +335,28 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             glViewport(0, 0, GLsizei(width), GLsizei(height))
         }
         
-        let (num, type) = vertexManager!.bindPostprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
-        textureManager!.bindUprightTextureToSlot(textureSlot)
+        let (num, type) = vertexManager!.bindPostprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        textureManager!.bindOutputTextureToSlot(textureSlot)
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
-        vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
     func render() {
         glClear(GLenum(GL_COLOR_BUFFER_BIT))
         let _pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
-        
-        setupForOrientation()
-        
-        preprocessRender()
-        glFinish() // Rotated upright
-        hblurRender() // Render from small upright texture to hblurred texture
-        
+        setupForOrientation(withScale: scale)
+        preprocessRender() // Generates upright and small-upright images
+        blurRender() // Render from small upright texture to hblurred texture to vlburred to output texture
+        clearToOutput() // renders upright to output
+        findFaces() // Finds faces and renders them to output
         renderToScreen()
         pastOrientation = _pastOrientation
+        if captureNext {
+            captureNext = false
+            glFinish()
+            textureManager!.saveOutput()
+        }
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
+    
 }
-//
-//func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef, fromConnection connection: AVCaptureConnection) {
-//    dispatch_async(dispatch_get_main_queue()) {
-//        self.videoTexture = nil
-//        CVOpenGLESTextureCacheFlush(self.textureCache!, 0);
-//        
-//        self.pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-//        guard let _ = self.pixelBuffer else {
-//            print("Failed to get pixel buffer")
-//            exit(1)
-//        }
-//        
-//        let width = CVPixelBufferGetWidth(self.pixelBuffer!)
-//        let height = CVPixelBufferGetHeight(self.pixelBuffer!)
-//        
-//        glActiveTexture(GLenum(GL_TEXTURE0))
-//        
-//        let ret = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
-//            self.textureCache!,
-//            self.pixelBuffer!,
-//            nil,
-//            GLenum(GL_TEXTURE_2D),
-//            GLint(GL_RGBA),
-//            GLsizei(width),
-//            GLsizei(height),
-//            GLenum(GL_BGRA),
-//            GLenum(GL_UNSIGNED_BYTE),
-//            0,
-//            &self.videoTexture)
-//        if ret != kCVReturnSuccess {
-//            print("CVOpenGLESTextureCacheCreateTextureFromImage failed with code \(ret)")
-//            exit(1)
-//        }
-//        self.render()
-//    }
-//func renderWholeImageToRenderTexture() {
-//    glBindVertexArrayOES(VAO)
-//    glViewport(0, 0, GLint(CVPixelBufferGetWidth(renderPB!)), GLint(CVPixelBufferGetHeight(renderPB!)));
-//    glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
-//    glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
-//    glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
-//    glBindVertexArrayOES(0)
-//}
-//
-//func renderWholeImageToSmallTexture() {
-//    glBindVertexArrayOES(VAO)
-//    glViewport(0, 0, GLint(CVPixelBufferGetWidth(smallPixelBuffer!)), GLint(CVPixelBufferGetHeight(smallPixelBuffer!)));
-//    glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(smallTexture!), 0);
-//    glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
-//    glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
-//    glBindVertexArrayOES(0)
-//}
-//
-//func renderWholeImageToFlipTexture() {
-//    glBindVertexArrayOES(VAO)
-//    glViewport(0, 0, GLint(CVPixelBufferGetWidth(flipPixelBuffer!)), GLint(CVPixelBufferGetHeight(flipPixelBuffer!)));
-//    glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(flipTexture!), 0);
-//    glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
-//    glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
-//    glBindVertexArrayOES(0)
-//}
-//
-//func renderFaceToRenderTexture() {
-//    glBindVertexArrayOES(VFaceAO)
-//    if faceVertices.count > 0 {
-//        
-//        //            print("Rendering \(faceVertices.count) face vertices and \(currentIndices.count) indices")
-//        glViewport(0, 0, GLint(CVPixelBufferGetWidth(renderPB!)), GLint(CVPixelBufferGetHeight(renderPB!)));
-//        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(renderTex!), 0);
-//        
-//        glBindTexture(CVOpenGLESTextureGetTarget(videoTexture!), CVOpenGLESTextureGetName(videoTexture!))
-//        glClear(GLenum(GL_COLOR_BUFFER_BIT))
-//        glDrawElements(GLenum(GL_TRIANGLES), GLsizei(currentIndices.count), GLenum(GL_UNSIGNED_SHORT), nil)
-//    }
-//    glBindVertexArrayOES(0)
-//}
-//
-//func renderRenderTextureToScreen() {
-//    glBindVertexArrayOES(VAO)
-//    
-//    glViewport(0, 0, GLint(self.frame.size.width * self.contentScaleFactor) , GLint(self.frame.size.height * self.contentScaleFactor));
-//    glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.colorRenderBuffer)
-//    glBindTexture(CVOpenGLESTextureGetTarget(renderTex!), CVOpenGLESTextureGetName(renderTex!))
-//    glDrawElements(GLenum(GL_TRIANGLES), GLsizei(Indices.count), GLenum(GL_UNSIGNED_BYTE), nil)
-//    glBindVertexArrayOES(0)
-//}
-//func render() {
-//    activateStandardShader()
-//    
-//    renderWholeImageToSmallTexture()
-//    renderWholeImageToFlipTexture()
-//    
-//    renderWholeImageToRenderTexture()
-//    
-//    findFaces()
-//    setFaceVertices()
-//    activateHorizontalBlurShader()
-//    setScaleInShader(gaussianHorizontalProgramHandle, toValue: 1)
-//    renderFaceToRenderTexture()
-//    
-//    activateStandardShader()
-//    renderRenderTextureToScreen()
-//    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-//}

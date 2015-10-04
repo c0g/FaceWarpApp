@@ -8,6 +8,7 @@ uniform sampler2D TextureSampler;
 void main(){
     
     // Output color = color of the texture at the specified UV
-    gl_FragColor = texture2D( TextureSampler, UV );
-    gl_FragColor.a = Alpha;
+    highp vec4 color = texture2D( TextureSampler, UV );
+    color.a = Alpha;
+    gl_FragColor = color;
 }

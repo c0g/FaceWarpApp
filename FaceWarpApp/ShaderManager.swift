@@ -13,24 +13,34 @@ class ShaderManager {
     let passThroughShader : ShaderProgram
     let passThroughXYZ : GLuint
     let passThroughUV : GLuint
+    let passThroughAlpha : GLuint
     let passThroughTex : GLint
     
     let hblurShader : ShaderProgram
     let hblurXYZ : GLuint
     let hblurUV : GLuint
+    let hblurAlpha : GLuint
     let hblurScale : GLint
     let hblurTex : GLint
     
     let vblurShader : ShaderProgram
     let vblurXYZ : GLuint
     let vblurUV : GLuint
+    let vblurAlpha : GLuint
     let vblurScale : GLint
     let vblurTex : GLint
+    
+//    let blendShader : ShaderProgram
+//    let blendXYZ : GLuint
+//    let blendUV : GLuint
+//    let blendAlpha : GLuint
+//    let blendTex : GLint
     
     init?() {
         passThroughShader = ShaderProgram(withVertexShader: "TextureVertex", andFragmentShader: "TextureFragment")!
         passThroughXYZ = GLuint(glGetAttribLocation(passThroughShader.programHandle, "Position"))
         passThroughUV = GLuint(glGetAttribLocation(passThroughShader.programHandle, "TexSource"))
+        passThroughAlpha = GLuint(glGetAttribLocation(passThroughShader.programHandle, "InAlpha"))
         passThroughTex = GLint(glGetUniformLocation(passThroughShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(passThroughXYZ)
         glEnableVertexAttribArray(passThroughUV)
@@ -38,6 +48,7 @@ class ShaderManager {
         hblurShader = ShaderProgram(withVertexShader: "GaussianHorizontalVertex", andFragmentShader: "GaussianFragment")!
         hblurXYZ = GLuint(glGetAttribLocation(hblurShader.programHandle, "Position"))
         hblurUV = GLuint(glGetAttribLocation(hblurShader.programHandle, "TexSource"))
+        hblurAlpha = GLuint(glGetAttribLocation(hblurShader.programHandle, "InAlpha"))
         hblurScale = GLint(glGetUniformLocation(hblurShader.programHandle, "Scale"))
         hblurTex = GLint(glGetUniformLocation(hblurShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(hblurXYZ)
@@ -46,27 +57,36 @@ class ShaderManager {
         vblurShader = ShaderProgram(withVertexShader: "GaussianVerticalVertex", andFragmentShader: "GaussianFragment")!
         vblurXYZ = GLuint(glGetAttribLocation(vblurShader.programHandle, "Position"))
         vblurUV = GLuint(glGetAttribLocation(vblurShader.programHandle, "TexSource"))
+        vblurAlpha = GLuint(glGetAttribLocation(vblurShader.programHandle, "InAlpha"))
         vblurScale = GLint(glGetUniformLocation(vblurShader.programHandle, "Scale"))
         vblurTex = GLint(glGetUniformLocation(vblurShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(vblurXYZ)
         glEnableVertexAttribArray(vblurUV)
+        
+//        blendShader = ShaderProgram(withVertexShader: "BlendVertex", andFragmentShader: "BlendFragment")!
+//        blendXYZ = GLuint(glGetAttribLocation(blendShader.programHandle, "Position"))
+//        blendUV = GLuint(glGetAttribLocation(blendShader.programHandle, "TexSource"))
+//        blendAlpha = GLuint(glGetAttribLocation(blendShader.programHandle, "InAlpha"))
+//        blendTex = GLint(glGetUniformLocation(blendShader.programHandle, "TextureSampler"))
+//        glEnableVertexAttribArray(blendXYZ)
+//        glEnableVertexAttribArray(blendUV)
     }
     
-    func activatePassThroughShader() -> (GLuint, GLuint, GLint) {
+    func activatePassThroughShader() -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(passThroughShader.programHandle)
-        return (passThroughXYZ, passThroughUV, passThroughTex)
+        return (passThroughXYZ, passThroughUV, passThroughAlpha, passThroughTex)
     }
     
-    func activateHBlurShader(WithScale scale : GLfloat) -> (GLuint, GLuint, GLint) {
+    func activateHBlurShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(hblurShader.programHandle)
         glUniform1f(hblurScale, scale)
-        return (hblurXYZ, hblurUV, hblurTex)
+        return (hblurXYZ, hblurUV, hblurAlpha, hblurTex)
     }
     
-    func activateVBlurShader(WithScale scale : GLfloat) -> (GLuint, GLuint, GLint) {
+    func activateVBlurShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(vblurShader.programHandle)
         glUniform1f(vblurScale, scale)
-        return (vblurXYZ, vblurUV, vblurTex)
+        return (vblurXYZ, vblurUV, vblurAlpha, vblurTex)
     }
     
     
