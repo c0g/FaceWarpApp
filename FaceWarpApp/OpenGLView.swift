@@ -105,7 +105,8 @@ class OpenGLView: UIView  {
     ------------------------------------------*/
     
     func singleTap(rec : UITapGestureRecognizer) {
-        self.renderer!.textureManager!.saveVideoTexture()
+        self.renderer!.textureManager!.saveIntermediateTexture()
+        self.renderer!.textureManager!.saveSmallTexture()
     }
     
     
@@ -119,8 +120,8 @@ class OpenGLView: UIView  {
         self.eaglLayer.opaque = true
         self.contentScaleFactor = UIScreen.mainScreen().scale
         self.eaglLayer.contentsScale = UIScreen.mainScreen().scale
-        self.eaglLayer.bounds.size.width = UIScreen.mainScreen().bounds.width
-        self.eaglLayer.bounds.size.height = UIScreen.mainScreen().bounds.height
+        self.eaglLayer.bounds.size.width = UIScreen.mainScreen().fixedCoordinateSpace.bounds.width
+        self.eaglLayer.bounds.size.height = UIScreen.mainScreen().fixedCoordinateSpace.bounds.height
     }
     
     func setupContext() {

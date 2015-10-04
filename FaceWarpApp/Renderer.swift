@@ -73,71 +73,141 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
-        setupPassThrough()
     }
-    
-    func setupPassThrough() {
-        vertexManager!.setupPassVBO()
-    }
-    
-    func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef, fromConnection connection: AVCaptureConnection) {
-        print("Capture output called!")
+
+    func captureOutput(
+        captureOutput : AVCaptureOutput,
+        didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
+        fromConnection connection: AVCaptureConnection
+        ) {
         textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
-        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
-        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
-        print("Video is \(width) x \(height)")
-        print("Layer claims to be \(self.layer.bounds.width * self.layer.contentsScale) x \(self.layer.bounds.height * self.layer.contentsScale)")
         render()
     }
     
-    func passThroughRender() {
+    func preprocessRender() {
         let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-
+        
+        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
+        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
+        
         switch orientation {
         case pastOrientation:
             break
         case .LandscapeLeft:
-            vertexManager!.fillPassVBO(forFlip: .VERTICAL, andRotate90: false)
+            vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWithWidth(width, andHeight: height)
         case .LandscapeRight:
-            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: false)
+            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWithWidth(width, andHeight: height)
         case .Portrait:
-            vertexManager!.fillPassVBO(forFlip: .HORIZONTAL, andRotate90: true)
+            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
+            textureManager!.makeUprightPixelBufferWithWidth(height, andHeight: width)
         case .PortraitUpsideDown:
-            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: true)
-        case _:
-            vertexManager!.fillPassVBO(forFlip: .NONE, andRotate90: false)
+            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
+            textureManager!.makeUprightPixelBufferWithWidth(height, andHeight: width)
+        case .Unknown:
+            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+            textureManager!.makeUprightPixelBufferWithWidth(width, andHeight: height)
         }
         
-        
-        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
-        textureManager!.bindVideoTextureToSlot(textureSlot)
-        setFullViewport()
+        let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        glUniform1i(textureSlot, 1)
+        textureManager!.bindUprightTextureAsOutput()
+        glViewport(
+            0,
+            0,
+            GLsizei(CVPixelBufferGetWidth(textureManager!.uprightPixelBuffer!)),
+            GLsizei(CVPixelBufferGetHeight(textureManager!.uprightPixelBuffer!))
+        )
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPreprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot)
     }
     
-    func setFullViewport() {
+    func renderToSmallTexture() {
+        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
         
-        let width = GLsizei(self.layer.bounds.width * self.layer.contentsScale)
-        let height = GLsizei(self.layer.bounds.height * self.layer.contentsScale)
+        
+        let width = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
+        let height = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
+        
+        switch orientation {
+        case pastOrientation:
+            break
+        case .LandscapeLeft:
+            textureManager!.makeSmallerPixelBufferWithWidth(width, andHeight: height)
+        case .LandscapeRight:
+            textureManager!.makeSmallerPixelBufferWithWidth(width, andHeight: height)
+        case .Portrait:
+            textureManager!.makeSmallerPixelBufferWithWidth(height, andHeight: width)
+        case .PortraitUpsideDown:
+            textureManager!.makeSmallerPixelBufferWithWidth(height, andHeight: width)
+        case .Unknown:
+            textureManager!.makeSmallerPixelBufferWithWidth(width, andHeight: height)
+        }
+        
+        textureManager!.bindSmallerTextureAsOutput()
+        let (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        glUniform1i(textureSlot, 2) // upright texture is in GL_TEXTURE2
+        glViewport(
+            0,
+            0,
+            GLsizei(CVPixelBufferGetWidth(textureManager!.smallPixelBuffer!)),
+            GLsizei(CVPixelBufferGetHeight(textureManager!.smallPixelBuffer!))
+        )
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot)
+    }
+    
+    func renderToScreen() {
+        let (xyzSlot, uvSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+        
+        switch orientation {
+        case pastOrientation:
+            break
+        case .LandscapeLeft:
+            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
+        case .LandscapeRight:
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+        case .Portrait:
+            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
+        case .PortraitUpsideDown:
+            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: true)
+        case .Unknown:
+            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false)
+        }
+        
+        textureManager!.bindScreen()
+        
+        let width = UIScreen.mainScreen().bounds.width * UIScreen.mainScreen().scale
+        let height = UIScreen.mainScreen().bounds.height * UIScreen.mainScreen().scale
         
         switch orientation {
         case .LandscapeLeft:
-            glViewport(0, 0, width, height)
+            glViewport(0, 0, GLsizei(height), GLsizei(width))
         case .LandscapeRight:
-            glViewport(0, 0, width, height)
+            glViewport(0, 0, GLsizei(height), GLsizei(width))
         case .Portrait:
-            glViewport(0, 0, height, width)
+            glViewport(0, 0, GLsizei(width), GLsizei(height))
         case .PortraitUpsideDown:
-            glViewport(0, 0, height, width)
-        case _:
-            glViewport(0, 0, width, height)
+            glViewport(0, 0, GLsizei(width), GLsizei(height))
+        case .Unknown:
+            glViewport(0, 0, GLsizei(width), GLsizei(height))
         }
+        
+        let (num, type) = vertexManager!.bindPostprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot)
+        glUniform1i(textureSlot, 2)
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot)
     }
-    
     func render() {
-        pastOrientation = orientation
+        glClear(GLenum(GL_COLOR_BUFFER_BIT))
+        let _pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
-        passThroughRender()
+        preprocessRender()
+        glFinish()
+        renderToSmallTexture()
+        renderToScreen()
+        pastOrientation = _pastOrientation
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
 }

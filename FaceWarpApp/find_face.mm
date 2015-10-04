@@ -61,7 +61,7 @@ struct tracker_rect {
     if (self) {
         iter = 0;
         retrackAfter = 3;
-        NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"shape_predictor" ofType:@"dat"];
+        NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
         detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
         facesAverage = [[NSMutableArray alloc] init];

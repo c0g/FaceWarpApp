@@ -11,19 +11,24 @@ import Foundation
 class ShaderManager {
     
     let passThroughShader : ShaderProgram
+    let passThroughXYZ : GLuint
+    let passThroughUV : GLuint
+    let passThroughTex : GLint
     
     init?() {
         passThroughShader = ShaderProgram(withVertexShader: "TextureVertex", andFragmentShader: "TextureFragment")!
+        passThroughXYZ = GLuint(glGetAttribLocation(passThroughShader.programHandle, "Position"))
+        passThroughUV = GLuint(glGetAttribLocation(passThroughShader.programHandle, "TexSource"))
+        passThroughTex = GLint(glGetUniformLocation(passThroughShader.programHandle, "TextureSampler"))
+        glEnableVertexAttribArray(passThroughXYZ)
+        glEnableVertexAttribArray(passThroughUV)
     }
     
     func activatePassThroughShader() -> (GLuint, GLuint, GLint) {
         glUseProgram(passThroughShader.programHandle)
-        let xyzSlot = GLuint(glGetAttribLocation(passThroughShader.programHandle, "Position"))
-        let uvSlot = GLuint(glGetAttribLocation(passThroughShader.programHandle, "TexSource"))
-        glEnableVertexAttribArray(xyzSlot)
-        glEnableVertexAttribArray(uvSlot)
-        let textureSlot = GLint(glGetUniformLocation(passThroughShader.programHandle, "TextureSampler"));
-        return (xyzSlot, uvSlot, textureSlot)
+//        glEnableVertexAttribArray(passThroughXYZ)
+//        glEnableVertexAttribArray(passThroughUV)
+        return (passThroughXYZ, passThroughUV, passThroughTex)
     }
     
 }
