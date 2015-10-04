@@ -120,7 +120,6 @@ class VertexManager {
     }
     
     func setupPreprocessVBO() {
-        
         glGenVertexArraysOES(1, &preprocessAO);
         print(preprocessAO)
         glGenBuffers(1, &preprocessPositionBuffer)

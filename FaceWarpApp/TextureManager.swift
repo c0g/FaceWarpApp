@@ -32,6 +32,14 @@ class TextureManager {
     // References to Rotated render and textures - re-draw upright buffer smaller - live inside TEXTURE3
     var smallTexture : CVOpenGLESTextureRef? = nil
     var smallPixelBuffer : CVPixelBufferRef? = nil
+    
+    // Reference to HBlur texture - upright, blurred - live inside TEXTURE4
+    var hblurTexture : GLuint = GLuint()
+    var hblurwidth : Int = 0
+    var hblurheight : Int = 0
+    
+    // Reference to VBlur texture - upright, blurred - lives inside TEXTURE5
+    var vblurTexture : GLuint = GLuint()
 
     init?(withContext cntxt : EAGLContext, andLayer lyr : CAEAGLLayer) {
         context = cntxt
@@ -44,6 +52,7 @@ class TextureManager {
             return nil
         }
         setupScreen()
+        setupNormalTextures()
     }
     
     var size : CGRect {
@@ -88,6 +97,9 @@ class TextureManager {
         )
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
+    func bindVideoTextureToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, 1)
+    }
     
     func saveIntermediateTexture() {
         if let pb = uprightPixelBuffer {
@@ -128,6 +140,14 @@ class TextureManager {
     func bindUprightTextureAsOutput() {
         glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(uprightTexture!), 0);
     }
+    func bindUprightTextureToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, 2)
+    }
+    func setViewPortForUprightTexture() {
+        if let pb = uprightPixelBuffer {
+            setViewPortForTexture(pb)
+        }
+    }
     
     // MARK: generate buffer for smaller textures
     func makeSmallerPixelBufferWithWidth(inWidth : Int, andHeight inHeight : Int, andScale scale : Int = 2) {
@@ -148,6 +168,64 @@ class TextureManager {
     }
     func bindSmallerTextureAsOutput() {
         glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(smallTexture!), 0);
+    }
+    func bindSmallerTextureToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, 3)
+    }
+    func setViewPortForSmallerTexture() {
+        if let pb = smallPixelBuffer {
+            setViewPortForTexture(pb)
+        }
+    }
+    
+    // MAKL: setup for non-CVPixel backed textures
+    func setupNormalTextures() {
+        glGenTextures(1, &hblurTexture)
+        glGenTextures(1, &vblurTexture)
+    }
+    
+    // MARK: generate buffer for hblur - GL_TEXTURE4
+    func makeHBlurTexture(inWidth : Int, andHeight inHeight : Int, andScale scale : Int = 2) {
+        hblurwidth = inWidth / scale
+        hblurheight = inHeight / scale
+        glActiveTexture(GLenum(GL_TEXTURE4))
+        glBindTexture(GLenum(GL_TEXTURE_2D), hblurTexture)
+        glTexImage2D(
+            GLenum(GL_TEXTURE_2D),
+            0,
+            GLint(GL_RGBA),
+            GLsizei(hblurwidth),
+            GLsizei(hblurheight),
+            0,
+            GLenum(GL_RGBA),
+            GLenum(GL_UNSIGNED_BYTE),
+            nil);
+        glActiveTexture(GLenum(GL_TEXTURE0))
+        glBindTexture(GLenum(GL_TEXTURE_2D), 0)
+    }
+    func bindHBlurTextureAsOutput() {
+        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), hblurTexture, 0);
+    }
+    func bindHBlurTextureToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, 4)
+    }
+    func setViewPortForHBlurTexture() {
+        glViewport(
+            0,
+            0,
+            GLsizei(hblurwidth),
+            GLsizei(hblurwidth)
+        )
+    }
+    
+    // MARK: Setupviewport to fill a given texture
+    func setViewPortForTexture(pb : CVPixelBufferRef) {
+        glViewport(
+            0,
+            0,
+            GLsizei(CVPixelBufferGetWidth(pb)),
+            GLsizei(CVPixelBufferGetHeight(pb))
+        )
     }
     
     // MARK: Save a given pixel buffer to camera roll
