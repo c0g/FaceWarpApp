@@ -109,9 +109,9 @@ class OpenGLView: UIView  {
         
         self.captureManager?.start()
         
-        let singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("singleTap:"))
-        singleFingerTap.numberOfTapsRequired = 1
-        self.addGestureRecognizer(singleFingerTap)
+//        let singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("singleTap:"))
+//        singleFingerTap.numberOfTapsRequired = 1
+//        self.addGestureRecognizer(singleFingerTap)
     }
     
     /* Gesture recogniser
