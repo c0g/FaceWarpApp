@@ -23,21 +23,6 @@ struct tracker_rect {
     dlib::rectangle lastone;
 };
 
-//dlib::rectangle dlibRectFromRectangle(PhiRectangle rect) {
-//    return dlib::rectangle(rect.left, rect.top, rect.right, rect.bottom);
-//}
-//
-//PhiRectangle rectangleFromDlibRectangle(const dlib::rectangle & rect) {
-//    return Rectangle{
-//        static_cast<float>(rect.left()),
-//        static_cast<float>(rect.top()),
-//        static_cast<float>(rect.right()),
-//        static_cast<float>(rect.bottom())};
-//}
-//
-//Rectangle operator*(const Rectangle & rect, float scale) {
-//    return Rectangle{rect.left * scale, rect.top * scale, rect.right * scale, rect.bottom * scale};
-//}
 
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
@@ -79,43 +64,6 @@ struct tracker_rect {
     return self;
 }
 
--(UIImage *) UIImageFromCVMat:(cv::Mat)cvMat
-{
-    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
-    CGColorSpaceRef colorSpace;
-    
-    if (cvMat.elemSize() == 1) {
-        colorSpace = CGColorSpaceCreateDeviceGray();
-    } else {
-        colorSpace = CGColorSpaceCreateDeviceRGB();
-    }
-    
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-    
-    // Creating CGImage from cv::Mat
-    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                 //width
-                                        cvMat.rows,                                 //height
-                                        8,                                          //bits per component
-                                        8 * cvMat.elemSize(),                       //bits per pixel
-                                        cvMat.step[0],                            //bytesPerRow
-                                        colorSpace,                                 //colorspace
-                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
-                                        provider,                                   //CGDataProviderRef
-                                        NULL,                                       //decode
-                                        false,                                      //should interpolate
-                                        kCGRenderingIntentDefault                   //intent
-                                        );
-    
-    
-    // Getting UIImage from CGImage
-    UIImage *finalImage = [UIImage imageWithCGImage:imageRef];
-    CGImageRelease(imageRef);
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
-    
-    return finalImage;
-};
-
 -(NSArray *) facesPointsInBigImage:(CamImage)_bigImg andSmallImage: (CamImage)_smallImg withScale: (int) scale {
     //Convert CamImages into dlib images:
     cv::Mat bigMat(_bigImg.height, _bigImg.width, CV_8UC4, _bigImg.pixels, _bigImg.rowSize);
@@ -127,37 +75,32 @@ struct tracker_rect {
     dlib::cv_image<dlib::rgb_pixel> smallImg(smallMat);
     
     if (iter  == retrackAfter) {
-//        std::cout << "Tracker restarted and iter is " << iter << std::endl;
-        
-        
         // Copy small img data on main thread
-        cv::Mat smallMatCopy = smallMat;
+//        cv::Mat smallMatCopy = smallMat;
         
         // Asynchronously find the faces using dlib's face detector
-        dispatch_async(faceQueue, ^{
-            dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMat);
             std::vector<dlib::rectangle> faces = detector(smallImgCopy);
             
-            // Update trackers inside mutex
+            // Lock trackers on main thread and reset
             mtx.lock();
-            trackers.clear();
-            for (auto face : faces) {
-                dlib::correlation_tracker tracker;
-                tracker.start_track(smallImgCopy, face);
-                trackers.push_back(tracker_rect{tracker, face});
-            }
+                trackers.clear();
+                for (auto face : faces) {
+                    dlib::correlation_tracker tracker;
+                    tracker.start_track(smallImgCopy, face);
+                    trackers.push_back(tracker_rect{tracker, face});
+                }
             mtx.unlock();
             
             iter = 0;
-//            std::cout << "Restart complete" << std::endl;
         });
     }
-//    std::cout << "Iter is " << iter << std::endl;
     iter++;
-    
+
     // Get rectanges from tracker inside mutex
-    std::vector<dlib::rectangle> rects;
     mtx.lock();
+    std::vector<dlib::rectangle> rects;
     for (auto tr : trackers) {
         tr.tracker.update(smallImg, tr.lastone);
         dlib::rectangle smallRect = tr.tracker.get_position();
@@ -170,7 +113,6 @@ struct tracker_rect {
         rects.push_back(faceRect);
     }
     mtx.unlock();
-    
     
     // Got face points outside mutex
     NSMutableArray * arr = [[NSMutableArray alloc] init];
