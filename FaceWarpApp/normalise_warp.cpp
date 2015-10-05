@@ -142,7 +142,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     {
         std::cout << e.what() << std::endl;
     };
-    std::cout << "started with " << startAngle[0] << " ended with " << angle << std::endl;
+//    std::cout << "started with " << startAngle[0] << " ended with " << angle << std::endl;
     angle = (angle + startAngle[0]) / 2;
     startAngle[0] = angle;
 //    dlib::matrix<double> 

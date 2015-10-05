@@ -57,7 +57,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     let warper : Warper = Warper()
     
-    let scale = 4 // how much we shrink small image by
+    let scale = 2 // how much we shrink small image by
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown

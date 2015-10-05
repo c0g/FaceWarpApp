@@ -89,13 +89,13 @@ class OpenGLView: UIView  {
             try device.lockForConfiguration()
             for f in device.formats as! [AVCaptureDeviceFormat] {
                 device.activeFormat = f
+                
             }
             device.unlockForConfiguration()
         } catch {
             print("Could not set config")
         }
-
-        
+        print(CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription))
         self.captureManager = CaptureManager(withDevice: device)
         
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
@@ -145,7 +145,7 @@ class OpenGLView: UIView  {
         // Just like with CoreGraphics, in order to do much with OpenGL, we need a context.
         //   Here we create a new context with the version of the rendering API we want and
         //   tells OpenGL that when we draw, we want to do so within this context.
-        let api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES3
+        let api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES2
         self.context = EAGLContext(API: api)
         
         if (self.context == nil) {

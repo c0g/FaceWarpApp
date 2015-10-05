@@ -101,6 +101,8 @@ class TextureManager {
             CVOpenGLESTextureGetTarget(videoTexture!),
             CVOpenGLESTextureGetName(videoTexture!)
         )
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
     func bindVideoTextureToSlot(textureSlot : GLint) {
@@ -135,6 +137,8 @@ class TextureManager {
         glActiveTexture(GLenum(GL_TEXTURE2)) // upright texture lives in texture 2
         generatePixelBuffer(&uprightPixelBuffer, andTexture: &uprightTexture, withSize: size)
         glBindTexture(CVOpenGLESTextureGetTarget(uprightTexture!), CVOpenGLESTextureGetName(uprightTexture!))
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
     func bindUprightTextureAsOutput() {
@@ -194,6 +198,8 @@ class TextureManager {
         glActiveTexture(GLenum(GL_TEXTURE3)) // upright texture lives in texture 2
         generatePixelBuffer(&smallPixelBuffer, andTexture: &smallTexture, withSize: size)
         glBindTexture(CVOpenGLESTextureGetTarget(smallTexture!), CVOpenGLESTextureGetName(smallTexture!))
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
     func bindSmallerTextureAsOutput() {
@@ -240,8 +246,8 @@ class TextureManager {
         hblurheight = inHeight / scale
         glActiveTexture(GLenum(GL_TEXTURE4))
         glBindTexture(GLenum(GL_TEXTURE_2D), hblurTexture)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_REPEAT)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_REPEAT)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR)
         glTexImage2D(
@@ -279,8 +285,8 @@ class TextureManager {
         vblurheight = inHeight / scale
         glActiveTexture(GLenum(GL_TEXTURE5))
         glBindTexture(GLenum(GL_TEXTURE_2D), vblurTexture)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_REPEAT)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_REPEAT)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR)
         glTexImage2D(
@@ -322,6 +328,8 @@ class TextureManager {
         glActiveTexture(GLenum(GL_TEXTURE6)) // outputTexture lives in 6
         generatePixelBuffer(&outputPixelBuffer, andTexture: &outputTexture, withSize: size)
         glBindTexture(CVOpenGLESTextureGetTarget(outputTexture!), CVOpenGLESTextureGetName(outputTexture!))
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
+        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
     func bindOutputTextureAsOutput() {
