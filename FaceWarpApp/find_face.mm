@@ -41,7 +41,8 @@ struct tracker_rect {
 
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
-    dlib::frontal_face_detector detector;
+    std::vector<dlib::object_detector<dlib::scan_fhog_pyramid<dlib::pyramid_down<4> > > > detector;
+//    dlib::frontal_face_detector ;
     NSMutableArray * facesAverage;
     NSUInteger movingAverageCount;
     
@@ -62,8 +63,11 @@ struct tracker_rect {
         iter = 0;
         retrackAfter = 3;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
-        detector = dlib::get_frontal_face_detector();
+        NSString * dat_file2 = [[NSBundle mainBundle] pathForResource:@"total_detector" ofType:@"svm"];
+        
+//        detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
+        dlib::deserialize(dat_file2.UTF8String) >> detector;
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
         movingAverageCount = 0;
@@ -136,7 +140,7 @@ struct tracker_rect {
         // Asynchronously find the faces using dlib's face detector
         dispatch_async(faceQueue, ^{
             dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
-            std::vector<dlib::rectangle> faces = detector(smallImgCopy);
+            std::vector<dlib::rectangle> faces = dlib::evaluate_detectors(detector, smallImgCopy);
             
             // Update trackers inside mutex
             mtx.lock();
