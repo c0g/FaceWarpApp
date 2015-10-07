@@ -208,7 +208,11 @@
 /*   recommend double precision unless you want to generate a mesh for which */
 /*   you do not have enough memory.                                          */
 
+<<<<<<< HEAD
 #define SINGLE
+=======
+#define SINGLE */
+>>>>>>> OpenGLRefactor
 
 #ifdef SINGLE
 #define REAL float

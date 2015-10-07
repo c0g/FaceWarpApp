@@ -8,36 +8,88 @@
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="FaceWarpApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Paramus" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="FaceWarpApp" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="Paramus" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+<<<<<<< HEAD
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sDR-7T-yBH">
                                 <rect key="frame" x="500" y="0.0" width="100" height="600"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <segue destination="ijh-je-PGR" kind="embed" id="mUb-gP-fOj"/>
+=======
+                            <containerView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5vJ-aO-d0L">
+                                <rect key="frame" x="600" y="0.0" width="0.0" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="KSb-j3-3Jq"/>
+                                    <constraint firstAttribute="width" constant="100" id="q8c-ob-V7y"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="KSb-j3-3Jq"/>
+                                    </mask>
+                                </variation>
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="747" width="400" height="53"/>
+                                    <mask key="constraints">
+                                        <include reference="KSb-j3-3Jq"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <segue destination="mA3-Hk-BHp" kind="embed" id="ryq-bP-kuJ"/>
+>>>>>>> OpenGLRefactor
                                 </connections>
                             </containerView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" red="1" green="0.52648174316488017" blue="0.48974023977280912" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+<<<<<<< HEAD
                             <constraint firstItem="sDR-7T-yBH" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="7MH-rK-aHJ"/>
                             <constraint firstItem="sDR-7T-yBH" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="trailing" constant="-100" id="Wsd-Q1-9eJ"/>
                             <constraint firstItem="sDR-7T-yBH" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="wz9-8t-GRR"/>
                             <constraint firstAttribute="trailing" secondItem="sDR-7T-yBH" secondAttribute="trailing" id="yK4-Yq-8BM"/>
                         </constraints>
+=======
+                            <constraint firstItem="5vJ-aO-d0L" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BOJ-tK-WDO"/>
+                            <constraint firstAttribute="trailing" secondItem="5vJ-aO-d0L" secondAttribute="trailing" id="Dg2-Al-AIU"/>
+                            <constraint firstItem="5vJ-aO-d0L" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="eZh-Hk-PEA"/>
+                            <constraint firstItem="5vJ-aO-d0L" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="edM-Qe-uMw"/>
+                            <constraint firstItem="5vJ-aO-d0L" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="fp1-XK-m5n"/>
+                            <constraint firstAttribute="trailing" secondItem="5vJ-aO-d0L" secondAttribute="trailing" id="ibr-Ip-sef"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="BOJ-tK-WDO"/>
+                                <exclude reference="Dg2-Al-AIU"/>
+                                <exclude reference="eZh-Hk-PEA"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="BOJ-tK-WDO"/>
+                                <include reference="Dg2-Al-AIU"/>
+                                <include reference="eZh-Hk-PEA"/>
+                                <exclude reference="edM-Qe-uMw"/>
+                                <exclude reference="fp1-XK-m5n"/>
+                                <exclude reference="ibr-Ip-sef"/>
+                            </mask>
+                        </variation>
+>>>>>>> OpenGLRefactor
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+<<<<<<< HEAD
             <point key="canvasLocation" x="448" y="370"/>
         </scene>
         <!--Control View Controller-->
@@ -95,6 +147,27 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dgW-TI-Jcb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1113.5" y="160"/>
+=======
+            <point key="canvasLocation" x="36" y="331.5"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="6WL-9p-U43">
+            <objects>
+                <viewController id="mA3-Hk-BHp" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="i9G-Vl-FXz"/>
+                        <viewControllerLayoutGuide type="bottom" id="bXn-ak-nDP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="a9P-DY-d4q">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JII-EP-qz4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+>>>>>>> OpenGLRefactor
         </scene>
     </scenes>
 </document>

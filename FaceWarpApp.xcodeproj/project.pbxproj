@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */; settings = {ASSET_TAGS = (); }; };
 		5E386B001BBABE28003EDAEB /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFF1BBABE28003EDAEB /* triangle.c */; settings = {ASSET_TAGS = (); }; };
+		5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */ = {isa = PBXBuildFile; fileRef = 5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */; settings = {ASSET_TAGS = (); }; };
 		5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; settings = {ASSET_TAGS = (); }; };
 		E20FE7671BB0326C00142050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7661BB0326C00142050 /* ViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7681BB032A800142050 /* OpenGLView.swift */; settings = {ASSET_TAGS = (); }; };
@@ -17,6 +18,9 @@
 		E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76E1BB034BC00142050 /* TextureFragment.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76F1BB034BC00142050 /* TextureVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E20FE7881BB092CF00142050 /* Accelerate.framework */; };
+		E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */; settings = {ASSET_TAGS = (); }; };
+		E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
 		E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E26D166F1BB42F7700A0F573 /* PHItypes.m */; settings = {ASSET_TAGS = (); }; };
 		E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */; };
@@ -24,15 +28,22 @@
 		E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */; };
 		E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3AA91BAC43E000ACC953 /* opencv2.framework */; settings = {ASSET_TAGS = (); }; };
 		E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AAD1BAC442A00ACC953 /* Readme.md */; settings = {ASSET_TAGS = (); }; };
-		E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
+		E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; };
 		E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3ABE1BAC480500ACC953 /* libjpeg.a */; settings = {ASSET_TAGS = (); }; };
-		E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* find_face.mm */; settings = {ASSET_TAGS = (); COMPILER_FLAGS = "-O3"; }; };
-		E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */; };
+		E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AC01BAC5BF800ACC953 /* find_face.mm */; settings = {ASSET_TAGS = (); }; };
+		E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */ = {isa = PBXBuildFile; fileRef = E28D3AC41BAC67D100ACC953 /* facemarks.dat */; };
 		E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28E56241BBC31B700358D16 /* GaussianFragment.glsl */; settings = {ASSET_TAGS = (); }; };
-		E28E563D1BBD5EE700358D16 /* MultiSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E563C1BBD5EE700358D16 /* MultiSelector.swift */; settings = {ASSET_TAGS = (); }; };
-		E28E56421BBD604F00358D16 /* ControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56411BBD604F00358D16 /* ControlViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E562C1BBD246A00358D16 /* TextureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E562B1BBD246A00358D16 /* TextureManager.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E562E1BBD247700358D16 /* VertexManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E562D1BBD247700358D16 /* VertexManager.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56311BBD248C00358D16 /* ShaderManager.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56341BBD254900358D16 /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56331BBD254900358D16 /* CaptureManager.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56361BBD26CF00358D16 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56351BBD26CF00358D16 /* Texture.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56371BBD279600358D16 /* PixelBufferTexture.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56391BBD324700358D16 /* ShaderProgram.swift */; settings = {ASSET_TAGS = (); }; };
+		E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56471BBD7A1100358D16 /* Renderer.swift */; settings = {ASSET_TAGS = (); }; };
+		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; settings = {ASSET_TAGS = (); }; };
@@ -82,6 +93,7 @@
 		5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle_wrapper.c; sourceTree = "<group>"; };
 		5E386AFE1BBABBAA003EDAEB /* triangle_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle_wrapper.h; sourceTree = "<group>"; };
 		5E386AFF1BBABE28003EDAEB /* triangle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle.c; sourceTree = "<group>"; };
+		5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */ = {isa = PBXFileReference; lastKnownFileType = file; path = total_detector.svm; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -91,11 +103,14 @@
 		E20FE76E1BB034BC00142050 /* TextureFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureFragment.glsl; sourceTree = "<group>"; };
 		E20FE76F1BB034BC00142050 /* TextureVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureVertex.glsl; sourceTree = "<group>"; };
 		E20FE7881BB092CF00142050 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageVerticalVertex.glsl; sourceTree = "<group>"; };
+		E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageFragment.glsl; sourceTree = "<group>"; };
+		E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E264DF3E1BB950710051380D /* GTEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTEngine.xcodeproj; path = GeometricTools/GTEngine/GTEngine.xcodeproj; sourceTree = "<group>"; };
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
 		E26D16721BB58F9B00A0F573 /* __fix_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = __fix_triangulation.hpp; sourceTree = "<group>"; };
-		E28D3A8D1BAC409000ACC953 /* FaceWarpApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceWarpApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E28D3A8D1BAC409000ACC953 /* Paramus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paramus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E28D3A981BAC409000ACC953 /* FaceWarpApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceWarpApp.xcdatamodel; sourceTree = "<group>"; };
 		E28D3A9A1BAC409000ACC953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E28D3A9D1BAC409000ACC953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -112,12 +127,20 @@
 		E28D3AC01BAC5BF800ACC953 /* find_face.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = find_face.mm; sourceTree = "<group>"; };
 		E28D3AC21BAC5C0E00ACC953 /* find_face.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = find_face.h; sourceTree = "<group>"; };
 		E28D3AC31BAC5D0500ACC953 /* bridging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = bridging.h; sourceTree = "<group>"; };
-		E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = shape_predictor.dat; sourceTree = "<group>"; };
+		E28D3AC41BAC67D100ACC953 /* facemarks.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = facemarks.dat; sourceTree = "<group>"; };
 		E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianVerticalVertex.glsl; sourceTree = "<group>"; };
 		E28E56241BBC31B700358D16 /* GaussianFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GaussianFragment.glsl; sourceTree = "<group>"; };
-		E28E563C1BBD5EE700358D16 /* MultiSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiSelector.swift; sourceTree = "<group>"; };
-		E28E56411BBD604F00358D16 /* ControlViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlViewController.swift; sourceTree = "<group>"; };
+		E28E562B1BBD246A00358D16 /* TextureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureManager.swift; sourceTree = "<group>"; };
+		E28E562D1BBD247700358D16 /* VertexManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexManager.swift; sourceTree = "<group>"; };
+		E28E56311BBD248C00358D16 /* ShaderManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderManager.swift; sourceTree = "<group>"; };
+		E28E56331BBD254900358D16 /* CaptureManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
+		E28E56351BBD26CF00358D16 /* Texture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
+		E28E56371BBD279600358D16 /* PixelBufferTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelBufferTexture.swift; sourceTree = "<group>"; };
+		E28E56391BBD324700358D16 /* ShaderProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderProgram.swift; sourceTree = "<group>"; };
+		E28E56471BBD7A1100358D16 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		E29319791BC589C0006CAA6F /* fft_stuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft_stuff.cpp; sourceTree = "<group>"; };
+		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -164,7 +187,7 @@
 		E28D3A8E1BAC409000ACC953 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E28D3A8D1BAC409000ACC953 /* FaceWarpApp.app */,
+				E28D3A8D1BAC409000ACC953 /* Paramus.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -172,6 +195,7 @@
 		E28D3A8F1BAC409000ACC953 /* FaceWarpApp */ = {
 			isa = PBXGroup;
 			children = (
+				E28E562A1BBD245100358D16 /* OpenGL */,
 				E2B55E501BB5DD540086F719 /* Swift */,
 				E20FE76C1BB0348400142050 /* AppDelegate.swift */,
 				E28D3AA81BAC436A00ACC953 /* External Projects */,
@@ -192,6 +216,7 @@
 				E28D3AAD1BAC442A00ACC953 /* Readme.md */,
 				5E386AFF1BBABE28003EDAEB /* triangle.c */,
 				E28D3AC01BAC5BF800ACC953 /* find_face.mm */,
+				5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */,
 				5E2897471BB578DB00166D83 /* normalise_warp.h */,
 				5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */,
 				5E386AF91BBA04CD003EDAEB /* triangle.h */,
@@ -204,6 +229,8 @@
 				E2B55E531BB69F390086F719 /* triangulator.h */,
 				E2B55E541BB69F390086F719 /* triangulator.cpp */,
 				E2B55E581BB6E2F70086F719 /* PHI_C_Types.h */,
+				E29319791BC589C0006CAA6F /* fft_stuff.cpp */,
+				E293197A1BC589C0006CAA6F /* fft_stuff.hpp */,
 			);
 			name = ObjectiveCpp;
 			sourceTree = "<group>";
@@ -214,7 +241,7 @@
 				E20FE76A1BB032AF00142050 /* Main.storyboard */,
 				E20FE76E1BB034BC00142050 /* TextureFragment.glsl */,
 				E20FE76F1BB034BC00142050 /* TextureVertex.glsl */,
-				E28D3AC41BAC67D100ACC953 /* shape_predictor.dat */,
+				E28D3AC41BAC67D100ACC953 /* facemarks.dat */,
 				E28D3A9A1BAC409000ACC953 /* Assets.xcassets */,
 				E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */,
 				E28D3AC31BAC5D0500ACC953 /* bridging.h */,
@@ -223,6 +250,9 @@
 				E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */,
 				E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */,
 				E28E56241BBC31B700358D16 /* GaussianFragment.glsl */,
+				E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */,
+				E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */,
+				E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -232,8 +262,6 @@
 			children = (
 				E20FE7681BB032A800142050 /* OpenGLView.swift */,
 				E20FE7661BB0326C00142050 /* ViewController.swift */,
-				E28E563C1BBD5EE700358D16 /* MultiSelector.swift */,
-				E28E56411BBD604F00358D16 /* ControlViewController.swift */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -247,6 +275,21 @@
 				E28D3AA91BAC43E000ACC953 /* opencv2.framework */,
 			);
 			name = "External Projects";
+			sourceTree = "<group>";
+		};
+		E28E562A1BBD245100358D16 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				E28E562B1BBD246A00358D16 /* TextureManager.swift */,
+				E28E562D1BBD247700358D16 /* VertexManager.swift */,
+				E28E56311BBD248C00358D16 /* ShaderManager.swift */,
+				E28E56331BBD254900358D16 /* CaptureManager.swift */,
+				E28E56351BBD26CF00358D16 /* Texture.swift */,
+				E28E56371BBD279600358D16 /* PixelBufferTexture.swift */,
+				E28E56391BBD324700358D16 /* ShaderProgram.swift */,
+				E28E56471BBD7A1100358D16 /* Renderer.swift */,
+			);
+			name = OpenGL;
 			sourceTree = "<group>";
 		};
 		E2B55E4F1BB5DD380086F719 /* delaunay */ = {
@@ -285,7 +328,7 @@
 			);
 			name = FaceWarpApp;
 			productName = FaceWarpApp;
-			productReference = E28D3A8D1BAC409000ACC953 /* FaceWarpApp.app */;
+			productReference = E28D3A8D1BAC409000ACC953 /* Paramus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -301,7 +344,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 2WHKXWB6SD;
+						DevelopmentTeam = S559Q4PGN4;
 					};
 				};
 			};
@@ -365,13 +408,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E28D3AC51BAC67F800ACC953 /* shape_predictor.dat in Resources */,
+				E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */,
+				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
+				E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
+				5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
+				E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */,
 				E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */,
 				E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */,
 			);
@@ -384,21 +431,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */,
 				E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */,
+				E28E56361BBD26CF00358D16 /* Texture.swift in Sources */,
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
+				E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */,
+				E28E562E1BBD247700358D16 /* VertexManager.swift in Sources */,
+				E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */,
 				5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */,
 				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
+				E28E56341BBD254900358D16 /* CaptureManager.swift in Sources */,
 				5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */,
 				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
 				E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */,
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,
-				E28E56421BBD604F00358D16 /* ControlViewController.swift in Sources */,
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
-				E28E563D1BBD5EE700358D16 /* MultiSelector.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
+				E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */,
 				5E386B001BBABE28003EDAEB /* triangle.c in Sources */,
+				E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */,
+				E28E562C1BBD246A00358D16 /* TextureManager.swift in Sources */,
 				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,
 				E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */,
 			);
@@ -513,6 +567,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -521,12 +576,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = NO;
+				GCC_FAST_MATH = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
+					DLIB_USE_VECLIB_FFT,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
@@ -541,10 +597,11 @@
 				);
 				LLVM_LTO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = phi.FaceWarpApp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Paramus;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -552,6 +609,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -560,12 +618,13 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = NO;
+				GCC_FAST_MATH = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
 					TRILIBRARY,
+					DLIB_USE_VECLIB_FFT,
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
@@ -580,10 +639,11 @@
 				);
 				LLVM_LTO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = phi.FaceWarpApp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Paramus;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
