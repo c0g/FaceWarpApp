@@ -7,12 +7,12 @@
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="FaceWarpApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Paramus" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="FaceWarpApp" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="Paramus" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -77,6 +77,10 @@
         <scene sceneID="6WL-9p-U43">
             <objects>
                 <viewController id="mA3-Hk-BHp" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="i9G-Vl-FXz"/>
+                        <viewControllerLayoutGuide type="bottom" id="bXn-ak-nDP"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="a9P-DY-d4q">
                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
