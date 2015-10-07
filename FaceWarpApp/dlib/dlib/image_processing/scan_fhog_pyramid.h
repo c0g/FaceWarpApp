@@ -400,7 +400,7 @@ namespace dlib
             padding = 1;
             window_width = 64;
             window_height = 64;
-            max_pyramid_levels = 500;
+            max_pyramid_levels = 1000;
             min_pyramid_layer_width = 64;
             min_pyramid_layer_height = 64;
             nuclear_norm_regularization_strength = 0;

@@ -45,63 +45,32 @@
 
         <font color='#BB00BB'>randomize_samples</font><font face='Lucida Console'>(</font>samples<font face='Lucida Console'>)</font>;
 
+        std::vector<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font> centers;
+        <font color='#BB00BB'>pick_initial_centers</font><font face='Lucida Console'>(</font>seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>, centers, samples, linear_kernel<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
+
+        <font color='#BB00BB'>find_clusters_using_kmeans</font><font face='Lucida Console'>(</font>samples, centers<font face='Lucida Console'>)</font>;
+
+        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font><font color='#5555FF'>=</font> seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
+
+        std::vector<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>int</u></font><font color='#5555FF'>&gt;</font> <font color='#BB00BB'>hits</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
+        <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> samples.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
         <b>{</b>
-            std::vector<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font> centers;
-            <font color='#BB00BB'>pick_initial_centers</font><font face='Lucida Console'>(</font>seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>, centers, samples, linear_kernel<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
-
-            <font color='#BB00BB'>find_clusters_using_kmeans</font><font face='Lucida Console'>(</font>samples, centers<font face='Lucida Console'>)</font>;
-
-            <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font><font color='#5555FF'>=</font> seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
-
-            std::vector<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>int</u></font><font color='#5555FF'>&gt;</font> <font color='#BB00BB'>hits</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-            <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> samples.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
+            <font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> best_idx <font color='#5555FF'>=</font> <font color='#979000'>0</font>;
+            <font color='#0000FF'><u>double</u></font> best_dist <font color='#5555FF'>=</font> <font color='#979000'>1e100</font>;
+            <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> j <font color='#5555FF'>=</font> <font color='#979000'>0</font>; j <font color='#5555FF'>&lt;</font> centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>j<font face='Lucida Console'>)</font>
             <b>{</b>
-                <font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> best_idx <font color='#5555FF'>=</font> <font color='#979000'>0</font>;
-                <font color='#0000FF'><u>double</u></font> best_dist <font color='#5555FF'>=</font> <font color='#979000'>1e100</font>;
-                <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> j <font color='#5555FF'>=</font> <font color='#979000'>0</font>; j <font color='#5555FF'>&lt;</font> centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>j<font face='Lucida Console'>)</font>
+                <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> best_dist<font face='Lucida Console'>)</font>
                 <b>{</b>
-                    <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> best_dist<font face='Lucida Console'>)</font>
-                    <b>{</b>
-                        best_dist <font color='#5555FF'>=</font> <font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font>;
-                        best_idx <font color='#5555FF'>=</font> j;
-                    <b>}</b>
+                    best_dist <font color='#5555FF'>=</font> <font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font>;
+                    best_idx <font color='#5555FF'>=</font> j;
                 <b>}</b>
-                hits[best_idx]<font color='#5555FF'>+</font><font color='#5555FF'>+</font>;
             <b>}</b>
-
-            <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> hits.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
-            <b>{</b>
-                <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>hits[i] <font color='#5555FF'>=</font><font color='#5555FF'>=</font> <font color='#979000'>250</font><font face='Lucida Console'>)</font>;
-            <b>}</b>
+            hits[best_idx]<font color='#5555FF'>+</font><font color='#5555FF'>+</font>;
         <b>}</b>
+
+        <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> hits.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
         <b>{</b>
-            std::vector<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font> centers;
-            <font color='#BB00BB'>pick_initial_centers</font><font face='Lucida Console'>(</font>seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>, centers, samples, linear_kernel<font color='#5555FF'>&lt;</font>sample_type<font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
-
-            <font color='#BB00BB'>find_clusters_using_angular_kmeans</font><font face='Lucida Console'>(</font>samples, centers<font face='Lucida Console'>)</font>;
-
-            <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font><font color='#5555FF'>=</font> seed_centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
-
-            std::vector<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>int</u></font><font color='#5555FF'>&gt;</font> <font color='#BB00BB'>hits</font><font face='Lucida Console'>(</font>centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-            <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> samples.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
-            <b>{</b>
-                <font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> best_idx <font color='#5555FF'>=</font> <font color='#979000'>0</font>;
-                <font color='#0000FF'><u>double</u></font> best_dist <font color='#5555FF'>=</font> <font color='#979000'>1e100</font>;
-                <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> j <font color='#5555FF'>=</font> <font color='#979000'>0</font>; j <font color='#5555FF'>&lt;</font> centers.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>j<font face='Lucida Console'>)</font>
-                <b>{</b>
-                    <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> best_dist<font face='Lucida Console'>)</font>
-                    <b>{</b>
-                        best_dist <font color='#5555FF'>=</font> <font color='#BB00BB'>length</font><font face='Lucida Console'>(</font>samples[i] <font color='#5555FF'>-</font> centers[j]<font face='Lucida Console'>)</font>;
-                        best_idx <font color='#5555FF'>=</font> j;
-                    <b>}</b>
-                <b>}</b>
-                hits[best_idx]<font color='#5555FF'>+</font><font color='#5555FF'>+</font>;
-            <b>}</b>
-
-            <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> hits.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
-            <b>{</b>
-                <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>hits[i] <font color='#5555FF'>=</font><font color='#5555FF'>=</font> <font color='#979000'>250</font><font face='Lucida Console'>)</font>;
-            <b>}</b>
+            <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font>hits[i] <font color='#5555FF'>=</font><font color='#5555FF'>=</font> <font color='#979000'>250</font><font face='Lucida Console'>)</font>;
         <b>}</b>
     <b>}</b>
 

@@ -115,7 +115,8 @@ namespace dlib
             const long n = a.nc();
 
             ipiv.set_size(std::min(m,n), 1);
-            // compute the actual decomposition
+
+            // compute the actual decomposition 
             return binding::getrf(m, n, &a(0,0), a.nr(), &ipiv(0,0));
         }
 

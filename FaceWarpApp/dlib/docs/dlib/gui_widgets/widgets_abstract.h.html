@@ -534,11 +534,10 @@
     <b>{</b>
         <font color='#009900'>/*!
             INITIAL VALUE
-                - text() == ""
-                - width() == 10
-                - height() == a height appropriate for the font used.  The text color will
-                  be black.
-                - has_input_focus() == false
+                text() == ""
+                width() == 10
+                height() == a height appropriate for the font used.
+                The text color will be black.
 
             WHAT THIS OBJECT REPRESENTS
                 This object represents a simple one line text input field.  
@@ -624,16 +623,7 @@
         <font face='Lucida Console'>)</font>;
         <font color='#009900'>/*!
             ensures
-                - #has_input_focus() == true
-        !*/</font>
-
-        <font color='#0000FF'><u>bool</u></font> <b><a name='has_input_focus'></a>has_input_focus</b> <font face='Lucida Console'>(</font>
-        <font face='Lucida Console'>)</font>;
-        <font color='#009900'>/*!
-            ensures
-                - Returns true if this txt field has input keyboard focus.  If this
-                  is the case then it means that when the user types on the keyboard
-                  the output will appear inside the text field.
+                - gives this text field input keyboard focus
         !*/</font>
 
         <font color='#0000FF'><u>void</u></font> <b><a name='select_all_text'></a>select_all_text</b> <font face='Lucida Console'>(</font>

@@ -1,5 +1,5 @@
 /* Gaussian Vertical*/
-uniform float VRes;
+uniform float Scale;
 
 attribute vec4 Position;
 attribute vec2 TexSource;
@@ -14,6 +14,6 @@ void main()
     gl_Position = Position;
     UV = TexSource;
     Alpha = InAlpha;
-    v_blurTexCoords[ 0] = UV + vec2(0.0, -1.0 / VRes);
-    v_blurTexCoords[ 1] = UV + vec2(0.0,  1.0 / VRes);
+    v_blurTexCoords[ 0] = UV + vec2(0.0, -Scale);
+    v_blurTexCoords[ 1] = UV + vec2(0.0,  Scale);
 }

@@ -87,18 +87,15 @@ class OpenGLView: UIView  {
         let device = CaptureManager.devices()[1]
         do {
             try device.lockForConfiguration()
-            for f in device.formats as! [AVCaptureDeviceFormat] {
-                if CMVideoFormatDescriptionGetDimensions(f.formatDescription).width == 640 {
-                    device.activeFormat = f
-                }
-            }
+            device.activeVideoMaxFrameDuration = CMTimeMake(1, 24)
+            device.activeVideoMinFrameDuration = CMTimeMake(1, 24)
             device.unlockForConfiguration()
         } catch {
             print("Could not set config")
         }
+        
         print(CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription))
         self.captureManager = CaptureManager(withDevice: device)
-        
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
         
         do {
@@ -109,10 +106,6 @@ class OpenGLView: UIView  {
         }
         
         self.captureManager?.start()
-        
-//        let singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("singleTap:"))
-//        singleFingerTap.numberOfTapsRequired = 1
-//        self.addGestureRecognizer(singleFingerTap)
     }
     
     /* Gesture recogniser

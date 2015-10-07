@@ -57,7 +57,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     let warper : Warper = Warper()
     
-    let scale = 2 // how much we shrink small image by
+    let scale = 4 // how much we shrink small image by
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -150,7 +150,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let origHeight = textureManager!.uprightHeight
         let origWidth = textureManager!.uprightWidth
         
-        var (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateHAvgShader(forHRes: GLfloat(origWidth))
+        var (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateHAvgShader(withScale: 0.0001)
         var (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
         textureManager!.bindUprightTextureToSlot(textureSlot)
@@ -159,7 +159,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
-        (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateVAvgShader(forVRes: GLfloat(origHeight))
+        (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateVAvgShader(withScale: 0.0001)
         (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
         textureManager!.bindHBlurTextureToSlot(textureSlot)

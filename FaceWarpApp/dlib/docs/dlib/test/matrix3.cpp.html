@@ -1075,40 +1075,6 @@
     <b>}</b>
 
 
-    <font color='#0000FF'><u>void</u></font> <b><a name='test_axpy'></a>test_axpy</b><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>
-    <b>{</b>
-        <font color='#0000FF'>const</font> <font color='#0000FF'><u>int</u></font> n <font color='#5555FF'>=</font> <font color='#979000'>4</font>;
-        matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font> B <font color='#5555FF'>=</font> dlib::<font color='#BB00BB'>randm</font><font face='Lucida Console'>(</font>n,n<font face='Lucida Console'>)</font>;
-
-        matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font> g <font color='#5555FF'>=</font> dlib::uniform_matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font>n,<font color='#979000'>1</font>,<font color='#979000'>0.0</font><font face='Lucida Console'>)</font>;
-
-        <font color='#0000FF'>const</font> <font color='#0000FF'><u>double</u></font> tau <font color='#5555FF'>=</font> <font color='#979000'>1</font>;
-
-        matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font> p <font color='#5555FF'>=</font> g <font color='#5555FF'>+</font> tau<font color='#5555FF'>*</font>dlib::<font color='#BB00BB'>colm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-        matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font> q <font color='#5555FF'>=</font> dlib::<font color='#BB00BB'>colm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font>q<font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-
-        p <font color='#5555FF'>=</font> tau<font color='#5555FF'>*</font>dlib::<font color='#BB00BB'>colm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-        q <font color='#5555FF'>=</font> dlib::<font color='#BB00BB'>colm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>0</font><font face='Lucida Console'>)</font>;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font>q<font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-
-
-
-
-        g <font color='#5555FF'>=</font> dlib::uniform_matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font>n,n,<font color='#979000'>0.0</font><font face='Lucida Console'>)</font>;
-        p <font color='#5555FF'>=</font> g <font color='#5555FF'>+</font> tau<font color='#5555FF'>*</font>B;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font>B<font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-
-        p <font color='#5555FF'>=</font> g <font color='#5555FF'>+</font> tau<font color='#5555FF'>*</font><font color='#BB00BB'>subm</font><font face='Lucida Console'>(</font>B,<font color='#BB00BB'>get_rect</font><font face='Lucida Console'>(</font>B<font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font>B<font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-
-        g <font color='#5555FF'>=</font> dlib::uniform_matrix<font color='#5555FF'>&lt;</font><font color='#0000FF'><u>double</u></font><font color='#5555FF'>&gt;</font><font face='Lucida Console'>(</font><font color='#979000'>2</font>,<font color='#979000'>2</font>,<font color='#979000'>0.0</font><font face='Lucida Console'>)</font>;
-        p <font color='#5555FF'>=</font> g <font color='#5555FF'>+</font> tau<font color='#5555FF'>*</font><font color='#BB00BB'>subm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>1</font>,<font color='#979000'>1</font>,<font color='#979000'>2</font>,<font color='#979000'>2</font><font face='Lucida Console'>)</font>;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font><font color='#BB00BB'>subm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>1</font>,<font color='#979000'>1</font>,<font color='#979000'>2</font>,<font color='#979000'>2</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-
-        <font color='#BB00BB'>set_subm</font><font face='Lucida Console'>(</font>p,<font color='#979000'>0</font>,<font color='#979000'>0</font>,<font color='#979000'>2</font>,<font color='#979000'>2</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font> g <font color='#5555FF'>+</font> tau<font color='#5555FF'>*</font><font color='#BB00BB'>subm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>1</font>,<font color='#979000'>1</font>,<font color='#979000'>2</font>,<font color='#979000'>2</font><font face='Lucida Console'>)</font>;
-        <font color='#BB00BB'>DLIB_TEST</font><font face='Lucida Console'>(</font><font color='#BB00BB'>max</font><font face='Lucida Console'>(</font><font color='#BB00BB'>abs</font><font face='Lucida Console'>(</font>p<font color='#5555FF'>-</font><font color='#BB00BB'>subm</font><font face='Lucida Console'>(</font>B,<font color='#979000'>1</font>,<font color='#979000'>1</font>,<font color='#979000'>2</font>,<font color='#979000'>2</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&lt;</font> <font color='#979000'>1e</font><font color='#5555FF'>-</font><font color='#979000'>14</font><font face='Lucida Console'>)</font>;
-    <b>}</b>
 
 
     <font color='#0000FF'>class</font> <b><a name='matrix_tester'></a>matrix_tester</b> : <font color='#0000FF'>public</font> tester
@@ -1123,7 +1089,6 @@
         <font color='#0000FF'><u>void</u></font> <b><a name='perform_test'></a>perform_test</b> <font face='Lucida Console'>(</font>
         <font face='Lucida Console'>)</font>
         <b>{</b>
-            <font color='#BB00BB'>test_axpy</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>;
             <font color='#BB00BB'>test_matrix_IO</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>;
             <font color='#BB00BB'>matrix_test</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>;
         <b>}</b>

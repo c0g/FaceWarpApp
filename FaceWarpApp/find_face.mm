@@ -23,15 +23,11 @@ struct tracker_rect {
     dlib::rectangle lastone;
 };
 
-
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
-//    std::vector<dlib::object_detector<dlib::scan_fhog_pyramid<dlib::pyramid_down<4> > > > detector;
     dlib::frontal_face_detector detector;
     NSMutableArray * facesAverage;
     NSUInteger movingAverageCount;
-    
-    //    std::vector<dlib::rectangle> faces;
     int retrackAfter;
     int iter;
     std::mutex mtx;
@@ -48,11 +44,8 @@ struct tracker_rect {
         iter = 0;
         retrackAfter = 3;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
-//        NSString * dat_file2 = [[NSBundle mainBundle] pathForResource:@"total_detector" ofType:@"svm"];
-        
         detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
-//        dlib::deserialize(dat_file2.UTF8String) >> detector;
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
         movingAverageCount = 0;
@@ -74,17 +67,55 @@ struct tracker_rect {
     dlib::cv_image<dlib::rgb_alpha_pixel> bigImg(bigMat);
     
     cv::Mat smallMatWithA(_smallImg.height, _smallImg.width, CV_8UC4, _smallImg.pixels, _smallImg.rowSize);
-    dlib::cv_image<dlib::rgb_alpha_pixel> smallImg(smallMatWithA);
-    std::vector<dlib::rectangle> faces = detector(smallImg);
+    cv::Mat smallMat;
+    cv::cvtColor(smallMatWithA, smallMat, CV_BGRA2RGB);
+    dlib::cv_image<dlib::rgb_pixel> smallImg(smallMat);
     
+    if (iter  == retrackAfter) {
+        
+        // Copy small img data on main thread
+        cv::Mat smallMatCopy = smallMat;
+        
+        // Asynchronously find the faces using dlib's face detector
+        dispatch_async(faceQueue, ^{
+            dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
+            std::vector<dlib::rectangle> faces = detector(smallImgCopy);
+            
+            // Update trackers inside mutex
+            mtx.lock();
+            trackers.clear();
+            for (auto face : faces) {
+                dlib::correlation_tracker tracker;
+                tracker.start_track(smallImgCopy, face);
+                trackers.push_back(tracker_rect{tracker, face});
+            }
+            mtx.unlock();
+            
+            iter = 0;
+        });
+    }
+    iter++;
+    
+    // Get rectanges from tracker inside mutex
+    std::vector<dlib::rectangle> rects;
+    mtx.lock();
+    for (auto tr : trackers) {
+        tr.tracker.update(smallImg, tr.lastone);
+        dlib::rectangle smallRect = tr.tracker.get_position();
+        dlib::rectangle faceRect = dlib::rectangle(
+                                   static_cast<long>(smallRect.left() * scale),
+                                   static_cast<long>(smallRect.top() * scale),
+                                   static_cast<long>(smallRect.right() * scale),
+                                   static_cast<long>(smallRect.bottom() * scale)
+                                   );
+        rects.push_back(faceRect);
+    }
+    mtx.unlock();
+    
+    
+    // Got face points outside mutex
     NSMutableArray * arr = [[NSMutableArray alloc] init];
-    for (auto smallFaceRect : faces) {
-        dlib::rectangle faceRect{
-            smallFaceRect.left() * scale,
-            smallFaceRect.top() * scale,
-            smallFaceRect.right() * scale,
-            smallFaceRect.bottom() * scale
-        };
+    for (auto faceRect : rects) {
         NSMutableArray * internalArr = [[NSMutableArray alloc] init];
         dlib::full_object_detection res = predictor(bigImg, faceRect);
         for (int pidx = 0; pidx < res.num_parts(); ++pidx) {

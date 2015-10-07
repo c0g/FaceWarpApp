@@ -18,8 +18,9 @@
 		E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76E1BB034BC00142050 /* TextureFragment.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76F1BB034BC00142050 /* TextureVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E20FE7881BB092CF00142050 /* Accelerate.framework */; };
-		E21BAB2E1BC193B700E9B58F /* BlendFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2D1BC193B700E9B58F /* BlendFragment.glsl */; settings = {ASSET_TAGS = (); }; };
-		E21BAB301BC193C400E9B58F /* BlendVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2F1BC193C400E9B58F /* BlendVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */; settings = {ASSET_TAGS = (); }; };
+		E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
 		E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E26D166F1BB42F7700A0F573 /* PHItypes.m */; settings = {ASSET_TAGS = (); }; };
 		E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */; };
@@ -101,8 +102,9 @@
 		E20FE76E1BB034BC00142050 /* TextureFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureFragment.glsl; sourceTree = "<group>"; };
 		E20FE76F1BB034BC00142050 /* TextureVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TextureVertex.glsl; sourceTree = "<group>"; };
 		E20FE7881BB092CF00142050 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		E21BAB2D1BC193B700E9B58F /* BlendFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BlendFragment.glsl; sourceTree = "<group>"; };
-		E21BAB2F1BC193C400E9B58F /* BlendVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BlendVertex.glsl; sourceTree = "<group>"; };
+		E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageVerticalVertex.glsl; sourceTree = "<group>"; };
+		E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageFragment.glsl; sourceTree = "<group>"; };
+		E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E264DF3E1BB950710051380D /* GTEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTEngine.xcodeproj; path = GeometricTools/GTEngine/GTEngine.xcodeproj; sourceTree = "<group>"; };
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
@@ -243,8 +245,9 @@
 				E28E56201BBC318400358D16 /* GaussianHorizontalVertex.glsl */,
 				E28E56221BBC319D00358D16 /* GaussianVerticalVertex.glsl */,
 				E28E56241BBC31B700358D16 /* GaussianFragment.glsl */,
-				E21BAB2D1BC193B700E9B58F /* BlendFragment.glsl */,
-				E21BAB2F1BC193C400E9B58F /* BlendVertex.glsl */,
+				E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */,
+				E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */,
+				E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -336,7 +339,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 2WHKXWB6SD;
+						DevelopmentTeam = S559Q4PGN4;
 					};
 				};
 			};
@@ -400,8 +403,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */,
 				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
-				E21BAB301BC193C400E9B58F /* BlendVertex.glsl in Resources */,
+				E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
@@ -409,7 +413,7 @@
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
 				5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
-				E21BAB2E1BC193B700E9B58F /* BlendFragment.glsl in Resources */,
+				E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */,
 				E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */,
 				E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */,
 			);
@@ -557,7 +561,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -566,8 +570,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_FAST_MATH = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
@@ -598,7 +602,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_OPTIMIZATION = time;
+				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEFINES_MODULE = YES;
@@ -607,8 +611,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_FAST_MATH = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,

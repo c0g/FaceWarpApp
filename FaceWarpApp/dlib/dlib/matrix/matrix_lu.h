@@ -116,8 +116,6 @@ namespace dlib
 
 #ifdef DLIB_USE_LAPACK
         matrix<lapack::integer,0,1,mem_manager_type,layout_type> piv_temp;
-        
-        
         lapack::getrf(LU, piv_temp);
 
         pivsign = 1;

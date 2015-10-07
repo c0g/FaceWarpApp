@@ -458,16 +458,6 @@
 
 <font color='#009900'>// ----------------------------------------------------------------------------------------
 </font>
-    <font color='#0000FF'><u>bool</u></font> text_field::
-    <b><a name='has_input_focus'></a>has_input_focus</b> <font face='Lucida Console'>(</font>
-    <font face='Lucida Console'>)</font> <font color='#0000FF'>const</font>
-    <b>{</b>
-        auto_mutex <font color='#BB00BB'>M</font><font face='Lucida Console'>(</font>m<font face='Lucida Console'>)</font>;
-        <font color='#0000FF'>return</font> has_focus;
-    <b>}</b>
-
-<font color='#009900'>// ----------------------------------------------------------------------------------------
-</font>
     <font color='#0000FF'><u>void</u></font> text_field::
     <b><a name='select_all_text'></a>select_all_text</b> <font face='Lucida Console'>(</font>
     <font face='Lucida Console'>)</font>
@@ -6313,9 +6303,6 @@
 </font>            std::map<font color='#5555FF'>&lt;</font>std::string,point<font color='#5555FF'>&gt;</font>::const_iterator itr;
             <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font>itr <font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>begin</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; itr <font color='#5555FF'>!</font><font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>end</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>itr<font face='Lucida Console'>)</font>
             <b>{</b>
-                <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second <font color='#5555FF'>=</font><font color='#5555FF'>=</font> OBJECT_PART_NOT_PRESENT<font face='Lucida Console'>)</font>
-                    <font color='#0000FF'>continue</font>;
-
                 rectangle temp <font color='#5555FF'>=</font> <font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font><font color='#BB00BB'>get_rect_on_screen</font><font face='Lucida Console'>(</font><font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second,<font color='#979000'>1</font>,<font color='#979000'>1</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>, part_width, part_width<font face='Lucida Console'>)</font>;
 
                 <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font>rect_is_selected <font color='#5555FF'>&amp;</font><font color='#5555FF'>&amp;</font> selected_rect <font color='#5555FF'>=</font><font color='#5555FF'>=</font> i <font color='#5555FF'>&amp;</font><font color='#5555FF'>&amp;</font> 
@@ -6508,9 +6495,6 @@
                 std::map<font color='#5555FF'>&lt;</font>std::string,point<font color='#5555FF'>&gt;</font>::const_iterator itr;
                 <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font>itr <font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>begin</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; itr <font color='#5555FF'>!</font><font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>end</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>itr<font face='Lucida Console'>)</font>
                 <b>{</b>
-                    <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second <font color='#5555FF'>=</font><font color='#5555FF'>=</font> OBJECT_PART_NOT_PRESENT<font face='Lucida Console'>)</font>
-                        <font color='#0000FF'>continue</font>;
-
                     rectangle temp <font color='#5555FF'>=</font> <font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font><font color='#BB00BB'>get_rect_on_screen</font><font face='Lucida Console'>(</font><font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second,<font color='#979000'>1</font>,<font color='#979000'>1</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>, part_width, part_width<font face='Lucida Console'>)</font>;
                     point c <font color='#5555FF'>=</font> <font color='#BB00BB'>center</font><font face='Lucida Console'>(</font>temp<font face='Lucida Console'>)</font>;
 
@@ -6654,9 +6638,6 @@
                 std::map<font color='#5555FF'>&lt;</font>std::string,point<font color='#5555FF'>&gt;</font>::const_iterator itr;
                 <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font>itr <font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>begin</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; itr <font color='#5555FF'>!</font><font color='#5555FF'>=</font> overlay_rects[i].parts.<font color='#BB00BB'>end</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>itr<font face='Lucida Console'>)</font>
                 <b>{</b>
-                    <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second <font color='#5555FF'>=</font><font color='#5555FF'>=</font> OBJECT_PART_NOT_PRESENT<font face='Lucida Console'>)</font>
-                        <font color='#0000FF'>continue</font>;
-
                     rectangle temp <font color='#5555FF'>=</font> <font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font><font color='#BB00BB'>get_rect_on_screen</font><font face='Lucida Console'>(</font><font color='#BB00BB'>centered_rect</font><font face='Lucida Console'>(</font>itr<font color='#5555FF'>-</font><font color='#5555FF'>&gt;</font>second,<font color='#979000'>1</font>,<font color='#979000'>1</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>, part_width, part_width<font face='Lucida Console'>)</font>;
                     point c <font color='#5555FF'>=</font> <font color='#BB00BB'>center</font><font face='Lucida Console'>(</font>temp<font face='Lucida Console'>)</font>;
 

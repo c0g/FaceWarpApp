@@ -34,14 +34,14 @@ class ShaderManager {
     let havgXYZ : GLuint
     let havgUV : GLuint
     let havgAlpha : GLuint
-    let havgRes : GLint
+    let havgScale : GLint
     let havgTex : GLint
     
     let vavgShader : ShaderProgram
     let vavgXYZ : GLuint
     let vavgUV : GLuint
     let vavgAlpha : GLuint
-    let vavgRes : GLint
+    let vavgScale : GLint
     let vavgTex : GLint
     
 //    let blendShader : ShaderProgram
@@ -81,7 +81,7 @@ class ShaderManager {
         havgXYZ = GLuint(glGetAttribLocation(havgShader.programHandle, "Position"))
         havgUV = GLuint(glGetAttribLocation(havgShader.programHandle, "TexSource"))
         havgAlpha = GLuint(glGetAttribLocation(havgShader.programHandle, "InAlpha"))
-        havgRes = GLint(glGetUniformLocation(havgShader.programHandle, "Res"))
+        havgScale = GLint(glGetUniformLocation(havgShader.programHandle, "Scale"))
         havgTex = GLint(glGetUniformLocation(havgShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(havgXYZ)
         glEnableVertexAttribArray(havgUV)
@@ -90,7 +90,7 @@ class ShaderManager {
         vavgXYZ = GLuint(glGetAttribLocation(vavgShader.programHandle, "Position"))
         vavgUV = GLuint(glGetAttribLocation(vavgShader.programHandle, "TexSource"))
         vavgAlpha = GLuint(glGetAttribLocation(vavgShader.programHandle, "InAlpha"))
-        vavgRes = GLint(glGetUniformLocation(vavgShader.programHandle, "Res"))
+        vavgScale = GLint(glGetUniformLocation(vavgShader.programHandle, "Scale"))
         vavgTex = GLint(glGetUniformLocation(vavgShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(vavgXYZ)
         glEnableVertexAttribArray(vavgUV)
@@ -124,15 +124,15 @@ class ShaderManager {
     }
     
     
-    func activateHAvgShader(forHRes res : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
+    func activateHAvgShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(havgShader.programHandle)
-        glUniform1f(havgRes, res)
+        glUniform1f(havgScale, scale)
         return (havgXYZ, havgUV, havgAlpha, havgTex)
     }
     
-    func activateVAvgShader(forVRes res : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
+    func activateVAvgShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(vavgShader.programHandle)
-        glUniform1f(vavgRes, res)
+        glUniform1f(vavgScale, scale)
         return (vavgXYZ, vavgUV, vavgAlpha, vavgTex)
     }
     
