@@ -75,7 +75,7 @@ struct tracker_rect {
     
     cv::Mat smallMatWithA(_smallImg.height, _smallImg.width, CV_8UC4, _smallImg.pixels, _smallImg.rowSize);
     dlib::cv_image<dlib::rgb_alpha_pixel> smallImg(smallMatWithA);
-    std::vector<dlib::rectangle> faces = detector(smallImg);
+    std::vector<dlib::rectangle> faces = evaluate_detectors(detector, smallImg);
     
     NSMutableArray * arr = [[NSMutableArray alloc] init];
     for (auto smallFaceRect : faces) {
