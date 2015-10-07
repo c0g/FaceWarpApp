@@ -108,8 +108,8 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
                                        angle,
                                        -3.1,
                                        3.1,
-                                       1e-7,
-                                       100,
+                                       1e-3,
+                                       80,
                                        1e-2);
         //        dlib::find_min_using_approximate_derivatives(dlib::cg_search_strategy(),
         //                                                     dlib::gradient_norm_stop_strategy(1e-7),
@@ -167,7 +167,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
                                                      dlib::objective_delta_stop_strategy(1e-3),
                                                      cost_function_3d_rotation_wrapper,
                                                      vector,
-                                                     1e-5);
+                                                     1e-7);
         
         
         
