@@ -30,6 +30,20 @@ class ShaderManager {
     let vblurScale : GLint
     let vblurTex : GLint
     
+    let havgShader : ShaderProgram
+    let havgXYZ : GLuint
+    let havgUV : GLuint
+    let havgAlpha : GLuint
+    let havgRes : GLint
+    let havgTex : GLint
+    
+    let vavgShader : ShaderProgram
+    let vavgXYZ : GLuint
+    let vavgUV : GLuint
+    let vavgAlpha : GLuint
+    let vavgRes : GLint
+    let vavgTex : GLint
+    
 //    let blendShader : ShaderProgram
 //    let blendXYZ : GLuint
 //    let blendUV : GLuint
@@ -62,6 +76,26 @@ class ShaderManager {
         vblurTex = GLint(glGetUniformLocation(vblurShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(vblurXYZ)
         glEnableVertexAttribArray(vblurUV)
+
+        havgShader = ShaderProgram(withVertexShader: "AverageHorizontalVertex", andFragmentShader: "AverageFragment")!
+        havgXYZ = GLuint(glGetAttribLocation(havgShader.programHandle, "Position"))
+        havgUV = GLuint(glGetAttribLocation(havgShader.programHandle, "TexSource"))
+        havgAlpha = GLuint(glGetAttribLocation(havgShader.programHandle, "InAlpha"))
+        havgRes = GLint(glGetUniformLocation(havgShader.programHandle, "Res"))
+        havgTex = GLint(glGetUniformLocation(havgShader.programHandle, "TextureSampler"))
+        glEnableVertexAttribArray(havgXYZ)
+        glEnableVertexAttribArray(havgUV)
+
+        vavgShader = ShaderProgram(withVertexShader: "AverageVerticalVertex", andFragmentShader: "AverageFragment")!
+        vavgXYZ = GLuint(glGetAttribLocation(vavgShader.programHandle, "Position"))
+        vavgUV = GLuint(glGetAttribLocation(vavgShader.programHandle, "TexSource"))
+        vavgAlpha = GLuint(glGetAttribLocation(vavgShader.programHandle, "InAlpha"))
+        vavgRes = GLint(glGetUniformLocation(vavgShader.programHandle, "Res"))
+        vavgTex = GLint(glGetUniformLocation(vavgShader.programHandle, "TextureSampler"))
+        glEnableVertexAttribArray(vavgXYZ)
+        glEnableVertexAttribArray(vavgUV)
+        
+
         
 //        blendShader = ShaderProgram(withVertexShader: "BlendVertex", andFragmentShader: "BlendFragment")!
 //        blendXYZ = GLuint(glGetAttribLocation(blendShader.programHandle, "Position"))
@@ -87,6 +121,19 @@ class ShaderManager {
         glUseProgram(vblurShader.programHandle)
         glUniform1f(vblurScale, scale)
         return (vblurXYZ, vblurUV, vblurAlpha, vblurTex)
+    }
+    
+    
+    func activateHAvgShader(forHRes res : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
+        glUseProgram(havgShader.programHandle)
+        glUniform1f(havgRes, res)
+        return (havgXYZ, havgUV, havgAlpha, havgTex)
+    }
+    
+    func activateVAvgShader(forVRes res : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
+        glUseProgram(vavgShader.programHandle)
+        glUniform1f(vavgRes, res)
+        return (vavgXYZ, vavgUV, vavgAlpha, vavgTex)
     }
     
     

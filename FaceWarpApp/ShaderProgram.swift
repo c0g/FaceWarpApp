@@ -38,9 +38,9 @@ class ShaderProgram {
         glGetProgramiv(programHandle, GLenum(GL_LINK_STATUS), &linkSuccess)
         if (linkSuccess == GL_FALSE) {
             print("Failed to create shader program!")
-            var infolog = [GLchar](count: 100, repeatedValue: 0)
+            var infolog = [GLchar](count: 200, repeatedValue: 0)
             var length : GLsizei = GLsizei()
-            glGetProgramInfoLog(programHandle, 100, &length, &infolog)
+            glGetProgramInfoLog(programHandle, 200, &length, &infolog)
             print(String.fromCString(&infolog))
             throw ShaderError.LINK_ERROR
         }

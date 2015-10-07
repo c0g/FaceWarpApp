@@ -101,10 +101,12 @@ class TextureManager {
             CVOpenGLESTextureGetTarget(videoTexture!),
             CVOpenGLESTextureGetName(videoTexture!)
         )
+//        glGenerateMipmap(GLenum(GL_TEXTURE_2D))
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR);
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR);
+//        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR);
+//        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR_MIPMAP_LINEAR);
+//        glGenerateMipmap(GLenum(GL_TEXTURE_2D))
         glActiveTexture(GLenum(GL_TEXTURE0))
     }
     func bindVideoTextureToSlot(textureSlot : GLint) {
@@ -152,6 +154,22 @@ class TextureManager {
     func setViewPortForUprightTexture() {
         if let pb = uprightPixelBuffer {
             setViewPortForTexture(pb)
+        }
+    }
+    
+    var uprightWidth : Int {
+        if let pb = uprightPixelBuffer {
+            return CVPixelBufferGetWidth(pb)
+        } else {
+            return 1
+        }
+    }
+    
+    var uprightHeight : Int {
+        if let pb = uprightPixelBuffer {
+            return CVPixelBufferGetHeight(pb)
+        } else {
+            return 1
         }
     }
     

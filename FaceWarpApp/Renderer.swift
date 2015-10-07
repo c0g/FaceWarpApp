@@ -57,7 +57,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     let warper : Warper = Warper()
     
-    let scale = 4 // how much we shrink small image by
+    let scale = 2 // how much we shrink small image by
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -140,12 +140,35 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         textureManager!.setViewPortForUprightTexture()
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         
-        // Render small size, upright
+        downSizeBlurFilter()
+        
+        vertexManager!.unbindPreprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+    }
+    
+    func downSizeBlurFilter() {
+        
+        let origHeight = textureManager!.uprightHeight
+        let origWidth = textureManager!.uprightWidth
+        
+        var (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateHAvgShader(forHRes: GLfloat(origWidth))
+        var (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
+        textureManager!.bindUprightTextureToSlot(textureSlot)
+        textureManager!.bindHBlurTextureAsOutput()
+        textureManager!.setViewPortForHBlurTexture()
+        glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
+        (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateVAvgShader(forVRes: GLfloat(origHeight))
+        (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
+        textureManager!.bindHBlurTextureToSlot(textureSlot)
         textureManager!.bindSmallerTextureAsOutput()
         textureManager!.setViewPortForSmallerTexture()
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+        vertexManager!.unbindPassVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
-        vertexManager!.unbindPreprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        
     }
     
     func hblurRender() {

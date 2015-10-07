@@ -26,8 +26,8 @@ struct tracker_rect {
 
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
-    std::vector<dlib::object_detector<dlib::scan_fhog_pyramid<dlib::pyramid_down<4> > > > detector;
-//    dlib::frontal_face_detector ;
+//    std::vector<dlib::object_detector<dlib::scan_fhog_pyramid<dlib::pyramid_down<4> > > > detector;
+    dlib::frontal_face_detector detector;
     NSMutableArray * facesAverage;
     NSUInteger movingAverageCount;
     
@@ -48,11 +48,11 @@ struct tracker_rect {
         iter = 0;
         retrackAfter = 3;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
-        NSString * dat_file2 = [[NSBundle mainBundle] pathForResource:@"total_detector" ofType:@"svm"];
+//        NSString * dat_file2 = [[NSBundle mainBundle] pathForResource:@"total_detector" ofType:@"svm"];
         
-//        detector = dlib::get_frontal_face_detector();
+        detector = dlib::get_frontal_face_detector();
         dlib::deserialize(dat_file.UTF8String) >> predictor;
-        dlib::deserialize(dat_file2.UTF8String) >> detector;
+//        dlib::deserialize(dat_file2.UTF8String) >> detector;
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
         movingAverageCount = 0;
@@ -75,7 +75,7 @@ struct tracker_rect {
     
     cv::Mat smallMatWithA(_smallImg.height, _smallImg.width, CV_8UC4, _smallImg.pixels, _smallImg.rowSize);
     dlib::cv_image<dlib::rgb_alpha_pixel> smallImg(smallMatWithA);
-    std::vector<dlib::rectangle> faces = evaluate_detectors(detector, smallImg);
+    std::vector<dlib::rectangle> faces = detector(smallImg);
     
     NSMutableArray * arr = [[NSMutableArray alloc] init];
     for (auto smallFaceRect : faces) {
