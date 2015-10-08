@@ -399,7 +399,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func doWarp(uv : [PhiPoint]) -> [PhiPoint] {
-        return warper.doWarp(uv, warp: WarpType.SILLY)
+        return warper.doWarp(uv, warp: WarpType.PRETTY2)
     }
     
     func scheduleSave() {
