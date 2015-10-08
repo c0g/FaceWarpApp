@@ -276,7 +276,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             drawMouth(XY: xyPoints, UV: uvPoints)
             let (ratio, min, max) = prepTeeth(UVs: uvPoints)
             if (min > 0) && (max > 0) {
-                drawInnerMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
+                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
             }
         }
     }
@@ -355,17 +355,17 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-    func drawInnerMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin min: GLfloat, andMax max : GLfloat, andRatio ratio : GLfloat) {
+    func drawBrighterMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin min: GLfloat, andMax max : GLfloat, andRatio ratio : GLfloat) {
         let box = textureManager!.uprightRect
         if let box = box {
             let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: min, andMaximum: max, andThreshold: toothThreshold)
-            vertexManager!.fillInnerMouthVBO(UV: Array(uv[60..<68]), XY: Array(xy[60..<68]), inBox: box, withBrightness: 1 + ratio)
-            let (num, type) = vertexManager!.bindInnerMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
+            vertexManager!.fillBrighterMouthVBO(UV: Array(uv[60..<68]), XY: Array(xy[60..<68]), inBox: box, withBrightness: 1 + ratio)
+            let (num, type) = vertexManager!.bindBrighterMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
             textureManager!.setViewPortForOutputTexture()
             glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
-            vertexManager!.unbindInnerMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
+            vertexManager!.unbindBrighterMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
         }
     }
     
