@@ -59,12 +59,32 @@ let squareIndices: [GLubyte] = [
     0, 2, 3,
 ]
 
+let mouth_indices : [GLubyte] = [ // To draw to 50x20 texture
+    0, 1, 2,
+    6, 7, 0,
+    6, 0, 2,
+    2, 4, 6,
+    1, 4, 3,
+    6, 5, 4
+]
+
+let inner_mouth_indices : [GLubyte] = [
+    0, 7, 1,
+    5, 4, 3,
+    7, 2, 1,
+    5, 3, 2,
+    7, 6, 2,
+    6, 5, 2
+]
+
 class VertexManager {
     
     var preprocessAO : GLuint = GLuint()  // Used to rotate the input video to the correct orientation for dlib
     var passAO : GLuint = GLuint()        // Used for pass-through draws - shrinking textures etc
     var faceAO : GLuint = GLuint()        // Used for drawing face regions
     var postprocessAO : GLuint = GLuint() // Used to rotate the output to the correct orientation for display or recording
+    var mouthAO : GLuint = GLuint()
+    var innermouthAO : GLuint = GLuint()
     
     var passPositionBuffer : GLuint = GLuint()
     var passIndexBuffer : GLuint = GLuint()
@@ -75,6 +95,12 @@ class VertexManager {
     var postprocessPositionBuffer : GLuint = GLuint()
     var postprocessIndexBuffer : GLuint = GLuint()
     
+    var mouthPositionBuffer : GLuint = GLuint()
+    var mouthIndexBuffer : GLuint = GLuint()
+    
+    var innermouthPositionBuffer : GLuint = GLuint()
+    var innermouthIndexBuffer : GLuint = GLuint()
+    
     var facePositionBuffer : GLuint = GLuint()
     var faceIndexBuffer : GLuint = GLuint()
     var numFaceIdx = 0
@@ -84,11 +110,12 @@ class VertexManager {
         setupPostprocessVBO()
         setupPreprocessVBO()
         setupFaceVBO()
+        setupPredrawMouthVBO()
+        setupInnerMouthVBO()
     }
     
     func setupPassVBO() {
         glGenVertexArraysOES(1, &passAO);
-        print(passAO)
         glGenBuffers(1, &passPositionBuffer)
         glGenBuffers(1, &passIndexBuffer)
         
@@ -133,7 +160,6 @@ class VertexManager {
     
     func setupPreprocessVBO() {
         glGenVertexArraysOES(1, &preprocessAO);
-        print(preprocessAO)
         glGenBuffers(1, &preprocessPositionBuffer)
         glGenBuffers(1, &preprocessIndexBuffer)
     }
@@ -183,7 +209,6 @@ class VertexManager {
     
     func setupPostprocessVBO() {
         glGenVertexArraysOES(1, &postprocessAO);
-        print(postprocessAO)
         glGenBuffers(1, &postprocessPositionBuffer)
         glGenBuffers(1, &postprocessIndexBuffer)
     }
@@ -242,9 +267,7 @@ class VertexManager {
             return (1 - rot_u, 1 - rot_v)
         }
     }
-    
-    
-    
+
     func makeSquareVertices(withFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) -> [Coordinate] {
         let vertices = [
             Coordinate(xyz : (-1, -1, 0), uv : UV((0, 0), ForFlip: flip, andRotate90: rotate), alpha: 1),
@@ -259,7 +282,6 @@ class VertexManager {
     // MARK: Management of face vertex buffer object
     func setupFaceVBO() {
         glGenVertexArraysOES(1, &faceAO);
-        print(preprocessAO)
         glGenBuffers(1, &facePositionBuffer)
         glGenBuffers(1, &faceIndexBuffer)
     }
@@ -350,6 +372,140 @@ class VertexManager {
         glDisableVertexAttribArray(positionSlot)
         glDisableVertexAttribArray(uvSlot)
         glDisableVertexAttribArray(alphaSlot)
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
+    // MARK: Fill up mouth vertices to draw to the 50x20 image
+    func setupPredrawMouthVBO() {
+        glGenVertexArraysOES(1, &mouthAO);
+        glGenBuffers(1, &mouthPositionBuffer)
+        glGenBuffers(1, &mouthIndexBuffer)
+    }
+    
+    func fillPredrawMouthVBO(UV uv: [PhiPoint], inBox box: CGRect) {
+        
+        glBindVertexArrayOES(mouthAO);
+        let scale_uv = uv.map { (point : PhiPoint) -> TexturePosition in
+            let unorm = GLfloat(point.x) / GLfloat(box.width)
+            let vnorm = GLfloat(point.y) / GLfloat(box.height)
+            return (unorm, vnorm)
+        }
+        let mouth_vertices = [
+            Coordinate(xyz: (-1.0, 0.0,  0), uv: scale_uv[0], alpha: 1),
+            Coordinate(xyz: (-1.0, 1.0,  0), uv: scale_uv[1], alpha: 1),
+            Coordinate(xyz: ( 0.0, 1.0,  0), uv: scale_uv[2], alpha: 1),
+            Coordinate(xyz: ( 1.0, 1.0,  0), uv: scale_uv[3], alpha: 1),
+            Coordinate(xyz: ( 1.0, 0.0,  0), uv: scale_uv[4], alpha: 1),
+            Coordinate(xyz: ( 1.0,-1.0,  0), uv: scale_uv[5], alpha: 1),
+            Coordinate(xyz: ( 0.0,-1.0,  0), uv: scale_uv[6], alpha: 1),
+            Coordinate(xyz: (-1.0,-1.0,  0), uv: scale_uv[7], alpha: 1)
+        ]
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), mouthPositionBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), mouth_vertices.size(), mouth_vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), mouthIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), mouth_indices.size(), mouth_indices, GLenum(GL_STATIC_DRAW))
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
+    func bindPredrawMouthVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andAlphaSlot alphaSlot : GLuint) -> (GLint, GLenum) {
+        glBindVertexArrayOES(mouthAO);
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), mouthPositionBuffer)
+        glEnableVertexAttribArray(positionSlot)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
+        glEnableVertexAttribArray(uvSlot)
+        glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
+        glEnableVertexAttribArray(alphaSlot)
+        glVertexAttribPointer(alphaSlot, 1, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(TexturePosition) + sizeof(ImagePosition)))
+        return (GLint(mouth_indices.count), GLenum(GL_UNSIGNED_BYTE))
+    }
+    
+    func unbindPredrawMouthVBO(fromPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andAlphaSlot alphaSlot : GLuint) {
+        glDisableVertexAttribArray(positionSlot)
+        glDisableVertexAttribArray(uvSlot)
+        glDisableVertexAttribArray(alphaSlot)
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
+    // MARK: Fill up mouth vertices to draw to the final image with brightening
+    func setupInnerMouthVBO() {
+        glGenVertexArraysOES(1, &innermouthAO);
+        glGenBuffers(1, &innermouthPositionBuffer)
+        glGenBuffers(1, &innermouthIndexBuffer)
+    }
+    
+    func fillInnerMouthVBO(UV uv: [PhiPoint], XY xy : [PhiPoint], inBox box: CGRect, withBrightness brightenFactor : GLfloat) {
+        
+        glBindVertexArrayOES(innermouthAO);
+        
+        let scale_uv = uv.map { (point : PhiPoint) -> TexturePosition in
+            let unorm = GLfloat(point.x) / GLfloat(box.width)
+            let vnorm = GLfloat(point.y) / GLfloat(box.height)
+            return (unorm, vnorm)
+        }
+        
+        let scale_xy = xy.map { (point : PhiPoint) -> ImagePosition in
+            let xnorm = GLfloat(point.x) / GLfloat(box.width) * 2 - 1
+            let ynorm = GLfloat(point.y) / GLfloat(box.height) * 2 - 1
+            return (xnorm, ynorm, 0)
+        }
+        
+        let mouth_vertices = [
+            Coordinate(xyz: scale_xy[0], uv: scale_uv[0], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[1], uv: scale_uv[1], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[2], uv: scale_uv[2], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[3], uv: scale_uv[3], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[4], uv: scale_uv[4], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[5], uv: scale_uv[5], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[6], uv: scale_uv[6], alpha: brightenFactor),
+            Coordinate(xyz: scale_xy[7], uv: scale_uv[7], alpha: brightenFactor)
+        ]
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), innermouthPositionBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), mouth_vertices.size(), mouth_vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), innermouthIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), inner_mouth_indices.size(), mouth_indices, GLenum(GL_STATIC_DRAW))
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
+    func bindInnerMouthVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andBrightenSlot brightenSlot : GLuint) -> (GLint, GLenum) {
+        glBindVertexArrayOES(innermouthAO);
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), innermouthPositionBuffer)
+        glEnableVertexAttribArray(positionSlot)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
+        glEnableVertexAttribArray(uvSlot)
+        glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
+        glEnableVertexAttribArray(brightenSlot)
+        glVertexAttribPointer(brightenSlot, 1, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(TexturePosition) + sizeof(ImagePosition)))
+        return (GLint(inner_mouth_indices.count), GLenum(GL_UNSIGNED_BYTE))
+    }
+    
+    func unbindInnerMouthVBO(fromPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andBrightenSlot brightenSlot : GLuint) {
+        glDisableVertexAttribArray(positionSlot)
+        glDisableVertexAttribArray(uvSlot)
+        glDisableVertexAttribArray(brightenSlot)
         
         glBindVertexArrayOES(0)
         glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)

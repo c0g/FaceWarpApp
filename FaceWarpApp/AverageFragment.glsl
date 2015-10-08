@@ -1,10 +1,10 @@
 /* BlurFragmentShader.glsl */
 
-varying lowp vec2 v_blurTexCoords[2];
+varying highp vec2 v_blurTexCoords[2];
 
 // Interpolated values from the vertex shaders
-varying lowp vec2 UV;
-varying lowp float Alpha;
+varying highp vec2 UV;
+varying highp float Alpha;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D TextureSampler;

@@ -41,6 +41,41 @@ extension Int {
     
 }
 
+func dist(p1 : PhiPoint, _ p2 : PhiPoint) -> Float {
+    let xdist = p1.x - p2.x
+    let ydist = p1.y - p2.y
+    let sqdist = xdist * xdist + ydist * ydist
+    return sqrt(Float(sqdist))
+}
+
+func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
+    let width = CVPixelBufferGetWidth(pb)
+    let height = CVPixelBufferGetHeight(pb)
+    let rowbytes = CVPixelBufferGetBytesPerRow(pb)
+    CVPixelBufferLockBaseAddress(pb, kCVPixelBufferLock_ReadOnly)
+    defer {
+        CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly)
+    }
+    
+    let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(pb))
+    
+    var min = Float.infinity
+    var max = -Float.infinity
+    
+    for r in 0..<height {
+        for c in 0..<width {
+            let idx = r * rowbytes + c
+            let red =   Float(ptr[idx + 0])
+            let blue =  Float(ptr[idx + 1])
+            let green = Float(ptr[idx + 2])
+            let v = (red + blue + green) / 3.0
+            min = v < min ? v : min
+            max = v > max ? v : max
+        }
+    }
+    return (min, max)
+}
+
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     
@@ -58,6 +93,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let warper : Warper = Warper()
     
     let scale = 4 // how much we shrink small image by
+    let toothThreshold : GLfloat = 0.5 // brightness percentile above which we brighten
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -147,9 +183,6 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func downSizeBlurFilter() {
         
-        let origHeight = textureManager!.uprightHeight
-        let origWidth = textureManager!.uprightWidth
-        
         var (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateHAvgShader(withScale: 0.0001)
         var (num, type) = vertexManager!.bindPassVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         
@@ -222,14 +255,9 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     func findFaces() {
         // Functions return a 'tidyUp' closure which we call to release the pixel buffer
         var facePoints : [[NSValue]] = []
-        let (bigCamImg, bigTidyUp) = textureManager!.uprightPixelBufferAsCamImg()
-        let (smallCamImg, smallTidyUp) = textureManager!.smallPixelBufferAsCamImg()
-        if let big = bigCamImg, let small = smallCamImg {
+        if let big = textureManager!.uprightPixelBuffer, let small = textureManager!.smallPixelBuffer {
             facePoints = faceDetector.facesPointsInBigImage(big, andSmallImage: small, withScale: Int32(scale)) as! [[NSValue]]
         }
-        bigTidyUp()
-        smallTidyUp()
-        
         let numFaces = facePoints.count
         guard numFaces > 0 else {
             return
@@ -239,13 +267,41 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             let uvPoints = pointArray.map {
                 return $0.PhiPointValue
             }
+            
             let xyPoints = doWarp(uvPoints)
             drawBlurFace(XY: xyPoints, UV: uvPoints)
             drawClearFace(XY: xyPoints, UV: uvPoints)
             drawRightEye(XY: xyPoints, UV: uvPoints)
             drawLeftEye(XY: xyPoints, UV: uvPoints)
             drawMouth(XY: xyPoints, UV: uvPoints)
+            let (ratio, min, max) = prepTeeth(UVs: uvPoints)
+            if (min > 0) && (max > 0) {
+                drawInnerMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
+            }
         }
+    }
+    
+    func prepTeeth(UVs uvs : [PhiPoint]) -> (GLfloat, GLfloat, GLfloat) {
+        let width = dist(uvs[60], uvs[64])
+        let height = dist(uvs[66], uvs[62])
+        let ratio = height / width
+        var min : GLfloat = 0
+        var max : GLfloat = 0
+        if ratio > 0.0 {
+            let box = textureManager!.uprightRect
+            if let box = box {
+                let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+                vertexManager!.fillPredrawMouthVBO(UV: Array(uvs[60..<68]), inBox: box)
+                let (num, type) = vertexManager!.bindPredrawMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+                textureManager!.bindUprightTextureToSlot(textureSlot)
+                textureManager!.bindTeethTextureAsOutput()
+                textureManager!.setViewPortForTeethTexture()
+                glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+                vertexManager!.unbindPredrawMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            }
+            (min, max) = extremaOfPixelBuffer(textureManager!.teethPixelBuffer!)
+        }
+        return (ratio, min / 255.0, max / 255.0)
     }
     
     func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
@@ -296,6 +352,20 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.setViewPortForOutputTexture()
             glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
             vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        }
+    }
+    
+    func drawInnerMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin min: GLfloat, andMax max : GLfloat, andRatio ratio : GLfloat) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: min, andMaximum: max, andThreshold: toothThreshold)
+            vertexManager!.fillInnerMouthVBO(UV: Array(uv[60..<68]), XY: Array(xy[60..<68]), inBox: box, withBrightness: 1 + ratio)
+            let (num, type) = vertexManager!.bindInnerMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindInnerMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
         }
     }
     

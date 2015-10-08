@@ -490,14 +490,14 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
 PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling_x = 1.2;
-    const double eye_scaling_y = 1.5;
+    const double eye_scaling_x = 0.6;
+    const double eye_scaling_y = 0.8;
     
-    const double mouth_scaling_x = 0.7;
-    const double mouth_scaling_y = 0.7;
+    const double mouth_scaling_x = 0.8;
+    const double mouth_scaling_y = 1.3;
     
-    const double nose_scaling_x = 1;
-    const double nose_scaling_y = 1;
+    const double nose_scaling_x = 1.2;
+    const double nose_scaling_y = 0.8;
     
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);

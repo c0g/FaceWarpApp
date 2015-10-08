@@ -32,17 +32,36 @@ struct tracker_rect {
     dlib::rectangle lastone;
 };
 
+cv::Mat makeMat(CVPixelBufferRef buffer) {
+    CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly);
+    size_t width = CVPixelBufferGetWidth(buffer);
+    size_t height = CVPixelBufferGetHeight(buffer);
+    size_t rowbytes = CVPixelBufferGetBytesPerRow(buffer);
+    char * ptr = (char * )CVPixelBufferGetBaseAddress(buffer); // ASSUMES IMAGE IS RGBA CHAR!!!
+    cv::Mat mat(height, width, CV_8UC4, ptr, rowbytes);
+    return mat;
+}
+
 @implementation FaceFinder {
     dlib::shape_predictor predictor;
     dlib::frontal_face_detector detector;
+    
+    bool dlibDone;
+    bool appleDone;
+    
     NSMutableArray * facesAverage;
     NSUInteger movingAverageCount;
     int retrackAfter;
     int iter;
-    std::mutex mtx;
-    std::vector<tracker_rect> trackers;
-    dlib::rectangle face_loc;
     
+    std::mutex applmtx;
+    std::mutex dlibmtx;
+    
+    std::vector<dlib::rectangle> dlibRects;
+    NSArray * appleRects;
+    
+    dlib::rectangle face_loc;
+    CIDetector * appleFace;
     dispatch_queue_t faceQueue;
 
 }
@@ -50,6 +69,10 @@ struct tracker_rect {
 -(FaceFinder *)init {
     self = [super init];
     if (self) {
+        
+        appleDone = true;
+        dlibDone = true;
+        
         iter = 0;
         retrackAfter = 3;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
@@ -58,6 +81,7 @@ struct tracker_rect {
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
         movingAverageCount = 0;
+
     }
     
     return self;
@@ -78,63 +102,61 @@ struct tracker_rect {
     dispatch_async(faceQueue, ^{
         dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
         std::vector<dlib::rectangle> faces = detector(smallImgCopy);
-        
-        // Update trackers inside mutex
-        mtx.lock();
-        trackers.clear();
-        for (auto face : faces) {
-            dlib::correlation_tracker tracker;
-//            tracker.start_track(smallImgCopy, face);
-            trackers.push_back(tracker_rect{tracker, face});
-        }
-        mtx.unlock();
-        
-        iter = 0;
-    });
 
+        // Update rects inside mutex
+        dlibmtx.lock();
+        dlibRects = faces;
+        dlibmtx.unlock();
+
+        dlibDone = true;
+    });
 }
 
--(std::vector<dlib::rectangle>) getRectsInImage:(const dlib::cv_image<dlib::rgb_pixel> &) smallImg withScale:(int) scale {
-    std::vector<dlib::rectangle> rects;
-//    mtx.lock();
-//    dispatch_apply(trackers.size(), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t i) {
-//        auto tr = trackers[i];
-//        tr.tracker.update(smallImg, tr.lastone);
-//    });
-//    mtx.unlock();
-    mtx.lock();
-    for (auto tr : trackers) {
-//        dlib::rectangle smallRect = tr.tracker.get_position();
-        dlib::rectangle smallRect = tr.lastone;
+-(void) applePointsInImage:(CVPixelBufferRef) pixelBuffer {
+    dispatch_async(faceQueue, ^{
+        CIImage * ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
+        appleRects = [appleFace featuresInImage:ciimage];
+        appleDone = true;
+    });
+}
+
+-(std::vector<dlib::rectangle>) getRectsWithScale:(int) scale {
+    std::vector<dlib::rectangle> localRects;
+    dlibmtx.lock();
+    for (auto smallRect : dlibRects) {
         dlib::rectangle faceRect = dlib::rectangle(
                                                    static_cast<long>(smallRect.left() * scale),
                                                    static_cast<long>(smallRect.top() * scale),
                                                    static_cast<long>(smallRect.right() * scale),
                                                    static_cast<long>(smallRect.bottom() * scale)
                                                    );
-        rects.push_back(faceRect);
+        localRects.push_back(faceRect);
     }
-    mtx.unlock();
-    return rects;
+    dlibmtx.unlock();
+    return localRects;
 }
 
--(NSArray *) facesPointsInBigImage:(CamImage)_bigImg andSmallImage: (CamImage)_smallImg withScale: (int) scale {
-    //Convert CamImages into dlib images:
-    cv::Mat bigMat(_bigImg.height, _bigImg.width, CV_8UC4, _bigImg.pixels, _bigImg.rowSize);
+-(NSArray *) facesPointsInBigImage:(CVPixelBufferRef)bigBuff andSmallImage: (CVPixelBufferRef)smallBuff withScale: (int) scale {
+    //Convert CamImages into dlib images. Need to unlock the buffers once done.
+    cv::Mat bigMat = makeMat(bigBuff);
     dlib::cv_image<dlib::rgb_alpha_pixel> bigImg(bigMat);
     
-    cv::Mat smallMatWithA(_smallImg.height, _smallImg.width, CV_8UC4, _smallImg.pixels, _smallImg.rowSize);
+    cv::Mat smallMatWithA = makeMat(smallBuff);
     cv::Mat smallMat;
     cv::cvtColor(smallMatWithA, smallMat, CV_BGRA2RGB);
     dlib::cv_image<dlib::rgb_pixel> smallImg(smallMat);
     
-    if (iter == 1) {
+    if (dlibDone) {
+        dlibDone = false;
         [self retrackInImage:smallMat];
     }
-    iter++;
+
+    // Resize rectangles and get a copy
+    std::vector<dlib::rectangle> rects = [self getRectsWithScale: scale];
     
-    // Get rectanges from tracker inside mutex
-    std::vector<dlib::rectangle> rects = [self getRectsInImage: smallImg withScale: scale];
+    //Unlock the buffers
+    CVPixelBufferUnlockBaseAddress(bigBuff, kCVPixelBufferLock_ReadOnly);
+    CVPixelBufferUnlockBaseAddress(smallBuff, kCVPixelBufferLock_ReadOnly);
     
     
     // Got face points outside mutex
