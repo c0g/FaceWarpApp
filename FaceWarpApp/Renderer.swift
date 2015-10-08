@@ -358,8 +358,10 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     func drawBrighterMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin min: GLfloat, andMax max : GLfloat, andRatio ratio : GLfloat) {
         let box = textureManager!.uprightRect
         if let box = box {
+            let uvSlice = Array(uv[48..<68])
+            let xySlice = Array(xy[48..<68])
             let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: min, andMaximum: max, andThreshold: toothThreshold)
-            vertexManager!.fillBrighterMouthVBO(UV: Array(uv[60..<68]), XY: Array(xy[60..<68]), inBox: box, withBrightness: 1 + ratio)
+            vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness: 1 + ratio)
             let (num, type) = vertexManager!.bindBrighterMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
@@ -433,7 +435,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
     func render() {
-        glClear(GLenum(GL_COLOR_BUFFER_BIT))
+//        glClear(GLenum(GL_COLOR_BUFFER_BIT))
         let _pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
         setupForOrientation(withScale: scale)
@@ -448,6 +450,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             glFinish()
             textureManager!.saveOutput()
         }
+        let error = glGetError()
+        print(error)
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
     
