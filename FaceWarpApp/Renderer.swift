@@ -59,21 +59,27 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
     
     let ptr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(pb))
     
-    var min = Float.infinity
-    var max = -Float.infinity
+    var minval = Float.infinity
+    var maxval = -Float.infinity
     
     for r in 0..<height {
         for c in 0..<width {
             let idx = r * rowbytes + c
-            let red =   Float(ptr[idx + 0])
-            let blue =  Float(ptr[idx + 1])
-            let green = Float(ptr[idx + 2])
-            let v = (red + blue + green) / 3.0
-            min = v < min ? v : min
-            max = v > max ? v : max
+            let r = Float(ptr[idx + 0])
+            let g = Float(ptr[idx + 1])
+            let b = Float(ptr[idx + 2])
+            let M = max(r, max(g, b))
+            let m = min(r, min(g, b))
+            let C = (M - m)
+            if C != 0 {
+                let v = (r + b + g) / 3.0
+                let s = C / v
+                minval = s < minval ? s : minval
+                maxval = s > maxval ? s : maxval
+            }
         }
     }
-    return (min, max)
+    return (minval, maxval)
 }
 
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -93,7 +99,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let warper : Warper = Warper()
     
     let scale = 4 // how much we shrink small image by
-    let toothThreshold : GLfloat = 0.5 // brightness percentile above which we brighten
+    let toothThreshold : GLfloat = 0.3
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -291,7 +297,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             let box = textureManager!.uprightRect
             if let box = box {
                 let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-                vertexManager!.fillPredrawMouthVBO(UV: Array(uvs[60..<68]), inBox: box)
+                vertexManager!.fillPredrawMouthVBO(UV: Array(uvs[48..<68]), inBox: box)
                 let (num, type) = vertexManager!.bindPredrawMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
                 textureManager!.bindUprightTextureToSlot(textureSlot)
                 textureManager!.bindTeethTextureAsOutput()
@@ -301,7 +307,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             }
             (min, max) = extremaOfPixelBuffer(textureManager!.teethPixelBuffer!)
         }
-        return (ratio, min / 255.0, max / 255.0)
+        return (ratio, min, max)
     }
     
     func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
@@ -361,7 +367,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             let uvSlice = Array(uv[48..<68])
             let xySlice = Array(xy[48..<68])
             let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: min, andMaximum: max, andThreshold: toothThreshold)
-            vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness: 1 + ratio)
+            vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness: ratio)
             let (num, type) = vertexManager!.bindBrighterMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
@@ -435,7 +441,6 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
     func render() {
-//        glClear(GLenum(GL_COLOR_BUFFER_BIT))
         let _pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation
         setupForOrientation(withScale: scale)
@@ -450,8 +455,6 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             glFinish()
             textureManager!.saveOutput()
         }
-        let error = glGetError()
-        print(error)
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
     
