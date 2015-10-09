@@ -11,6 +11,7 @@
 
 #include <dlib/matrix/matrix.h>
 #include <dlib/optimization.h>
+#include <dlib/graph_utils.h>
 #include "face_landmarks.hpp"
 
 typedef dlib::matrix<double,0,1> column_vector;
@@ -209,6 +210,66 @@ dlib::matrix<double> find_overall_rotation_matrix(const dlib::matrix<double> &la
     return rotation_matrix_total;
 };
 
+//warp adjust
+
+
+double check_do_warp(dlib::matrix<double,68,2> landmarks, double nose_side_distance_thresh, double nose_down_distance_thresh){
+    
+    dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
+    dlib::set_colm(landmarks,0) = colm(landmarks,0) - landmarks(0,0);
+    dlib::set_colm(landmarks,1) = colm(landmarks,1) - landmarks(0,1);
+    
+    double left_nose_dist = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,31), dlib::rowm(landmarks,33)));
+    double right_nose_dist = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,35), dlib::rowm(landmarks,33)));
+    
+    dlib::matrix<double,1,2> nose_dists;
+    nose_dists = left_nose_dist, right_nose_dist;
+    
+    double nose_dist_check = std::abs((left_nose_dist - right_nose_dist) / dlib::mean(nose_dists));
+    
+    double height_nose_dist_check = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,33), dlib::rowm(landmarks,30)) /
+                                              dlib::squared_euclidean_distance()(dlib::rowm(landmarks,29), dlib::rowm(landmarks,30)));
+    
+    //Check not gurning:
+    double inner_lip_distance = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,62), dlib::rowm(landmarks,66)));
+    double top_lip_distance = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,62), dlib::rowm(landmarks,51)));
+    double bottom_lip_distance = std::sqrt(dlib::squared_euclidean_distance()(dlib::rowm(landmarks,66), dlib::rowm(landmarks,57)));
+    
+    dlib::matrix<double,1,2> lip_dists;
+    lip_dists = top_lip_distance, bottom_lip_distance;
+    double outer_lip_distance = dlib::mean(lip_dists);
+    
+    std::vector<double> do_warp = {0.1,0.1};
+    
+    dlib::matrix<double,1,2> mean_tmp;
+    dlib::matrix<double,1,2> mean_tmp2;
+    
+    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
+        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+        do_warp[0] = std::min(do_warp[0] + dlib::mean(mean_tmp), 1.0);
+    };
+    
+    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh) && (inner_lip_distance < (3.0 * outer_lip_distance))){
+        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+        do_warp[0] = std::min(do_warp[1] + dlib::mean(mean_tmp2), 1.0);
+    };
+    
+    return ((do_warp[0] + do_warp[1]) / 2.0);
+};
+
+dlib::matrix<double,68,2> adjust_warp_for_angle(dlib::matrix<double,68,2> &landmarks, dlib::matrix<double,68,2> &landmarks_new)
+{
+    double nose_side_distance_thresh = 0.2;
+    double nose_down_distance_thresh = 0.8;
+    
+    double regression_factor = check_do_warp(landmarks, nose_side_distance_thresh, nose_down_distance_thresh);
+    
+    dlib::matrix<double> diff = landmarks_new - landmarks;
+    
+    return (landmarks + diff * regression_factor);
+};
+
+
 PhiPoint * return_3d_adjusted_warp(int * landmarks_ptr, int * face_flat_warp_ptr, double * parameters)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
@@ -363,6 +424,8 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
@@ -475,6 +538,9 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
     
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
+    
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
@@ -611,6 +677,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
+    
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
     {
@@ -622,6 +691,9 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     };
     return output;
 };
+
+
+
 
 // Needs c linkage to be imported to Swift
 extern "C" {
