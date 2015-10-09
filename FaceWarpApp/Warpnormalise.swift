@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, PRETTY2, SILLY
+    case PRETTY, SILLY
 }
 
 class Warper {
@@ -21,13 +21,11 @@ class Warper {
     }
     var face_log : [Face] = []
     
-    func doWarp (landmarks : [PhiPoint], warp : WarpType) -> [PhiPoint] {
+    func doWarp (landmarks : [PhiPoint], warp : WarpType) -> ([PhiPoint], Float64) {
         // Check if we've seen this before
         let idx = findBestFace(landmarks)
         switch warp {
         case .PRETTY:
-            return doAttractiveWarp(landmarks, initParam: &face_log[idx].parameters)
-        case .PRETTY2:
             return doAttractiveWarp2(landmarks, initParam: &face_log[idx].parameters)
         case .SILLY:
             return doSillyWarp(landmarks, initParam: &face_log[idx].parameters)
@@ -68,38 +66,38 @@ class Warper {
         }
     }
     
-    func doAttractiveWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> [PhiPoint]{
-        let ans = attractive_adjusted_warp(&landmarks, &initParam);
+    func doAttractiveWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
+        var factr : Float64 = 0
+        let ans = attractive_adjusted_warp(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
         }
-//        print("warped")
         free(ans)
 
-        return safeAns
+        return (safeAns, factr)
     }
     
-    func doAttractiveWarp2( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> [PhiPoint]{
-        let ans = attractive_adjusted_warp2(&landmarks, &initParam);
+    func doAttractiveWarp2( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
+        var factr : Float64 = 0
+        let ans = attractive_adjusted_warp2(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
-            //            print("\(idx) Delta x: \(landmarks[idx].x - ans[Int(idx)].x), Delta y: \(landmarks[idx].y - ans[Int(idx)].y)")
             safeAns.append((ans[Int(idx)]))
         }
-        //        print("warped")
         free(ans)
         
-        return safeAns
+        return (safeAns, factr)
     }
 
-    func doSillyWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> [PhiPoint]{
-        let ans = silly_adjusted_warp(&landmarks, &initParam);
+    func doSillyWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
+        var factr : Float64 = 0
+        let ans = silly_adjusted_warp(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
         }
         free(ans)
-        return safeAns
+        return (safeAns, factr)
     }
 }

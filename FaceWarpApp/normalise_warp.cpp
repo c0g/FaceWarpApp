@@ -244,29 +244,41 @@ double check_do_warp(dlib::matrix<double,68,2> landmarks, double nose_side_dista
     dlib::matrix<double,1,2> mean_tmp;
     dlib::matrix<double,1,2> mean_tmp2;
     
-    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
-        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+    if ((nose_dist_check < nose_side_distance_thresh)){// && (height_nose_dist_check > nose_down_distance_thresh)){
+//        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), 1.0 - (nose_dist_check / nose_side_distance_thresh);
         do_warp[0] = std::min(do_warp[0] + dlib::mean(mean_tmp), 1.0);
+        do_warp[1] = do_warp[0];
     };
     
-    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh) && (inner_lip_distance < (3.0 * outer_lip_distance))){
-        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
-        do_warp[0] = std::min(do_warp[1] + dlib::mean(mean_tmp2), 1.0);
-    };
+//    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
+//        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+//        do_warp[1] = std::min(do_warp[1] + dlib::mean(mean_tmp2), 1.0);
+//    };
     
     return ((do_warp[0] + do_warp[1]) / 2.0);
 };
 
-dlib::matrix<double,68,2> adjust_warp_for_angle(dlib::matrix<double,68,2> &landmarks, dlib::matrix<double,68,2> &landmarks_new)
+
+double smoothed_reg = 1;
+dlib::matrix<double,68,2> adjust_warp_for_angle(dlib::matrix<double,68,2> &landmarks, dlib::matrix<double,68,2> &landmarks_new, double & factr)
 {
-    double nose_side_distance_thresh = 0.2;
-    double nose_down_distance_thresh = 0.8;
+    double nose_side_distance_thresh = 1.0;
+    double nose_down_distance_thresh = 0.0;
     
     double regression_factor = check_do_warp(landmarks, nose_side_distance_thresh, nose_down_distance_thresh);
-    
+
+    smoothed_reg = 0.9 * smoothed_reg + 0.1 * regression_factor;
+    double squashed_regression_factor = std::min(std::max((smoothed_reg - 0.5)/0.4, 0.0), 1.0);
+//    double squashed_regression_factor_mouth = std::min(std::max((smoothed_reg - 0.5)/0.35, 0.0), 1.0);
+    factr = smoothed_reg;
     dlib::matrix<double> diff = landmarks_new - landmarks;
-    
-    return (landmarks + diff * regression_factor);
+    dlib::matrix<double> adjusted_lm = (landmarks + diff * squashed_regression_factor);
+//    for (const int idx : total_mouth) {
+//        adjusted_lm(idx, 0) = landmarks(idx, 0) + diff(idx, 0) * squashed_regression_factor_mouth;
+//        adjusted_lm(idx, 1) = landmarks(idx, 1) + diff(idx, 1) * squashed_regression_factor_mouth;
+//    }
+    return adjusted_lm;
 };
 
 
@@ -327,7 +339,7 @@ PhiPoint * return_3d_adjusted_warp(int * landmarks_ptr, int * face_flat_warp_ptr
     return output;
 };
 
-PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double eye_scaling = 1.1;
@@ -424,7 +436,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -451,7 +463,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     return output;
 };
 
-PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * parameters, double*factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double nose_scaling_x = 0.85;
@@ -539,7 +551,7 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -553,16 +565,16 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
     return output;
 };
 
-PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters, double * factr )
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling_x = 0.6;
-    const double eye_scaling_y = 0.8;
+    const double eye_scaling_x = 1.3;
+    const double eye_scaling_y = 1.5;
     
-    const double mouth_scaling_x = 0.8;
-    const double mouth_scaling_y = 1.3;
+    const double mouth_scaling_x = 0.7;
+    const double mouth_scaling_y = 0.9;
     
-    const double nose_scaling_x = 1.2;
+    const double nose_scaling_x = 0.8;
     const double nose_scaling_y = 0.8;
     
     
@@ -678,7 +690,7 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -706,28 +718,28 @@ extern "C" {
 }
 
 extern "C" {
-    PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters)
+    PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }
 
 extern "C" {
-    PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters)
+    PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp2((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp2((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }
 
 extern "C" {
-    PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters)
+    PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_silly_adjusted_warp((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_silly_adjusted_warp((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }

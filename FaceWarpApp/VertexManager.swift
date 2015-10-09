@@ -460,7 +460,7 @@ class VertexManager {
             let vnorm = GLfloat(uv_el.y) / GLfloat(box.height)
             let xnorm = GLfloat(xy_el.x) / GLfloat(box.width) * 2 - 1
             let ynorm = GLfloat(xy_el.y) / GLfloat(box.height) * 2 - 1
-            let brighten = idx < 12 ? GLfloat(0.0) : GLfloat(1.0)
+            let brighten = idx < 12 ? GLfloat(0.0) : brightenFactor
             return Coordinate(xyz: (xnorm, ynorm, 0), uv: (unorm, vnorm), alpha: brighten)
         }
         

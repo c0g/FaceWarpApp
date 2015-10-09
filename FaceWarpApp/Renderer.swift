@@ -113,12 +113,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.vertexManager = VertexManager()
     }
 
-    func captureOutput(
-                    captureOutput : AVCaptureOutput,
-                    didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
-                    fromConnection connection: AVCaptureConnection) {
+    func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
+                    fromConnection connection: AVCaptureConnection)
+    {
         textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
-        render()
+        dispatch_async(dispatch_get_main_queue()) {
+            self.render()
+        }
     }
     
     func setupForOrientation(withScale scale : Int = 2) {
@@ -274,14 +275,14 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                 return $0.PhiPointValue
             }
             
-            let xyPoints = doWarp(uvPoints)
-            drawBlurFace(XY: xyPoints, UV: uvPoints)
+            let (xyPoints, rotationAmount) = doWarp(uvPoints)
+            drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
             drawClearFace(XY: xyPoints, UV: uvPoints)
             drawRightEye(XY: xyPoints, UV: uvPoints)
             drawLeftEye(XY: xyPoints, UV: uvPoints)
             drawMouth(XY: xyPoints, UV: uvPoints)
             let (ratio, min, max) = prepTeeth(UVs: uvPoints)
-            drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
+            drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
         }
     }
     
@@ -292,13 +293,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         return (ratio, 0, 0)
     }
     
-    func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+    func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint], withRotation rotation : Float) {
         let box = textureManager!.uprightRect
         if let box = box {
             glEnable(GLenum(GL_BLEND))
             glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: 1.0, outFaceAlpha: 1.0, aroundEyesAlpha: 1.0, aroundMouthAlpha: 1.0)
+            // Fade blur in as rotation changes from 0.65 to 0.75
+            let scaler = min(max(((rotation - 0.65) / 0.1), 0.0), 1.0)
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: scaler, outFaceAlpha: scaler, aroundEyesAlpha: scaler, aroundMouthAlpha: scaler)
             vertexManager!.selectFacePart(FacePart.SKIN)
             let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
             textureManager!.bindVBlurTextureToSlot(textureSlot)
@@ -343,13 +346,16 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-    func drawBrighterMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin min: GLfloat, andMax max : GLfloat, andRatio ratio : GLfloat) {
+    func drawBrighterMouth(XY xy: [PhiPoint], UV uv: [PhiPoint], withMin mn: GLfloat, andMax mx : GLfloat, andRatio ratio : GLfloat, andRotation rotation: Float) {
         let box = textureManager!.uprightRect
         if let box = box {
             let uvSlice = Array(uv[48..<68])
             let xySlice = Array(xy[48..<68])
+            
+            let scaler = min(max(((rotation - 0.6) / 0.2), 0.0), 1.0)
+            
             let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: 0, andMaximum: 0, andThreshold: 0)
-            vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness: ratio)
+            vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness:  scaler)
             let (num, type) = vertexManager!.bindBrighterMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
@@ -388,8 +394,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
     
-    func doWarp(uv : [PhiPoint]) -> [PhiPoint] {
-        return warper.doWarp(uv, warp: WarpType.PRETTY2)
+    func doWarp(uv : [PhiPoint]) -> ([PhiPoint], Float64) {
+        return warper.doWarp(uv, warp: WarpType.SILLY)
     }
     
     func scheduleSave() {
@@ -422,6 +428,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
+    func recordit() {
+        if let tm = textureManager {
+            if let pb = tm.outputPixelBuffer {
+                
+            }
+        }
+        
+    }
+    
     func render() {
         let _pastOrientation = orientation
         orientation = UIApplication.sharedApplication().statusBarOrientation

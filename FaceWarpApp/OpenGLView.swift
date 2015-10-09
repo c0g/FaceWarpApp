@@ -122,6 +122,10 @@ class OpenGLView: UIView  {
 //        
 //    }
     
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        print("main ui")
+    }
+    
     
     /* Instance Methods
     ------------------------------------------*/
