@@ -98,6 +98,9 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     let faceDetector : FaceFinder = FaceFinder()
     let warper : Warper = Warper()
     
+    var delegate : AppDelegate? = nil
+    var warpType : WarpType = .PRETTY
+    
     let scale = 4 // how much we shrink small image by
     let toothThreshold : GLfloat = 0.3
     
@@ -111,6 +114,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
+        delegate = UIApplication.sharedApplication().delegate as! AppDelegate
     }
 
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
@@ -395,7 +399,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     }
     
     func doWarp(uv : [PhiPoint]) -> ([PhiPoint], Float64) {
-        return warper.doWarp(uv, warp: WarpType.SILLY)
+        return warper.doWarp(uv, warp: warpType)
     }
     
     func scheduleSave() {
@@ -439,6 +443,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func render() {
         let _pastOrientation = orientation
+        warpType = (delegate?.syncro.warp)!
         orientation = UIApplication.sharedApplication().statusBarOrientation
         setupForOrientation(withScale: scale)
         preprocessRender() // Generates upright and small-upright images
@@ -447,11 +452,12 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         findFaces() // Finds faces and renders them to output
         renderToScreen()
         pastOrientation = _pastOrientation
-        if captureNext {
-            captureNext = false
+        if delegate!.syncro.capturing {
+            delegate!.syncro.capturing = false
             glFinish()
             textureManager!.saveOutput()
         }
+        
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
     

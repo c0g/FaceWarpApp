@@ -7,12 +7,12 @@
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Paramus" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="Magic_Mirror" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="Paramus" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS" customClass="OpenGLView" customModule="Magic_Mirror" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -37,16 +37,19 @@
                             <constraint firstAttribute="trailing" secondItem="uNX-lt-2MC" secondAttribute="trailing" id="lgx-eU-GTi"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="openGLView" destination="kh9-bI-dsS" id="Tia-nS-CJY"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="36" y="331"/>
         </scene>
-        <!--View Controller-->
+        <!--Controller Controller-->
         <scene sceneID="hNJ-XG-few">
             <objects>
-                <viewController id="rNt-mM-TCA" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8IS-1i-MjM" customClass="ControllerController" customModule="Paramus" customModuleProvider="target">
+                <viewController id="rNt-mM-TCA" customClass="ControllerController" customModule="Magic_Mirror" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8IS-1i-MjM">
                         <rect key="frame" x="0.0" y="0.0" width="100" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -56,6 +59,9 @@
                                 <state key="normal" title="Capture">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="captureTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="Flw-pS-jV5"/>
+                                </connections>
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
                                 <rect key="frame" x="-10" y="323" width="121" height="29"/>
@@ -65,7 +71,50 @@
                                     <segment title="Video"/>
                                 </segments>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="selValChange:" destination="rNt-mM-TCA" eventType="valueChanged" id="8Qi-R3-zOV"/>
+                                </connections>
                             </segmentedControl>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rUu-y4-h3I">
+                                <rect key="frame" x="27" y="86" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Anime">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="animeTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="giT-cr-Pyw"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kjs-ge-UFc">
+                                <rect key="frame" x="27" y="124" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Live">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="liveTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="1u4-oa-OfE"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
+                                <rect key="frame" x="27" y="162" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="None">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="noneTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="smh-ZH-JSz"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ifo-3D-ynA">
+                                <rect key="frame" x="27" y="48" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Pretty">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="prettyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="MN8-2z-BTx"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
