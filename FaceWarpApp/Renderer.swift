@@ -281,9 +281,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             drawLeftEye(XY: xyPoints, UV: uvPoints)
             drawMouth(XY: xyPoints, UV: uvPoints)
             let (ratio, min, max) = prepTeeth(UVs: uvPoints)
-            if (min > 0) && (max > 0) {
-                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
-            }
+            drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio)
         }
     }
     
@@ -291,23 +289,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let width = dist(uvs[60], uvs[64])
         let height = dist(uvs[66], uvs[62])
         let ratio = height / width
-        var min : GLfloat = 0
-        var max : GLfloat = 0
-        if ratio > 0.0 {
-            let box = textureManager!.uprightRect
-            if let box = box {
-                let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-                vertexManager!.fillPredrawMouthVBO(UV: Array(uvs[48..<68]), inBox: box)
-                let (num, type) = vertexManager!.bindPredrawMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
-                textureManager!.bindUprightTextureToSlot(textureSlot)
-                textureManager!.bindTeethTextureAsOutput()
-                textureManager!.setViewPortForTeethTexture()
-                glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
-                vertexManager!.unbindPredrawMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
-            }
-            (min, max) = extremaOfPixelBuffer(textureManager!.teethPixelBuffer!)
-        }
-        return (ratio, min, max)
+        return (ratio, 0, 0)
     }
     
     func drawBlurFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
@@ -366,7 +348,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         if let box = box {
             let uvSlice = Array(uv[48..<68])
             let xySlice = Array(xy[48..<68])
-            let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: min, andMaximum: max, andThreshold: toothThreshold)
+            let (xyzSlot, uvSlot, brightenSlot, textureSlot) = shaderManager!.activateDentistShader(withMinimum: 0, andMaximum: 0, andThreshold: 0)
             vertexManager!.fillBrighterMouthVBO(UV: uvSlice, XY: xySlice, inBox: box, withBrightness: ratio)
             let (num, type) = vertexManager!.bindBrighterMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: brightenSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)

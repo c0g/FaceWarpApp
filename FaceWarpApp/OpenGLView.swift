@@ -85,15 +85,17 @@ class OpenGLView: UIView  {
         self.setupContext()
         
         let device = CaptureManager.devices()[1]
-        do {
-            try device.lockForConfiguration()
-            device.activeVideoMaxFrameDuration = CMTimeMake(1, 24)
-            device.activeVideoMinFrameDuration = CMTimeMake(1, 24)
-            device.unlockForConfiguration()
-        } catch {
-            print("Could not set config")
+        for format in device.formats as! [AVCaptureDeviceFormat] {
+            if CMVideoFormatDescriptionGetDimensions(format.formatDescription).height == 960 {
+                do {
+                    try device.lockForConfiguration()
+                    device.activeFormat = format
+                    device.unlockForConfiguration()
+                } catch {
+                    print("Could not set config")
+                }
+            }
         }
-        
         print(CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription))
         self.captureManager = CaptureManager(withDevice: device)
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
