@@ -693,8 +693,6 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
 };
 
 
-
-
 // Needs c linkage to be imported to Swift
 extern "C" {
     PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp, double * parameters)
