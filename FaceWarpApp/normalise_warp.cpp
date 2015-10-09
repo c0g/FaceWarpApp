@@ -13,6 +13,7 @@
 #include <dlib/optimization.h>
 #include <dlib/graph_utils.h>
 #include "face_landmarks.hpp"
+#include <chrono>
 
 typedef dlib::matrix<double,0,1> column_vector;
 
@@ -244,29 +245,41 @@ double check_do_warp(dlib::matrix<double,68,2> landmarks, double nose_side_dista
     dlib::matrix<double,1,2> mean_tmp;
     dlib::matrix<double,1,2> mean_tmp2;
     
-    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
-        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+    if ((nose_dist_check < nose_side_distance_thresh)){// && (height_nose_dist_check > nose_down_distance_thresh)){
+//        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), 1.0 - (nose_dist_check / nose_side_distance_thresh);
         do_warp[0] = std::min(do_warp[0] + dlib::mean(mean_tmp), 1.0);
+        do_warp[1] = do_warp[0];
     };
     
-    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh) && (inner_lip_distance < (3.0 * outer_lip_distance))){
-        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
-        do_warp[0] = std::min(do_warp[1] + dlib::mean(mean_tmp2), 1.0);
-    };
+//    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
+//        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+//        do_warp[1] = std::min(do_warp[1] + dlib::mean(mean_tmp2), 1.0);
+//    };
     
     return ((do_warp[0] + do_warp[1]) / 2.0);
 };
 
-dlib::matrix<double,68,2> adjust_warp_for_angle(dlib::matrix<double,68,2> &landmarks, dlib::matrix<double,68,2> &landmarks_new)
+
+double smoothed_reg = 1;
+dlib::matrix<double,68,2> adjust_warp_for_angle(dlib::matrix<double,68,2> &landmarks, dlib::matrix<double,68,2> &landmarks_new, double & factr)
 {
-    double nose_side_distance_thresh = 0.2;
-    double nose_down_distance_thresh = 0.8;
+    double nose_side_distance_thresh = 1.0;
+    double nose_down_distance_thresh = 0.0;
     
     double regression_factor = check_do_warp(landmarks, nose_side_distance_thresh, nose_down_distance_thresh);
-    
+
+    smoothed_reg = 0.9 * smoothed_reg + 0.1 * regression_factor;
+    double squashed_regression_factor = std::min(std::max((smoothed_reg - 0.5)/0.4, 0.0), 1.0);
+//    double squashed_regression_factor_mouth = std::min(std::max((smoothed_reg - 0.5)/0.35, 0.0), 1.0);
+    factr = smoothed_reg;
     dlib::matrix<double> diff = landmarks_new - landmarks;
-    
-    return (landmarks + diff * regression_factor);
+    dlib::matrix<double> adjusted_lm = (landmarks + diff * squashed_regression_factor);
+//    for (const int idx : total_mouth) {
+//        adjusted_lm(idx, 0) = landmarks(idx, 0) + diff(idx, 0) * squashed_regression_factor_mouth;
+//        adjusted_lm(idx, 1) = landmarks(idx, 1) + diff(idx, 1) * squashed_regression_factor_mouth;
+//    }
+    return adjusted_lm;
 };
 
 
@@ -327,7 +340,7 @@ PhiPoint * return_3d_adjusted_warp(int * landmarks_ptr, int * face_flat_warp_ptr
     return output;
 };
 
-PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double eye_scaling = 1.1;
@@ -424,7 +437,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -451,7 +464,7 @@ PhiPoint * return_3d_attractive_adjusted_warp(int * landmarks_ptr, double * para
     return output;
 };
 
-PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * parameters, double*factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
     const double nose_scaling_x = 0.85;
@@ -539,7 +552,7 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -553,16 +566,16 @@ PhiPoint * return_3d_attractive_adjusted_warp2(int * landmarks_ptr, double * par
     return output;
 };
 
-PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters)
+PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameters, double * factr )
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling_x = 0.6;
-    const double eye_scaling_y = 0.8;
+    const double eye_scaling_x = 1.3;
+    const double eye_scaling_y = 1.5;
     
-    const double mouth_scaling_x = 0.8;
-    const double mouth_scaling_y = 1.3;
+    const double mouth_scaling_x = 0.7;
+    const double mouth_scaling_y = 0.9;
     
-    const double nose_scaling_x = 1.2;
+    const double nose_scaling_x = 0.8;
     const double nose_scaling_y = 0.8;
     
     
@@ -678,7 +691,7 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
     dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
     
-    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full);
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
     
     PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
     for (int row = 0; row < _2d_landmarks_full.nr(); row++)
@@ -692,6 +705,148 @@ PhiPoint * return_3d_silly_adjusted_warp(int * landmarks_ptr, double * parameter
     return output;
 };
 
+PhiPoint * return_3d_dynamic_adjusted_warp(int * landmarks_ptr, double * parameters, double * factr )
+{
+    
+    // CALLER MUST FREE MEMORY ON RETURN.
+    
+    double ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    
+    const double eye_scaling_x = 1.0 + 0.3 * sin(8 * ms / 1000.0) * sin(8 * ms / 1000.0);
+    const double eye_scaling_y = 1.0 + 0.6 * sin(8 * ms / 1000.0) * sin(8 * ms / 1000.0);
+    
+    const double mouth_scaling_x = 1.0 + 0.1 * sin(8 * ms / 1000.0) * sin(8 * ms / 1000.0);
+    const double mouth_scaling_y = 1.0 + 0.7 * sin(8 * ms / 1000.0) * sin(8 * ms / 1000.0);
+    
+    const double nose_scaling_x = 1.0;
+    const double nose_scaling_y = 1.0;
+    
+    
+    dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
+    
+    dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
+    
+    dlib::matrix<double> mean_landmarks = dlib::rowm(landmarks,30);
+    dlib::matrix<double> centered_landmarks = landmarks;
+    dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
+    dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
+    
+    double *dlib_3d = landmarks3d_dlib;
+    dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
+    dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
+    dlib::matrix<double> centered_landmarks3d = landmarks3d;
+    dlib::set_colm(centered_landmarks3d,0) = colm(centered_landmarks3d,0) - mean_landmarks3d(0,0);
+    dlib::set_colm(centered_landmarks3d,1) = colm(centered_landmarks3d,1) - mean_landmarks3d(0,1);
+    dlib::set_colm(centered_landmarks3d,2) = colm(centered_landmarks3d,2) - mean_landmarks3d(0,2);
+    
+    dlib::matrix<double> rotation_matrix = find_overall_rotation_matrix(centered_landmarks, centered_landmarks3d, parameters);
+    
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full = centered_landmarks3d * rotation_matrix;
+    dlib::set_subm(flattened_2d_landmarks_full, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks;
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated = flattened_2d_landmarks_full * dlib::inv(rotation_matrix);
+    
+    dlib::matrix<long> dlib_leye_range(1,leye_dlib.size());
+    for (int i = 0; i < leye_dlib.size(); i++ )
+    {
+        dlib_leye_range(0,i) = (long)leye_dlib[i];
+    }
+    dlib::matrix<double> dlib_leye = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2));
+    
+    double dlib_leye_mean[2];
+    dlib_leye_mean[0] = dlib::mean(dlib::colm(dlib_leye,0));
+    dlib_leye_mean[1] = dlib::mean(dlib::colm(dlib_leye,1));
+    
+    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_scaling_x) + dlib_leye_mean[0];
+    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_scaling_y) + dlib_leye_mean[1];
+    
+    dlib::matrix<long> dlib_reye_range(1,reye_dlib.size());
+    for (int i = 0; i < reye_dlib.size(); i++ )
+    {
+        dlib_reye_range(0,i) = (long)reye_dlib[i];
+    }
+    dlib::matrix<double> dlib_reye = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2));
+    
+    double dlib_reye_mean[2];
+    dlib_reye_mean[0] = dlib::mean(dlib::colm(dlib_reye,0));
+    dlib_reye_mean[1] = dlib::mean(dlib::colm(dlib_reye,1));
+    
+    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_scaling_x) + dlib_reye_mean[0];
+    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_scaling_y) + dlib_reye_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
+    
+    //
+    dlib::matrix<long> dlib_mouth_range(1,outermouth_dlib.size());
+    for (int i = 0; i < outermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_range(0,i) = (long)outermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2));
+    
+    double dlib_mouth_mean[2];
+    dlib_mouth_mean[0] = dlib::mean(dlib::colm(dlib_mouth,0));
+    dlib_mouth_mean[1] = dlib::mean(dlib::colm(dlib_mouth,1));
+    
+    dlib::set_colm(dlib_mouth,0) = ((dlib::colm(dlib_mouth,0) - dlib_mouth_mean[0]) * mouth_scaling_x) + dlib_mouth_mean[0];
+    dlib::set_colm(dlib_mouth,1) = ((dlib::colm(dlib_mouth,1) - dlib_mouth_mean[1]) * mouth_scaling_y) + dlib_mouth_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2)) = dlib_mouth;
+    //
+    dlib::matrix<long> dlib_mouth_inner_range(1,innermouth_dlib.size());
+    for (int i = 0; i < innermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_inner_range(0,i) = (long)innermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth_inner = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2));
+    
+    double dlib_mouth_inner_mean[2];
+    dlib_mouth_inner_mean[0] = dlib::mean(dlib::colm(dlib_mouth_inner,0));
+    dlib_mouth_inner_mean[1] = dlib::mean(dlib::colm(dlib_mouth_inner,1));
+    
+    dlib::set_colm(dlib_mouth_inner,0) = ((dlib::colm(dlib_mouth_inner,0) - dlib_mouth_inner_mean[0]) * mouth_scaling_x) + dlib_mouth_inner_mean[0];
+    dlib::set_colm(dlib_mouth_inner,1) = ((dlib::colm(dlib_mouth_inner,1) - dlib_mouth_inner_mean[1]) * mouth_scaling_y) + dlib_mouth_inner_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2)) = dlib_mouth_inner;
+    
+    //
+    dlib::matrix<long> dlib_nose_range(1,nose_dlib_edge.size());
+    for (int i = 0; i < nose_dlib_edge.size(); i++ )
+    {
+        dlib_nose_range(0,i) = (long)nose_dlib_edge[i];
+    }
+    dlib::matrix<double> dlib_nose = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2));
+    
+    double dlib_nose_mean[2];
+    dlib_nose_mean[0] = dlib_nose(2,0);
+    dlib_nose_mean[1] = dlib_nose(2,1);
+    
+    dlib::set_colm(dlib_nose,0) = ((dlib::colm(dlib_nose,0) - dlib_nose_mean[0]) * nose_scaling_x) + dlib_nose_mean[0];
+    dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_scaling_y) + dlib_nose_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
+    //
+    
+    dlib::matrix<double,68,3> tmp = flattened_2d_landmarks_full_rotated * rotation_matrix;
+    dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(tmp, dlib::range(0,67), dlib::range(0,1));
+    
+    
+    dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
+    dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
+    
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
+    
+    PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
+    for (int row = 0; row < _2d_landmarks_full.nr(); row++)
+    {
+        output[row] = PhiPoint{
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
+        };
+        
+    };
+    return output;
+};
 
 // Needs c linkage to be imported to Swift
 extern "C" {
@@ -704,28 +859,37 @@ extern "C" {
 }
 
 extern "C" {
-    PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters)
+    PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }
 
 extern "C" {
-    PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters)
+    PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp2((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_attractive_adjusted_warp2((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }
 
 extern "C" {
-    PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters)
+    PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr)
     {
         // CALLER MUST FREE MEMORY ON RETURN.
-        PhiPoint * adjusted_warp = return_3d_silly_adjusted_warp((int *)landmarks, parameters);
+        PhiPoint * adjusted_warp = return_3d_silly_adjusted_warp((int *)landmarks, parameters, factr);
+        return adjusted_warp;
+    }
+}
+
+extern "C" {
+    PhiPoint * dynamic_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr)
+    {
+        // CALLER MUST FREE MEMORY ON RETURN.
+        PhiPoint * adjusted_warp = return_3d_dynamic_adjusted_warp((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }

@@ -45,6 +45,11 @@
 		E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56371BBD279600358D16 /* PixelBufferTexture.swift */; settings = {ASSET_TAGS = (); }; };
 		E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56391BBD324700358D16 /* ShaderProgram.swift */; settings = {ASSET_TAGS = (); }; };
 		E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56471BBD7A1100358D16 /* Renderer.swift */; settings = {ASSET_TAGS = (); }; };
+		E28EB8071BC81DE000E639E7 /* DesaturateVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28EB8061BC81DE000E639E7 /* DesaturateVertex.glsl */; settings = {ASSET_TAGS = (); }; };
+		E28EB8091BC81DF200E639E7 /* DesaturateFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E28EB8081BC81DF200E639E7 /* DesaturateFragment.glsl */; settings = {ASSET_TAGS = (); }; };
+		E28EB80F1BC8317A00E639E7 /* ControllerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB80E1BC8317A00E639E7 /* ControllerController.swift */; settings = {ASSET_TAGS = (); }; };
+		E28EB8111BC8368B00E639E7 /* SpinnyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8101BC8368B00E639E7 /* SpinnyController.swift */; settings = {ASSET_TAGS = (); }; };
+		E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8121BC8388200E639E7 /* Syncro.swift */; settings = {ASSET_TAGS = (); }; };
 		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; settings = {ASSET_TAGS = (); }; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; settings = {ASSET_TAGS = (); }; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; settings = {ASSET_TAGS = (); }; };
@@ -114,7 +119,7 @@
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
 		E26D16721BB58F9B00A0F573 /* __fix_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = __fix_triangulation.hpp; sourceTree = "<group>"; };
-		E28D3A8D1BAC409000ACC953 /* Paramus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paramus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E28D3A8D1BAC409000ACC953 /* Magic Mirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Magic Mirror.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E28D3A981BAC409000ACC953 /* FaceWarpApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceWarpApp.xcdatamodel; sourceTree = "<group>"; };
 		E28D3A9A1BAC409000ACC953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E28D3A9D1BAC409000ACC953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -143,6 +148,11 @@
 		E28E56371BBD279600358D16 /* PixelBufferTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelBufferTexture.swift; sourceTree = "<group>"; };
 		E28E56391BBD324700358D16 /* ShaderProgram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShaderProgram.swift; sourceTree = "<group>"; };
 		E28E56471BBD7A1100358D16 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		E28EB8061BC81DE000E639E7 /* DesaturateVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DesaturateVertex.glsl; sourceTree = "<group>"; };
+		E28EB8081BC81DF200E639E7 /* DesaturateFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DesaturateFragment.glsl; sourceTree = "<group>"; };
+		E28EB80E1BC8317A00E639E7 /* ControllerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerController.swift; sourceTree = "<group>"; };
+		E28EB8101BC8368B00E639E7 /* SpinnyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinnyController.swift; sourceTree = "<group>"; };
+		E28EB8121BC8388200E639E7 /* Syncro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syncro.swift; sourceTree = "<group>"; };
 		E29319791BC589C0006CAA6F /* fft_stuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft_stuff.cpp; sourceTree = "<group>"; };
 		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
@@ -191,7 +201,7 @@
 		E28D3A8E1BAC409000ACC953 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E28D3A8D1BAC409000ACC953 /* Paramus.app */,
+				E28D3A8D1BAC409000ACC953 /* Magic Mirror.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -259,6 +269,8 @@
 				E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */,
 				E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */,
 				E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */,
+				E28EB8061BC81DE000E639E7 /* DesaturateVertex.glsl */,
+				E28EB8081BC81DF200E639E7 /* DesaturateFragment.glsl */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -268,6 +280,8 @@
 			children = (
 				E20FE7681BB032A800142050 /* OpenGLView.swift */,
 				E20FE7661BB0326C00142050 /* ViewController.swift */,
+				E28EB80E1BC8317A00E639E7 /* ControllerController.swift */,
+				E28EB8101BC8368B00E639E7 /* SpinnyController.swift */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -312,6 +326,7 @@
 			children = (
 				E2B55E561BB6B9590086F719 /* Triangulator.swift */,
 				5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */,
+				E28EB8121BC8388200E639E7 /* Syncro.swift */,
 			);
 			name = Swift;
 			sourceTree = "<group>";
@@ -334,7 +349,7 @@
 			);
 			name = FaceWarpApp;
 			productName = FaceWarpApp;
-			productReference = E28D3A8D1BAC409000ACC953 /* Paramus.app */;
+			productReference = E28D3A8D1BAC409000ACC953 /* Magic Mirror.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -350,7 +365,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 2WHKXWB6SD;
+						DevelopmentTeam = S559Q4PGN4;
 					};
 				};
 			};
@@ -423,6 +438,8 @@
 				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
 				E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */,
+				E28EB8091BC81DF200E639E7 /* DesaturateFragment.glsl in Resources */,
+				E28EB8071BC81DE000E639E7 /* DesaturateVertex.glsl in Resources */,
 				5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
 				E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */,
@@ -449,6 +466,7 @@
 				5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */,
 				E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */,
 				E28E56341BBD254900358D16 /* CaptureManager.swift in Sources */,
+				E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */,
 				5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */,
 				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
@@ -456,12 +474,14 @@
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
+				E28EB80F1BC8317A00E639E7 /* ControllerController.swift in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */,
 				5E386B001BBABE28003EDAEB /* triangle.c in Sources */,
 				E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */,
 				E28E562C1BBD246A00358D16 /* TextureManager.swift in Sources */,
 				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,
+				E28EB8111BC8368B00E639E7 /* SpinnyController.swift in Sources */,
 				E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -605,7 +625,7 @@
 				);
 				LLVM_LTO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = phi.FaceWarpApp;
-				PRODUCT_NAME = Paramus;
+				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -647,7 +667,7 @@
 				);
 				LLVM_LTO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = phi.FaceWarpApp;
-				PRODUCT_NAME = Paramus;
+				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

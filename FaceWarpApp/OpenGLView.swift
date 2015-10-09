@@ -56,14 +56,15 @@ func time<O>(name: String, f : ()->O )-> O {
 
 
 
-class OpenGLView: UIView  {
+class OpenGLView: UIView {
     
-
     var eaglLayer: CAEAGLLayer!
     var context: EAGLContext!
     
     var captureManager : CaptureManager?
     var renderer : Renderer?
+    
+    
     
     /* Class Methods
     ------------------------------------------*/
@@ -117,11 +118,6 @@ class OpenGLView: UIView  {
         self.renderer!.doFaceBlur = !(self.renderer!.doFaceBlur)
         self.renderer!.scheduleSave()
     }
-//    
-//    func doubleTap(rec : UITapGestureRecognizer) {
-//        
-//    }
-    
     
     /* Instance Methods
     ------------------------------------------*/
@@ -154,7 +150,7 @@ class OpenGLView: UIView  {
             exit(1)
         }
     }
-}
+    }
 
 ///////////////////////////////////////
 

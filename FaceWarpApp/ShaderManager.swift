@@ -44,6 +44,13 @@ class ShaderManager {
     let vavgScale : GLint
     let vavgTex : GLint
     
+    let satShader : ShaderProgram
+    let satXYZ : GLuint
+    let satUV : GLuint
+    let satAlpha : GLuint
+    let satScale : GLint
+    let satTex : GLint
+    
     let dentistShader : ShaderProgram
     let dentistXYZ : GLuint
     let dentistUV : GLuint
@@ -98,6 +105,15 @@ class ShaderManager {
         glEnableVertexAttribArray(vavgXYZ)
         glEnableVertexAttribArray(vavgUV)
         
+        satShader = ShaderProgram(withVertexShader: "DesaturateVertex", andFragmentShader: "DesaturateFragment")!
+        satXYZ = GLuint(glGetAttribLocation(satShader.programHandle, "Position"))
+        satUV = GLuint(glGetAttribLocation(satShader.programHandle, "TexSource"))
+        satAlpha = GLuint(glGetAttribLocation(satShader.programHandle, "InAlpha"))
+        satScale = GLint(glGetUniformLocation(satShader.programHandle, "scale"))
+        satTex = GLint(glGetUniformLocation(satShader.programHandle, "TextureSampler"))
+        glEnableVertexAttribArray(satXYZ)
+        glEnableVertexAttribArray(satUV)
+        
         dentistShader = ShaderProgram(withVertexShader: "BrightenVertex", andFragmentShader: "BrightenFragment")!
         dentistXYZ = GLuint(glGetAttribLocation(dentistShader.programHandle, "Position"))
         dentistUV = GLuint(glGetAttribLocation(dentistShader.programHandle, "TexSource"))
@@ -139,6 +155,12 @@ class ShaderManager {
         glUseProgram(vavgShader.programHandle)
         glUniform1f(vavgScale, scale)
         return (vavgXYZ, vavgUV, vavgAlpha, vavgTex)
+    }
+    
+    func activateSatShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
+        glUseProgram(satShader.programHandle)
+        glUniform1f(satScale, scale)
+        return (satXYZ, satUV, vavgAlpha, satTex)
     }
     
     func activateDentistShader(withMinimum min : GLfloat, andMaximum max: GLfloat, andThreshold threshold: GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
