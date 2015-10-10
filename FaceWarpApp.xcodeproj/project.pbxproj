@@ -10,6 +10,7 @@
 		5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */; settings = {ASSET_TAGS = (); }; };
 		5E386B001BBABE28003EDAEB /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFF1BBABE28003EDAEB /* triangle.c */; settings = {ASSET_TAGS = (); }; };
 		5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */ = {isa = PBXBuildFile; fileRef = 5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */; settings = {ASSET_TAGS = (); }; };
+		5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EB989F91BC8A1F4002BF51F /* launch_logo.png */; settings = {ASSET_TAGS = (); }; };
 		5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; settings = {ASSET_TAGS = (); }; };
 		E20FE7671BB0326C00142050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7661BB0326C00142050 /* ViewController.swift */; settings = {ASSET_TAGS = (); }; };
 		E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7681BB032A800142050 /* OpenGLView.swift */; settings = {ASSET_TAGS = (); }; };
@@ -101,6 +102,7 @@
 		5E386AFE1BBABBAA003EDAEB /* triangle_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle_wrapper.h; sourceTree = "<group>"; };
 		5E386AFF1BBABE28003EDAEB /* triangle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle.c; sourceTree = "<group>"; };
 		5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */ = {isa = PBXFileReference; lastKnownFileType = file; path = total_detector.svm; sourceTree = "<group>"; };
+		5EB989F91BC8A1F4002BF51F /* launch_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_logo.png; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				E28D3AC41BAC67D100ACC953 /* facemarks.dat */,
 				E28D3A9A1BAC409000ACC953 /* Assets.xcassets */,
 				E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */,
+				5EB989F91BC8A1F4002BF51F /* launch_logo.png */,
 				E28D3AC31BAC5D0500ACC953 /* bridging.h */,
 				E28D3A9F1BAC409000ACC953 /* Info.plist */,
 				E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */,
@@ -365,7 +368,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = S559Q4PGN4;
+						DevelopmentTeam = 2WHKXWB6SD;
 					};
 				};
 			};
@@ -433,6 +436,7 @@
 				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
 				E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
+				5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
