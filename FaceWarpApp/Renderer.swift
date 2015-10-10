@@ -135,12 +135,18 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         let vwidth = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
         let vheight = CVPixelBufferGetHeight(textureManager!.videoPixelBuffer!)
         
+        let width = UIScreen.mainScreen().bounds.width * UIScreen.mainScreen().scale
+        let height = UIScreen.mainScreen().bounds.height * UIScreen.mainScreen().scale
+
+        let vaspect = Float(vwidth) / Float(vheight)
+        let saspect = Float(width) / Float(height)
+        
         switch orientation {
         case pastOrientation:
             break
         case .LandscapeLeft:
             vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
             textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
@@ -148,7 +154,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .LandscapeRight:
             vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
             textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
@@ -156,7 +162,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .Portrait:
             vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
-            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
             textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
@@ -164,7 +170,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .PortraitUpsideDown:
             vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
             textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
@@ -172,7 +178,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .Unknown:
             vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
             textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
@@ -433,6 +439,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         let (num, type) = vertexManager!.bindPostprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
         textureManager!.bindOutputTextureToSlot(textureSlot)
+        glClear(GLenum(GL_COLOR_BUFFER_BIT))
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }

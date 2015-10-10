@@ -129,8 +129,14 @@ class OpenGLView: UIView {
         self.eaglLayer.opaque = true
         self.contentScaleFactor = UIScreen.mainScreen().scale
         self.eaglLayer.contentsScale = UIScreen.mainScreen().scale
-        self.eaglLayer.bounds.size.width = UIScreen.mainScreen().fixedCoordinateSpace.bounds.width
-        self.eaglLayer.bounds.size.height = UIScreen.mainScreen().fixedCoordinateSpace.bounds.height
+        if #available(iOS 8.0, *) {
+            self.eaglLayer.bounds.size.width = UIScreen.mainScreen().fixedCoordinateSpace.bounds.width
+            self.eaglLayer.bounds.size.height = UIScreen.mainScreen().fixedCoordinateSpace.bounds.height
+        } else {
+            self.eaglLayer.bounds.size.width = UIScreen.mainScreen().bounds.width
+            self.eaglLayer.bounds.size.height = UIScreen.mainScreen().bounds.height
+        }
+        
     }
     
     func setupContext() {

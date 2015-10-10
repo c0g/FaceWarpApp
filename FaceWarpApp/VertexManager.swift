@@ -221,8 +221,31 @@ class VertexManager {
         glGenBuffers(1, &postprocessIndexBuffer)
     }
     
-    func fillPostprocessVBO(forFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false) {
-        let vertices = makeSquareVertices(withFlip: flip, andRotate90: rotate)
+    func fillPostprocessVBO(forFlip flip : ImgFlip = .NONE, andRotate90 rotate : Bool = false, forVideoAspect vaspect: Float, andScreenAspect saspect: Float) {
+        
+        var inner_saspect = saspect
+        var inner_vaspect : Float = 0.0
+        
+        if (saspect < 1) {
+            inner_vaspect = 1/vaspect
+        } else {
+            inner_vaspect = vaspect
+        }
+        var width_corrector : Float = 1.0
+        var height_corrector : Float = 1.0
+        if (inner_saspect > inner_vaspect) { // Screen is wider than video. Black bars at sides.
+            print("Black bars at sides")
+            width_corrector = inner_vaspect / inner_saspect
+        } else { // Screen is taller than video. Black bars at top and bottom.
+            print("Black bars at top and bottom")
+            height_corrector = inner_saspect / inner_vaspect
+        }
+        
+        let vertices = makeSquareVertices(withFlip: flip, andRotate90: rotate).map {
+            (c : Coordinate) -> Coordinate in
+            let new_xyz = ImagePosition(c.xyz.0 * width_corrector, c.xyz.1 * height_corrector, c.xyz.2)
+            return Coordinate(xyz: new_xyz, uv: c.uv, alpha: c.alpha)
+        }
         
         glBindVertexArrayOES(postprocessAO);
         
@@ -239,7 +262,6 @@ class VertexManager {
     
     func bindPostprocessVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andAlphaSlot alphaSlot : GLuint) -> (GLint, GLenum) {
         glBindVertexArrayOES(postprocessAO);
-        
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), postprocessPositionBuffer)
         glEnableVertexAttribArray(positionSlot)
         glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT), GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)

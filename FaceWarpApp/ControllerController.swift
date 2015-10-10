@@ -13,7 +13,13 @@ class ControllerController : UIViewController {
     
     var delegate : AppDelegate? = nil
     @IBOutlet weak var pretty: UIButton!
-    @IBOutlet weak var Anime: UIButton!
+    @IBOutlet weak var anime: UIButton!
+    @IBOutlet weak var live: UIButton!
+    @IBOutlet weak var tiny: UIButton!
+    @IBOutlet weak var none: UIButton!
+    @IBOutlet weak var capture: UIButton!
+    @IBOutlet weak var photoVideo: UISegmentedControl!
+    
     
     @IBAction func prettyTouch(sender: AnyObject) {
         print("Pretty")
@@ -44,6 +50,11 @@ class ControllerController : UIViewController {
         print(sender.selectedSegmentIndex)
     }
     
+    @IBAction func tinyTouch(sender: UIButton) {
+        print("Anime")
+        delegate!.syncro.warp = WarpType.TINY
+        redrawUI()
+    }
     func redrawUI() {
 //        switch delegate!.syncro.warp {
 //        case .DYNAMIC:
