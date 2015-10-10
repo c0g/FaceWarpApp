@@ -608,8 +608,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = YES;
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_FAST_MATH = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
@@ -650,8 +650,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
-				GCC_FAST_MATH = YES;
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_FAST_MATH = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DLIB_NO_GUI_SUPPORT,
 					DLIB_USE_BLAS,
