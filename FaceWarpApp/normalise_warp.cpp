@@ -153,6 +153,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     
     auto cost_function_3d_rotation_wrapper = [&centered_landmarks3d, &centered_landmarks](dlib::matrix<double,6,1> x)
     {
+//        std::cout << "Calling with: " << x << std::endl;
         return cost_function_3d_rotation(x, centered_landmarks3d, centered_landmarks);
     };
     
@@ -169,7 +170,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
                                                      dlib::objective_delta_stop_strategy(1e-3),
                                                      cost_function_3d_rotation_wrapper,
                                                      vector,
-                                                     1e-7);
+                                                     1e-10);
         
         
         

@@ -137,7 +137,7 @@ class OpenGLView: UIView {
         // Just like with CoreGraphics, in order to do much with OpenGL, we need a context.
         //   Here we create a new context with the version of the rendering API we want and
         //   tells OpenGL that when we draw, we want to do so within this context.
-        let api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES3
+        let api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES2
         self.context = EAGLContext(API: api)
         
         if (self.context == nil) {

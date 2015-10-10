@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -57,82 +58,119 @@
                         <rect key="frame" x="0.0" y="0.0" width="100" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rUu-y4-h3I">
+                                <rect key="frame" x="27" y="46" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Anime">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="27" y="186" width="46" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="animeTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="giT-cr-Pyw"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kjs-ge-UFc">
+                                <rect key="frame" x="27" y="84" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Live">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="27" y="224" width="46" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="liveTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="1u4-oa-OfE"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
+                                <rect key="frame" x="27" y="122" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Tiny">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="27" y="262" width="46" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="noneTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="smh-ZH-JSz"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ifo-3D-ynA">
+                                <rect key="frame" x="27" y="8" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Pretty">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="27" y="148" width="46" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="prettyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="MN8-2z-BTx"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
                                 <rect key="frame" x="27" y="285" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Capture">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="22" y="385" width="55" height="30"/>
+                                </variation>
                                 <connections>
                                     <action selector="captureTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="Flw-pS-jV5"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
-                                <rect key="frame" x="-10" y="323" width="121" height="29"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
+                                <rect key="frame" x="0.0" y="323" width="100" height="29"/>
                                 <animations/>
                                 <segments>
                                     <segment title="Photo"/>
                                     <segment title="Video"/>
                                 </segments>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="423" width="101" height="29"/>
+                                </variation>
                                 <connections>
                                     <action selector="selValChange:" destination="rNt-mM-TCA" eventType="valueChanged" id="8Qi-R3-zOV"/>
                                 </connections>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rUu-y4-h3I">
-                                <rect key="frame" x="27" y="86" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Anime">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="animeTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="giT-cr-Pyw"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kjs-ge-UFc">
-                                <rect key="frame" x="27" y="124" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Live">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="liveTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="1u4-oa-OfE"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
-                                <rect key="frame" x="27" y="162" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Tiny">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="noneTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="smh-ZH-JSz"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ifo-3D-ynA">
-                                <rect key="frame" x="27" y="48" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Pretty">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="prettyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="MN8-2z-BTx"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="efc-XM-lE0" firstAttribute="centerX" secondItem="1dZ-iS-pzh" secondAttribute="centerX" id="17J-mE-sw8"/>
-                            <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="AwV-ba-WGJ"/>
-                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerY" secondItem="8IS-1i-MjM" secondAttribute="centerY" id="dH4-ZD-1Lo"/>
-                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="kNp-Jp-ShV"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="rUu-y4-h3I" secondAttribute="leading" id="274-JD-VJI"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerY" secondItem="8IS-1i-MjM" secondAttribute="centerY" id="3Rz-cY-hkL"/>
+                            <constraint firstItem="efc-XM-lE0" firstAttribute="centerX" secondItem="1dZ-iS-pzh" secondAttribute="centerX" id="5Jz-dn-g78"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="6AM-QU-gQn"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="BTh-TQ-ajc"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="trailing" secondItem="TN8-BW-PaV" secondAttribute="trailing" id="Cpa-C5-hgl"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leadingMargin" constant="11" id="Jfa-Fe-6gV"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="trailing" secondItem="Ifo-3D-ynA" secondAttribute="trailing" id="LnI-uq-aJ1"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="MWd-pT-TYs"/>
+                            <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="YYb-N3-M3T"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="kjs-ge-UFc" secondAttribute="leading" id="b8d-IB-dOQ"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="top" secondItem="Ifo-3D-ynA" secondAttribute="bottom" constant="8" symbolic="YES" id="brP-hs-ayU"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TN8-BW-PaV" secondAttribute="bottom" constant="50" id="d3X-my-AXL"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="top" secondItem="kjs-ge-UFc" secondAttribute="bottom" constant="8" symbolic="YES" id="eKp-Bi-WEi"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="top" secondItem="E6J-LU-ujg" secondAttribute="bottom" constant="8" symbolic="YES" id="ipK-Ct-Spd"/>
+                            <constraint firstItem="efc-XM-lE0" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leading" id="ksA-kv-xfL"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="leading" secondItem="rUu-y4-h3I" secondAttribute="leading" id="oIG-XO-Mv0"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="top" secondItem="rUu-y4-h3I" secondAttribute="bottom" constant="8" symbolic="YES" id="oLc-qA-PDS"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="trailing" secondItem="TN8-BW-PaV" secondAttribute="trailing" id="vt5-RK-4Yb"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="Anime" destination="rUu-y4-h3I" id="MyT-AC-nzm"/>
+                        <outlet property="pretty" destination="Ifo-3D-ynA" id="1D2-ON-onp"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vzx-CM-g9l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="523" y="331"/>
+            <point key="canvasLocation" x="523" y="330"/>
         </scene>
     </scenes>
 </document>
