@@ -18,8 +18,8 @@ class ControllerController : UIViewController {
         delegate!.syncro.warp = WarpType.PRETTY
     }
     @IBAction func noneTouch(sender: AnyObject) {
-        print("None")
-        delegate!.syncro.warp = WarpType.NONE
+        print("Tiny")
+        delegate!.syncro.warp = WarpType.TINY
     }
     @IBAction func animeTouch(sender: AnyObject) {
         print("Anime")

@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, SILLY, NONE, DYNAMIC
+    case PRETTY, SILLY, NONE, TINY, DYNAMIC
 }
 
 class Warper {
@@ -31,6 +31,8 @@ class Warper {
             return doSillyWarp(landmarks, initParam: &face_log[idx].parameters)
         case .DYNAMIC:
             return doDynamicWarp(landmarks, initParam: &face_log[idx].parameters)
+        case .TINY:
+            return doTinyFaceWarp(landmarks, initParam: &face_log[idx].parameters)
         case .NONE:
             return (landmarks, 0.0)
         }
@@ -114,5 +116,16 @@ class Warper {
         }
         free(ans)
         return (safeAns, 0.0)
+    }
+    
+    func doTinyFaceWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
+        var factr : Float64 = 0
+        let ans = tiny_face_warp(&landmarks, &initParam, &factr);
+        var safeAns : [PhiPoint] = [];
+        for idx in 0..<landmarks.count {
+            safeAns.append((ans[Int(idx)]))
+        }
+        free(ans)
+        return (safeAns, factr)
     }
 }

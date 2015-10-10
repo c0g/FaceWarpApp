@@ -848,6 +848,68 @@ PhiPoint * return_3d_dynamic_adjusted_warp(int * landmarks_ptr, double * paramet
     return output;
 };
 
+PhiPoint * return_3d_tiny_face_warp(int * landmarks_ptr, double * parameters, double * factr )
+{
+    // CALLER MUST FREE MEMORY ON RETURN.
+    const double tiny_factor = 0.85;
+    
+    
+    dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
+    
+    dlib::matrix<double, 68, 2> landmarks = dlib::matrix_cast<double>(landmarks_i);
+    
+    dlib::matrix<double,1,2> mean_landmarks;
+    mean_landmarks = dlib::mean(dlib::colm(landmarks,0)), dlib::mean(dlib::colm(landmarks,1));
+    dlib::matrix<double> centered_landmarks = landmarks;
+    dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
+    dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
+    
+    double *dlib_3d = landmarks3d_dlib;
+    dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
+    dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
+    dlib::matrix<double> centered_landmarks3d = landmarks3d;
+    dlib::set_colm(centered_landmarks3d,0) = colm(centered_landmarks3d,0) - mean_landmarks3d(0,0);
+    dlib::set_colm(centered_landmarks3d,1) = colm(centered_landmarks3d,1) - mean_landmarks3d(0,1);
+    dlib::set_colm(centered_landmarks3d,2) = colm(centered_landmarks3d,2) - mean_landmarks3d(0,2);
+    
+    dlib::matrix<double> rotation_matrix = find_overall_rotation_matrix(centered_landmarks, centered_landmarks3d, parameters);
+    
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full = centered_landmarks3d * rotation_matrix;
+    dlib::set_subm(flattened_2d_landmarks_full, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks;
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated = flattened_2d_landmarks_full * dlib::inv(rotation_matrix);
+    
+    //
+    
+    dlib::matrix<long> not_face_outline(1,dlib_not_face_outline.size());
+    for (int i = 0; i < dlib_not_face_outline.size(); i++ )
+    {
+        not_face_outline(0,i) = (long)dlib_not_face_outline[i];
+    }
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, not_face_outline, dlib::range(0,2)) = dlib::rowm(flattened_2d_landmarks_full_rotated, not_face_outline) * tiny_factor;
+    
+    dlib::matrix<double,68,3> tmp = flattened_2d_landmarks_full_rotated * rotation_matrix;
+    dlib::matrix<double, 68,2> _2d_landmarks_full = dlib::subm(tmp, dlib::range(0,67), dlib::range(0,1));
+    
+    
+    dlib::set_colm(_2d_landmarks_full,0) = colm(_2d_landmarks_full,0) + mean_landmarks(0,0);
+    dlib::set_colm(_2d_landmarks_full,1) = colm(_2d_landmarks_full,1) + mean_landmarks(0,1);
+    
+    _2d_landmarks_full = adjust_warp_for_angle(landmarks, _2d_landmarks_full, *factr);
+    
+    PhiPoint * output = (PhiPoint *)malloc(_2d_landmarks_full.nr()*sizeof(PhiPoint));
+    for (int row = 0; row < _2d_landmarks_full.nr(); row++)
+    {
+        output[row] = PhiPoint{
+            static_cast<int>(std::round(_2d_landmarks_full(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full(row,1)))
+        };
+        
+    };
+    return output;
+};
+
+
 // Needs c linkage to be imported to Swift
 extern "C" {
     PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp, double * parameters)
@@ -890,6 +952,15 @@ extern "C" {
     {
         // CALLER MUST FREE MEMORY ON RETURN.
         PhiPoint * adjusted_warp = return_3d_dynamic_adjusted_warp((int *)landmarks, parameters, factr);
+        return adjusted_warp;
+    }
+}
+
+extern "C" {
+    PhiPoint * tiny_face_warp(PhiPoint * landmarks, double * parameters, double * factr)
+    {
+        // CALLER MUST FREE MEMORY ON RETURN.
+        PhiPoint * adjusted_warp = return_3d_tiny_face_warp((int *)landmarks, parameters, factr);
         return adjusted_warp;
     }
 }
