@@ -97,7 +97,7 @@ class OpenGLView: UIView {
                 }
             }
         }
-        print(CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription))
+        
         self.captureManager = CaptureManager(withDevice: device)
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
         

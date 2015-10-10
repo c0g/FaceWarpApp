@@ -47,7 +47,7 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
     dlib::frontal_face_detector detector;
     
     bool dlibDone;
-    bool appleDone;
+    bool doPredict;
     
     NSMutableArray * facesAverage;
     NSUInteger movingAverageCount;
@@ -70,16 +70,20 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
     self = [super init];
     if (self) {
         
-        appleDone = true;
+        doPredict = false;
         dlibDone = true;
         
         iter = 0;
         retrackAfter = 3;
         NSString * dat_file = [[NSBundle mainBundle] pathForResource:@"facemarks" ofType:@"dat"];
         detector = dlib::get_frontal_face_detector();
-        dlib::deserialize(dat_file.UTF8String) >> predictor;
+        
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
+        dispatch_async(faceQueue, ^{
+            dlib::deserialize(dat_file.UTF8String) >> predictor;
+            doPredict = true;
+        });
         movingAverageCount = 0;
 
     }
@@ -109,14 +113,6 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
         dlibmtx.unlock();
 
         dlibDone = true;
-    });
-}
-
--(void) applePointsInImage:(CVPixelBufferRef) pixelBuffer {
-    dispatch_async(faceQueue, ^{
-        CIImage * ciimage = [CIImage imageWithCVPixelBuffer:pixelBuffer];
-        appleRects = [appleFace featuresInImage:ciimage];
-        appleDone = true;
     });
 }
 
@@ -161,6 +157,9 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
     
     // Got face points outside mutex
     NSMutableArray * arr = [[NSMutableArray alloc] init];
+    if (!doPredict) {
+        return arr;
+    }
     for (auto faceRect : rects) {
         NSMutableArray * internalArr = [[NSMutableArray alloc] init];
         dlib::full_object_detection res = predictor(bigImg, faceRect);

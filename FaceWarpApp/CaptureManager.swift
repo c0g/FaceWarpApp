@@ -21,7 +21,7 @@ class CaptureManager {
         return  AVCaptureDevice.devices() as! [AVCaptureDevice]
     }
     
-    init?(withDevice device: AVCaptureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)) {
+    init?(withDevice device: AVCaptureDevice) {
         session = AVCaptureSession()
         
         // Attempt to attach the device to our session
@@ -46,11 +46,11 @@ class CaptureManager {
             throw CaptureError.CONNECTION_FAILURE
         }
         output?.alwaysDiscardsLateVideoFrames = true // Stops things getting bogged down if the CPU is being hammered
-        output?.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String:
-            Int(kCVPixelFormatType_32BGRA), ] // 32BGRA needed to be OpenGL compatible
+        output?.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),] // 32BGRA needed to be OpenGL compatible
         output?.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue()) // run on main thread
         session.beginConfiguration()
         session.addOutput(output)
+        session.sessionPreset = AVCaptureSessionPreset640x480
         session.commitConfiguration()
     }
     

@@ -101,7 +101,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     var delegate : AppDelegate? = nil
     var warpType : WarpType = .PRETTY
     
-    let scale = 4 // how much we shrink small image by
+    let scale = 2 // how much we shrink small image by
     let toothThreshold : GLfloat = 0.3
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
@@ -120,6 +120,10 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
                     fromConnection connection: AVCaptureConnection)
     {
+        let port = connection.inputPorts[0] as! AVCaptureInputPort
+        let input = port.input as! AVCaptureDeviceInput
+        let device = input.device as AVCaptureDevice
+        let format = device.activeFormat
         textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
         dispatch_async(dispatch_get_main_queue()) {
             self.render()
@@ -136,7 +140,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             break
         case .LandscapeLeft:
             vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false)
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
             textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
             textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
@@ -159,8 +163,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
             textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
         case .PortraitUpsideDown:
-            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
-            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: true)
+            vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
+            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false)
             textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
             textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
