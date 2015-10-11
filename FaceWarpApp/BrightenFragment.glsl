@@ -22,10 +22,10 @@ void main(){
         highp float v = (color.r + color.b + color.g) / 3.0;
         highp float S = C / v;
         highp float k = 0.0;
-        highp float amount = min(1.0, max(0.0, 1.0 - S));
+        highp float amount = min(1.0, max(0.0, (0.7 - S)));
         highp vec3 greyScaleFace =  color.rgb * (1.0 - Brighten) + vec3(1.0) * v * Brighten; // Fades from color at outermouth to greyscale by inner mouth
-        color.rgb = 0.5 * color.rgb + 0.5 * greyScaleFace; // mix 50/50 grey with color
-        color.rgb += 0.1 * Brighten * amount * color.rgb; // brighten by 10% when in a white pixel in the mouth.
+        color.rgb = (1.0 - amount) * color.rgb + amount * greyScaleFace; // the colourest thing is all colour, the least coloury thing is most greyscale
+        color.rgb += 0.2 * Brighten * amount * color.rgb; // brighten by 10% when in a white pixel in the mouth.
     }
     gl_FragColor = color;
 }
