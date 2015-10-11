@@ -9,6 +9,7 @@
 import Foundation
 import AVFoundation
 import CoreVideo
+import AssetsLibrary
 
 extension Array {
     func size () -> Int {
@@ -82,15 +83,25 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
     return (minval, maxval)
 }
 
-class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
     
+    var assetWriter : AVAssetWriter? = nil
+    var awAudio : AVAssetWriterInput? = nil
+    var awVideo : AVAssetWriterInput? =  nil
+    var assetWriterPixelBufferInput : AVAssetWriterInputPixelBufferAdaptor? = nil
+    var videoStartTime = NSDate()
+    var vidLoc : NSURL?
+    var isWriting : Bool = false
     
     let context : EAGLContext
     let layer : CAEAGLLayer
     
     var doFaceBlur : Bool = true
     var captureNext : Bool = false
+    
+    
+    var recorder = Recorder()
     
     var textureManager : TextureManager?
     var shaderManager : ShaderManager?
@@ -101,11 +112,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     var delegate : AppDelegate? = nil
     var warpType : WarpType = .PRETTY
     
-    let scale = 2 // how much we shrink small image by
+    let scale = 4 // how much we shrink small image by
     let toothThreshold : GLfloat = 0.3
     
     var orientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
     var pastOrientation : UIInterfaceOrientation = UIInterfaceOrientation.Unknown
+    
+    var hasInitedAW : Bool = false
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
         context = c
@@ -120,16 +133,19 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
                     fromConnection connection: AVCaptureConnection)
     {
-        let port = connection.inputPorts[0] as! AVCaptureInputPort
-        let input = port.input as! AVCaptureDeviceInput
-        let device = input.device as AVCaptureDevice
-        let format = device.activeFormat
-        textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
-        dispatch_async(dispatch_get_main_queue()) {
-            self.render()
+        if let _ = captureOutput as? AVCaptureAudioDataOutput {
+            if recorder.state == .Recording {
+                recorder.addAudioSampleBuffer(sampleBuffer)
+            }
+        } else if let _ = captureOutput as? AVCaptureVideoDataOutput {
+            textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
+            dispatch_async(dispatch_get_main_queue()) {
+                let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+                self.render(time)
+            }
         }
     }
-    
+        
     func setupForOrientation(withScale scale : Int = 2) {
         
         let vwidth = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
@@ -443,16 +459,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
         vertexManager!.unbindPostprocessVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
     }
-    func recordit() {
-        if let tm = textureManager {
-            if let pb = tm.outputPixelBuffer {
-                
-            }
-        }
-        
-    }
     
-    func render() {
+    func render(initTime: CMTime) {
         let _pastOrientation = orientation
         warpType = (delegate?.syncro.warp)!
         orientation = UIApplication.sharedApplication().statusBarOrientation
@@ -464,11 +472,27 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         renderToScreen()
         pastOrientation = _pastOrientation
         if delegate!.syncro.capturing {
-            delegate!.syncro.capturing = false
-            glFinish()
-            textureManager!.saveOutput()
+            if delegate!.syncro.capture_type == .IMAGE {
+                delegate!.syncro.capturing = false
+                glFinish()
+                textureManager!.saveOutput()
+            } else {
+                if recorder.state == .Idle {
+                    let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
+                    let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
+                    recorder.prepareRecord(forWidth: width, andHeight: height)
+                    videoStartTime = NSDate()
+                }  else if recorder.state == .Recording {
+                    if let pb = textureManager?.outputPixelBuffer {
+                        recorder.addVideoFrame(pb, atTime: initTime)
+                    }
+                }
+                if NSDate().timeIntervalSinceDate(videoStartTime) >= 5 {
+                    delegate!.syncro.capturing = false
+                    recorder.stopRecordingAndSave()
+                }
+            }
         }
-        
         self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
     

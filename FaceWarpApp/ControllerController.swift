@@ -47,7 +47,14 @@ class ControllerController : UIViewController {
         redrawUI()
     }
     @IBAction func selValChange(sender: UISegmentedControl) {
-        print(sender.selectedSegmentIndex)
+        switch sender.selectedSegmentIndex {
+        case 0:
+            delegate?.syncro.capture_type = .IMAGE
+        case 1:
+            delegate?.syncro.capture_type = .VIDEO
+        case _:
+            print("fucked error")
+        }
     }
     
     @IBAction func tinyTouch(sender: UIButton) {

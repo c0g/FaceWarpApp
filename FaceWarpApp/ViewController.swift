@@ -20,5 +20,14 @@ class ViewController: UIViewController {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+    
+    override func shouldAutorotate() -> Bool {
+        let del = UIApplication.sharedApplication().delegate as! AppDelegate
+        if del.syncro.capturing && del.syncro.capture_type == .VIDEO {
+            return false
+        } else {
+            return true
+        }
+    }
 }
 

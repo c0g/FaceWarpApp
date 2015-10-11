@@ -21,36 +21,42 @@ class CaptureManager {
         return  AVCaptureDevice.devices() as! [AVCaptureDevice]
     }
     
-    init?(withDevice device: AVCaptureDevice) {
+    init?(withDevice videoDevice: AVCaptureDevice) {
         session = AVCaptureSession()
         
+        let audioDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio) // default audio device
+        
         // Attempt to attach the device to our session
-        var input : AVCaptureDeviceInput? = nil
+        var videoInput : AVCaptureDeviceInput? = nil
+        var audioInput : AVCaptureDeviceInput? = nil
         do {
-            input = try AVCaptureDeviceInput(device: device)
+            
+            videoInput = try AVCaptureDeviceInput(device: videoDevice)
+            audioInput = try AVCaptureDeviceInput(device: audioDevice)
         } catch {
-            print("Failed to connect device \(device.description)")
+            print("Failed to connect device \(videoDevice.description)")
             return nil
         }
         session.beginConfiguration()
-        session.addInput(input!)
+        session.addInput(audioInput!)
+        session.addInput(videoInput!)
         session.commitConfiguration()
     }
     
     func connectToRenderer(renderer: Renderer) throws {
         // Attempt to initiate an output, tied to the sample buffer delegate (renderer)
-        var output : AVCaptureVideoDataOutput? = nil
-        output = AVCaptureVideoDataOutput()
-        guard let _ = output else {
-            print("Failed to get video output")
-            throw CaptureError.CONNECTION_FAILURE
-        }
-        output?.alwaysDiscardsLateVideoFrames = true // Stops things getting bogged down if the CPU is being hammered
-        output?.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),] // 32BGRA needed to be OpenGL compatible
-        output?.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue()) // run on main thread
+
+        let videoOutput = AVCaptureVideoDataOutput()
+        let audioOutput = AVCaptureAudioDataOutput()
+        
+        videoOutput.alwaysDiscardsLateVideoFrames = true // Stops things getting bogged down if the CPU is being hammered
+        videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),] // 32BGRA needed to be OpenGL compatible
+        videoOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue()) // run on main thread
+        audioOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue())
         session.beginConfiguration()
-        session.addOutput(output)
-        session.sessionPreset = AVCaptureSessionPreset640x480
+        session.addOutput(videoOutput)
+        session.addOutput(audioOutput)
+        session.sessionPreset = AVCaptureSessionPresetiFrame1280x720
         session.commitConfiguration()
     }
     
