@@ -487,7 +487,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                         recorder.addVideoFrame(pb, atTime: initTime)
                     }
                 }
-                if NSDate().timeIntervalSinceDate(videoStartTime) >= 5 {
+                if NSDate().timeIntervalSinceDate(videoStartTime) >= 10 {
                     delegate!.syncro.capturing = false
                     recorder.stopRecordingAndSave()
                 }

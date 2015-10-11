@@ -36,7 +36,7 @@ class Recorder {
         state = .Preparing
         print("Preparing")
         let dir =  NSTemporaryDirectory()
-        vidURL = NSURL(fileURLWithPath: "movie.mov")
+        vidURL = NSURL(fileURLWithPath: "\(dir)/movie.mov")
         do {
             try NSFileManager.defaultManager().removeItemAtURL(vidURL!)
         } catch {
@@ -71,12 +71,12 @@ class Recorder {
             AVVideoHeightKey: height ]
         awVideo = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings as! [String : AnyObject])
         awVideo?.expectsMediaDataInRealTime = true
-
+        
         var sourcePixelBufferAttributes = [String: AnyObject]()
         sourcePixelBufferAttributes[ kCVPixelBufferPixelFormatTypeKey as String ] = Int(kCVPixelFormatType_32BGRA)
         sourcePixelBufferAttributes[ kCVPixelBufferWidthKey as String ] = width
         sourcePixelBufferAttributes[ kCVPixelBufferHeightKey as String ] = height
-
+        
         assetWriterPixelBufferInput = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: awVideo!, sourcePixelBufferAttributes: sourcePixelBufferAttributes)
     }
     
@@ -84,19 +84,26 @@ class Recorder {
         if let awVideo = awVideo, let awAudio = awAudio {
             assetWriter!.addInput(awAudio)
             assetWriter!.addInput(awVideo)
+            if assetWriter!.startWriting() {
+                state = .Recording
+            }
             switch assetWriter!.status {
-            case .Cancelled: print("cancalled")
+            case .Cancelled: print("cancelled")
             case .Completed: print("Completed")
             case .Failed: print("failed")
             case .Unknown: print("unknown")
             case .Writing: print("writing")
             }
-            while assetWriter!.status == .Unknown {
-                print("unknown")
+            while assetWriter!.status != .Writing {
+                switch assetWriter!.status {
+                case .Cancelled: print("cancelled")
+                case .Completed: print("Completed")
+                case .Failed: print(assetWriter!.error)
+                case .Unknown: print("unknown")
+                case .Writing: print("writing")
+                }
             }
-            if assetWriter!.startWriting() {
-                state = .Recording
-            }
+            
         }
     }
     
@@ -105,20 +112,18 @@ class Recorder {
         state = .Writing
         awVideo!.markAsFinished()
         awAudio!.markAsFinished()
-            self.assetWriter!.finishWritingWithCompletionHandler {
-                let library = ALAssetsLibrary()
-                library.writeVideoAtPathToSavedPhotosAlbum(self.vidURL!, completionBlock: {
-                    (url : NSURL?, error : NSError?) -> Void in
-                    print("completed?")
-                    if let url = url {
-                        print("URL \(url)")
-                    }
-                    if let error = error {
-                        print("Error \(error)")
-                    }
-                    self.needTime = true
-                    self.state = .Idle
-                    print("Done maybe")
+        self.assetWriter!.finishWritingWithCompletionHandler {
+            let library = ALAssetsLibrary()
+            library.writeVideoAtPathToSavedPhotosAlbum(self.vidURL!, completionBlock: {
+                (url : NSURL?, error : NSError?) -> Void in
+                if let url = url {
+                    print("URL \(url)")
+                }
+                if let error = error {
+                    print("Error \(error)")
+                }
+                self.needTime = true
+                self.state = .Idle
             })
         }
     }
@@ -137,7 +142,6 @@ class Recorder {
                 if let awVideo = self.awVideo {
                     if awVideo.readyForMoreMediaData {
                         if let awpbi = self.assetWriterPixelBufferInput {
-                            print("added video")
                             awpbi.appendPixelBuffer(frame, withPresentationTime: time)
                         }
                     }
@@ -152,7 +156,6 @@ class Recorder {
             dispatch_async(audioQueue, {
                 if let awAudio = self.awAudio {
                     if awAudio.readyForMoreMediaData {
-                        print("added audio")
                         awAudio.appendSampleBuffer(sampleBuffer)
                     }
                 }
