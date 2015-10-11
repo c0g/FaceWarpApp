@@ -483,11 +483,14 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     recorder.prepareRecord(forWidth: width, andHeight: height)
                     videoStartTime = NSDate()
                 }  else if recorder.state == .Recording {
+                    let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
+                    delegate!.setRecordTime(intVal)
                     if let pb = textureManager?.outputPixelBuffer {
                         recorder.addVideoFrame(pb, atTime: initTime)
                     }
                 }
                 if NSDate().timeIntervalSinceDate(videoStartTime) >= 10 {
+                    delegate!.setRecordTime(0)
                     delegate!.syncro.capturing = false
                     recorder.stopRecordingAndSave()
                 }

@@ -19,30 +19,26 @@ class ControllerController : UIViewController {
     @IBOutlet weak var none: UIButton!
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var photoVideo: UISegmentedControl!
-    
+
+
     
     @IBAction func prettyTouch(sender: AnyObject) {
-        print("Pretty")
         delegate!.syncro.warp = WarpType.PRETTY
         redrawUI()
     }
     @IBAction func noneTouch(sender: AnyObject) {
-        print("None")
         delegate!.syncro.warp = WarpType.NONE
         redrawUI()
     }
     @IBAction func animeTouch(sender: AnyObject) {
-        print("Anime")
         delegate!.syncro.warp = WarpType.SILLY
         redrawUI()
     }
     @IBAction func liveTouch(sender: AnyObject) {
-        print("Live")
         delegate!.syncro.warp = WarpType.DYNAMIC
         redrawUI()
     }
     @IBAction func captureTouch(sender: AnyObject) {
-        print("Capture")
         delegate?.syncro.capturing = true
         redrawUI()
     }
@@ -58,15 +54,32 @@ class ControllerController : UIViewController {
     }
     
     @IBAction func tinyTouch(sender: UIButton) {
-        print("Anime")
         delegate!.syncro.warp = WarpType.TINY
         redrawUI()
     }
+    
+    func recordTime(time : Int) {
+        if time > 0 {
+            capture.setTitle(String(time), forState: .Normal)
+        } else {
+            capture.setTitle("Capture", forState: UIControlState.Normal)
+        }
+    }
+    
     func redrawUI() {
-//        switch delegate!.syncro.warp {
-//        case .DYNAMIC:
-//            
-//        }
+        pretty.setTitleColor(UIColor.grayColor(), forState: UIControlState.Normal)
+        anime.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        live.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        tiny.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        none.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        
+        switch delegate!.syncro.warp {
+        case .DYNAMIC: live.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .NONE: none.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        }
     }
     
     override func viewDidLoad() {
@@ -74,6 +87,8 @@ class ControllerController : UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        delegate!.ui = self
+        redrawUI()
     }
 
 }

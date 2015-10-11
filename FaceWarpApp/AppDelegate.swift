@@ -13,6 +13,13 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let syncro = Syncro()
+    var ui : ControllerController? = nil
+    
+    func setRecordTime(time : Int) {
+        if let ui = ui {
+            ui.recordTime(time)
+        }
+    }
                             
 	var window: UIWindow?
 
