@@ -112,20 +112,22 @@ class Recorder {
         state = .Writing
         awVideo!.markAsFinished()
         awAudio!.markAsFinished()
-        self.assetWriter!.finishWritingWithCompletionHandler {
-            let library = ALAssetsLibrary()
-            library.writeVideoAtPathToSavedPhotosAlbum(self.vidURL!, completionBlock: {
-                (url : NSURL?, error : NSError?) -> Void in
-                if let url = url {
-                    print("URL \(url)")
-                }
-                if let error = error {
-                    print("Error \(error)")
-                }
-                self.needTime = true
-                self.state = .Idle
-            })
-        }
+        dispatch_async(writeQueue, {
+            self.assetWriter!.finishWritingWithCompletionHandler {
+                let library = ALAssetsLibrary()
+                library.writeVideoAtPathToSavedPhotosAlbum(self.vidURL!, completionBlock: {
+                    (url : NSURL?, error : NSError?) -> Void in
+                    if let url = url {
+                        print("URL \(url)")
+                    }
+                    if let error = error {
+                        print("Error \(error)")
+                    }
+                    self.needTime = true
+                    self.state = .Idle
+                })
+            }
+        })
     }
     
     func setTime(time : CMTime) {

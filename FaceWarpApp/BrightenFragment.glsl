@@ -23,7 +23,7 @@ void main(){
         highp float S = C / v;
         highp float k = 0.0;
         highp float amount = min(1.0, max(0.0, 1.0 - S));
-        color.rgb += amount * vec3(0.3) * v * Brighten;
+        color.rgb += amount * vec3(0.1, 0.1, 0.2) * v * Brighten;
     }
     gl_FragColor = color;
 }
