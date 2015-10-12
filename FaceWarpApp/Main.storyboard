@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -97,7 +98,7 @@
                                     <action selector="prettyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="MN8-2z-BTx"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
                                 <rect key="frame" x="27" y="285" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Capture">
@@ -110,7 +111,7 @@
                                     <action selector="captureTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="Flw-pS-jV5"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
                                 <rect key="frame" x="0.0" y="323" width="100" height="29"/>
                                 <animations/>
                                 <segments>
@@ -135,8 +136,18 @@
                                     <action selector="tinyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="6Cj-7p-Gga"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wVC-WP-aW7">
                                 <rect key="frame" x="27" y="160" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Switch">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="switchTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="BPc-Er-KBg"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
+                                <rect key="frame" x="27" y="198" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="None">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -152,28 +163,30 @@
                         <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="rUu-y4-h3I" secondAttribute="leading" id="274-JD-VJI"/>
-                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerY" secondItem="8IS-1i-MjM" secondAttribute="centerY" priority="250" id="3Rz-cY-hkL"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="top" secondItem="Ifo-3D-ynA" secondAttribute="bottom" constant="8" symbolic="YES" id="2TQ-Qn-b4s"/>
                             <constraint firstItem="efc-XM-lE0" firstAttribute="centerX" secondItem="1dZ-iS-pzh" secondAttribute="centerX" id="5Jz-dn-g78"/>
-                            <constraint firstItem="kjs-ge-UFc" firstAttribute="trailing" secondItem="rUu-y4-h3I" secondAttribute="trailing" id="5zq-pw-tBu"/>
-                            <constraint firstItem="kjs-ge-UFc" firstAttribute="leading" secondItem="RJS-uQ-YAY" secondAttribute="leading" id="9J6-qF-U5O"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="RJS-uQ-YAY" secondAttribute="trailing" id="A4I-op-AAj"/>
-                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="BTh-TQ-ajc"/>
-                            <constraint firstItem="kjs-ge-UFc" firstAttribute="trailing" secondItem="RJS-uQ-YAY" secondAttribute="trailing" id="C2o-kv-ShV"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="1dZ-iS-pzh" secondAttribute="trailing" id="HRp-tr-UuA"/>
-                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leadingMargin" constant="11" id="Jfa-Fe-6gV"/>
-                            <constraint firstItem="rUu-y4-h3I" firstAttribute="trailing" secondItem="Ifo-3D-ynA" secondAttribute="trailing" id="LnI-uq-aJ1"/>
-                            <constraint firstItem="kjs-ge-UFc" firstAttribute="leading" secondItem="rUu-y4-h3I" secondAttribute="leading" id="R3l-Bj-p0U"/>
-                            <constraint firstItem="kjs-ge-UFc" firstAttribute="top" secondItem="rUu-y4-h3I" secondAttribute="bottom" constant="8" symbolic="YES" id="RhX-Ay-O01"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="RJS-uQ-YAY" secondAttribute="leading" id="VpN-g9-CBR"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="top" secondItem="RJS-uQ-YAY" secondAttribute="bottom" constant="8" symbolic="YES" id="Y1E-wU-sUd"/>
+                            <constraint firstItem="wVC-WP-aW7" firstAttribute="top" secondItem="RJS-uQ-YAY" secondAttribute="bottom" constant="8" symbolic="YES" id="7QT-P6-6kX"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="wVC-WP-aW7" secondAttribute="leading" id="8sx-zc-gW3"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="AE8-9S-zXf"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="top" secondItem="rUu-y4-h3I" secondAttribute="bottom" constant="8" symbolic="YES" id="B2a-2d-NT9"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="top" secondItem="E6J-LU-ujg" secondAttribute="bottom" constant="8" symbolic="YES" id="FwO-AC-663"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="IBw-ms-2D8"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="1dZ-iS-pzh" secondAttribute="trailing" id="L6N-Xf-a24"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="top" secondItem="kjs-ge-UFc" secondAttribute="bottom" constant="8" symbolic="YES" id="Par-DJ-fpZ"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="trailing" secondItem="rUu-y4-h3I" secondAttribute="trailing" id="S0y-Nb-mdE"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="wVC-WP-aW7" secondAttribute="trailing" id="Vra-EB-HlV"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TN8-BW-PaV" secondAttribute="bottom" constant="50" id="WGL-jm-Bgn"/>
                             <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="YYb-N3-M3T"/>
-                            <constraint firstItem="rUu-y4-h3I" firstAttribute="top" secondItem="Ifo-3D-ynA" secondAttribute="bottom" constant="8" symbolic="YES" id="brP-hs-ayU"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="top" secondItem="kjs-ge-UFc" secondAttribute="bottom" constant="8" symbolic="YES" id="dM6-Hm-rk4"/>
-                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="top" secondItem="E6J-LU-ujg" secondAttribute="bottom" constant="8" symbolic="YES" id="ipK-Ct-Spd"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="auy-NF-no4"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="b8A-TA-MpX"/>
+                            <constraint firstItem="kjs-ge-UFc" firstAttribute="leading" secondItem="RJS-uQ-YAY" secondAttribute="leading" id="bMu-Wu-9mQ"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="wVC-WP-aW7" secondAttribute="leading" id="d7a-oj-ueT"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="rUu-y4-h3I" secondAttribute="leading" id="jmV-CZ-grI"/>
                             <constraint firstItem="efc-XM-lE0" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leading" id="ksA-kv-xfL"/>
-                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TN8-BW-PaV" secondAttribute="bottom" constant="10" id="lDS-1k-EHI"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="y54-PO-pzD"/>
+                            <constraint firstItem="rUu-y4-h3I" firstAttribute="leading" secondItem="kjs-ge-UFc" secondAttribute="leading" id="o8D-9H-qYx"/>
+                            <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leadingMargin" constant="11" id="sT7-VW-lcU"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="wVC-WP-aW7" secondAttribute="trailing" id="wxi-OI-roW"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="top" secondItem="wVC-WP-aW7" secondAttribute="bottom" constant="8" symbolic="YES" id="xuF-AF-9v0"/>
                         </constraints>
                     </view>
                     <connections>
@@ -183,6 +196,7 @@
                         <outlet property="none" destination="TN8-BW-PaV" id="PQQ-GX-BST"/>
                         <outlet property="photoVideo" destination="efc-XM-lE0" id="lzN-a3-yam"/>
                         <outlet property="pretty" destination="Ifo-3D-ynA" id="1D2-ON-onp"/>
+                        <outlet property="switchBut" destination="wVC-WP-aW7" id="sft-DU-D5d"/>
                         <outlet property="tiny" destination="RJS-uQ-YAY" id="78K-Dm-0Kb"/>
                     </connections>
                 </viewController>
