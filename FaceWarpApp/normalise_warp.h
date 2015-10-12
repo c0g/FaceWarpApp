@@ -27,6 +27,8 @@ PhiPoint * dynamic_adjusted_warp(PhiPoint * landmarks, double * parameters, doub
     
 PhiPoint * tiny_face_warp(PhiPoint * landmarks, double * parameters, double * factr);
     
+PhiPoint * face_swap_warp(PhiPoint * landmarks_face1_ptr, PhiPoint * landmarks_face2_ptr, double * parameters_face1, double * parameters_face2, double*factr_face1, double*factr_face2);
+    
 #ifdef __cplusplus
 }
 #endif

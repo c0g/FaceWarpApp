@@ -79,6 +79,7 @@ class ControllerController : UIViewController {
         case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case _:print("Go fuck yourself")
         }
     }
     

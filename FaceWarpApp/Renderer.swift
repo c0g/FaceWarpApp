@@ -299,20 +299,40 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         guard numFaces > 0 else {
             return
         }
-        
-        for pointArray in facePoints {
-            let uvPoints = pointArray.map {
-                return $0.PhiPointValue
+        let facePhiPoints = facePoints.map {
+            (perFace) -> [PhiPoint] in
+                return perFace.map {
+                    (value) -> PhiPoint in
+                    return value.PhiPointValue
             }
-            
-            let (xyPoints, rotationAmount) = doWarp(uvPoints)
-            drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
-            drawClearFace(XY: xyPoints, UV: uvPoints)
-            drawRightEye(XY: xyPoints, UV: uvPoints)
-            drawLeftEye(XY: xyPoints, UV: uvPoints)
-            drawMouth(XY: xyPoints, UV: uvPoints)
-            let (ratio, min, max) = prepTeeth(UVs: uvPoints)
-            drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
+        }
+        switch warpType {
+        case .SWAP:
+            let (xyzArray, factrs) = warper.doSwitchFace(facePhiPoints)
+            for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
+                drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
+                drawClearFace(XY: xyPoints, UV: uvPoints)
+                drawRightEye(XY: xyPoints, UV: uvPoints)
+                drawLeftEye(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
+                let (ratio, min, max) = prepTeeth(UVs: uvPoints)
+                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
+            }
+        case _:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                
+                let (xyPoints, rotationAmount) = doWarp(uvPoints)
+                drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
+                drawClearFace(XY: xyPoints, UV: uvPoints)
+                drawRightEye(XY: xyPoints, UV: uvPoints)
+                drawLeftEye(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
+                let (ratio, min, max) = prepTeeth(UVs: uvPoints)
+                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
+            }
         }
     }
     
