@@ -310,13 +310,10 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         case .SWAP:
             let (xyzArray, factrs) = warper.doSwitchFace(facePhiPoints)
             for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
-                drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
-                drawClearFace(XY: xyPoints, UV: uvPoints)
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 1.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
                 drawMouth(XY: xyPoints, UV: uvPoints)
-                let (ratio, min, max) = prepTeeth(UVs: uvPoints)
-                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
             }
         case _:
             for pointArray in facePoints {
@@ -326,7 +323,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 
                 let (xyPoints, rotationAmount) = doWarp(uvPoints)
                 drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
-                drawClearFace(XY: xyPoints, UV: uvPoints)
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (0.6, 1.0, 0.9, 0.9))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
                 drawMouth(XY: xyPoints, UV: uvPoints)
@@ -363,13 +360,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
     }
     
-    func drawClearFace(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+    func drawClearFace(XY xy: [PhiPoint], UV uv: [PhiPoint], withAlphas alpha : (Float, Float, Float, Float)) {
         let box = textureManager!.uprightRect
         if let box = box {
             glEnable(GLenum(GL_BLEND))
             glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: 0.6, outFaceAlpha: 1.0, aroundEyesAlpha: 0.9, aroundMouthAlpha: 0.9)
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box, inFaceAlpha: alpha.0, outFaceAlpha: alpha.1, aroundEyesAlpha: alpha.2, aroundMouthAlpha: alpha.3)
             vertexManager!.selectFacePart(FacePart.SKIN)
             let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)

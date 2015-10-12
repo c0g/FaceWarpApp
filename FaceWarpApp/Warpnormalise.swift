@@ -54,7 +54,9 @@ class Warper {
             let pidx1 = findBestFace(face1)
             let pidx2 = findBestFace(face2)
             
-            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            
+//            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
             let warped1 = Array(warped_faces[0..<68])
             let warped2 = Array(warped_faces[68..<136])
             tmp_faces[idx1] = warped1
@@ -63,6 +65,12 @@ class Warper {
             factr[idx2] = factr2
         }
         return(tmp_faces, factr)
+    }
+    
+    func doShitSwap( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
+        var concat = landmarks2
+        concat.appendContentsOf(landmarks1)
+        return (concat, 0.0, 0.0)
     }
     
     func findBestFace(landmarks : [PhiPoint]) -> Int {
@@ -159,6 +167,7 @@ class Warper {
     func doSwap( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
         var factr1 : Float64 = 0.0
         var factr2 : Float64 = 0.0
+//        var param1 : [Float64]
         let ans = face_swap_warp(&landmarks1, &landmarks2, &initParam1, &initParam2, &factr1, &factr2)
         var safeAns : [PhiPoint] = [];
         for idx in 0..<(landmarks1.count + landmarks2.count) {
