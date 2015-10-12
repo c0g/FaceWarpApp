@@ -19,9 +19,13 @@ class ControllerController : UIViewController {
     @IBOutlet weak var none: UIButton!
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var photoVideo: UISegmentedControl!
-
+    @IBOutlet weak var switchBut: UIButton!
 
     
+    @IBAction func switchTouch(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.SWAP
+        redrawUI()
+    }
     @IBAction func prettyTouch(sender: AnyObject) {
         delegate!.syncro.warp = WarpType.PRETTY
         redrawUI()
@@ -72,6 +76,7 @@ class ControllerController : UIViewController {
         live.setTitleColor(UIColor.grayColor(), forState: .Normal)
         tiny.setTitleColor(UIColor.grayColor(), forState: .Normal)
         none.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        switchBut.setTitleColor(UIColor.grayColor(), forState: .Normal)
         
         switch delegate!.syncro.warp {
         case .DYNAMIC: live.setTitleColor(UIColor.whiteColor(), forState: .Normal)
@@ -79,6 +84,7 @@ class ControllerController : UIViewController {
         case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .SWAP: switchBut.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case _:print("Go fuck yourself")
         }
     }
