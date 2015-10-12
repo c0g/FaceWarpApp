@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, SILLY, NONE, TINY, DYNAMIC, SWAP
+    case PRETTY, SILLY, NONE, TINY, DYNAMIC, SWAP2D, SWAP3D
 }
 
 class Warper {
@@ -40,7 +40,7 @@ class Warper {
         }
     }
     
-    func doSwitchFace(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [Float64]) {
+    func doSwitchFace2D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [Float64]) {
         let num_faces = all_landmarks.count
         var factr : [Float64] = Array(count: num_faces, repeatedValue: 0.0)
         
@@ -57,6 +57,33 @@ class Warper {
             
 //            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
             let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            let warped1 = Array(warped_faces[0..<68])
+            let warped2 = Array(warped_faces[68..<136])
+            tmp_faces[idx1] = warped1
+            tmp_faces[idx2] = warped2
+            factr[idx1] = factr1
+            factr[idx2] = factr2
+        }
+        return(tmp_faces, factr)
+    }
+    
+    func doSwitchFace3D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [Float64]) {
+        let num_faces = all_landmarks.count
+        var factr : [Float64] = Array(count: num_faces, repeatedValue: 0.0)
+        
+        var tmp_faces = all_landmarks
+        for idx in 0..<(num_faces+1)/2 {
+            let idx1 = idx * 2
+            let idx2 = (idx1 + 1) % num_faces
+            var face1 = all_landmarks[idx1]
+            var face2 = all_landmarks[idx2]
+            
+            let pidx1 = findBestFace(face1)
+            let pidx2 = findBestFace(face2)
+            
+            
+            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+//            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
             let warped1 = Array(warped_faces[0..<68])
             let warped2 = Array(warped_faces[68..<136])
             tmp_faces[idx1] = warped1
