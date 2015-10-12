@@ -748,6 +748,20 @@ PhiPoint * return_face_swap_warp(int * landmarks_face1_ptr, int * landmarks_face
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_1 = dlib::subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1));
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_2 = dlib::subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1));
     
+    dlib::matrix<long> not_face_outline(1,dlib_not_face_outline.size());
+    for (int i = 0; i < dlib_not_face_outline.size(); i++ )
+    {
+        not_face_outline(0,i) = (long)dlib_not_face_outline[i];
+    }
+    
+//    for (int i = (int)dlib_not_face_outline.size(); i < dlib_not_face_outline.size() + innermouth_dlib.size(); i++ )
+//    {
+//        not_face_mouth_outline_face(0,i) = (long)innermouth_dlib[i - (int)dlib_not_face_outline.size()];
+//    }
+    
+ 
+    dlib::set_subm(_2d_landmarks_full_face_1, not_face_outline, dlib::range(0,1)) = dlib::subm(landmarks_face1, not_face_outline, dlib::range(0,1));
+    dlib::set_subm(_2d_landmarks_full_face_2, not_face_outline, dlib::range(0,1)) = dlib::subm(landmarks_face2, not_face_outline, dlib::range(0,1));
     
     _2d_landmarks_full_face_1 = adjust_warp_for_angle(landmarks_face1, _2d_landmarks_full_face_1, *factr_face1);
     _2d_landmarks_full_face_2 = adjust_warp_for_angle(landmarks_face2, _2d_landmarks_full_face_2, *factr_face2);
