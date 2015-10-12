@@ -19,11 +19,16 @@ class ControllerController : UIViewController {
     @IBOutlet weak var none: UIButton!
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var photoVideo: UISegmentedControl!
-    @IBOutlet weak var switchBut: UIButton!
+    @IBOutlet weak var switch2d: UIButton!
+    @IBOutlet weak var switch3d: UIButton!
 
     
-    @IBAction func switchTouch(sender: AnyObject) {
-        delegate!.syncro.warp = WarpType.SWAP
+    @IBAction func switch3dTouch(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.SWAP3D
+        redrawUI()
+    }
+    @IBAction func switch2dTouch(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.SWAP2D
         redrawUI()
     }
     @IBAction func prettyTouch(sender: AnyObject) {
@@ -76,7 +81,8 @@ class ControllerController : UIViewController {
         live.setTitleColor(UIColor.grayColor(), forState: .Normal)
         tiny.setTitleColor(UIColor.grayColor(), forState: .Normal)
         none.setTitleColor(UIColor.grayColor(), forState: .Normal)
-        switchBut.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        switch2d.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        switch3d.setTitleColor(UIColor.grayColor(), forState: .Normal)
         
         switch delegate!.syncro.warp {
         case .DYNAMIC: live.setTitleColor(UIColor.whiteColor(), forState: .Normal)
@@ -84,7 +90,8 @@ class ControllerController : UIViewController {
         case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        case .SWAP: switchBut.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .SWAP2D: switch2d.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .SWAP3D: switch3d.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case _:print("Go fuck yourself")
         }
     }

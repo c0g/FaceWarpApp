@@ -13,7 +13,7 @@ enum CaptureType {
 }
 
 class Syncro {
-    var warp: WarpType = WarpType.SWAP
+    var warp: WarpType = WarpType.SWAP2D
     var capturing : Bool = false
     var capture_type : CaptureType = CaptureType.IMAGE
 }
