@@ -46,11 +46,16 @@ class Warper {
         
         var tmp_faces = all_landmarks
         for idx in 0..<(num_faces+1)/2 {
-            let idx1 = idx * 2
+            let idx1 = idx*2
             let idx2 = (idx1 + 1) % num_faces
             var face1 = all_landmarks[idx1]
             var face2 = all_landmarks[idx2]
             
+            if idx1 + 1  >=  num_faces{
+                face1 = all_landmarks[idx1]
+                face2 = tmp_faces[idx2]
+            }
+        
             let pidx1 = findBestFace(face1)
             let pidx2 = findBestFace(face2)
             
@@ -59,6 +64,7 @@ class Warper {
             let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
             let warped1 = Array(warped_faces[0..<68])
             let warped2 = Array(warped_faces[68..<136])
+
             tmp_faces[idx1] = warped1
             tmp_faces[idx2] = warped2
             factr[idx1] = factr1
