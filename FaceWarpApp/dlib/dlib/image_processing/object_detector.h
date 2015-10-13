@@ -509,8 +509,28 @@ namespace dlib
         (*this)(img,dets,adjust_threshold);
 
         std::vector<rectangle> final_dets(dets.size());
-        for (unsigned long i = 0; i < dets.size(); ++i)
-            final_dets[i] = dets[i].rect;
+        std::vector<rectangle> rect_dets(dets.size());
+        std::vector<int> face_indices;
+        std::vector<long> face_left_boundaries;
+        
+        for (unsigned long i = 0; i < dets.size(); ++i){
+            rect_dets[i] = dets[i].rect;
+        };
+    
+        std::vector<int> indices(dets.size());
+        std::size_t n(0);
+        std::generate(std::begin(indices), std::end(indices), [&]{ return n++; });
+        
+
+        std::sort(std::begin(indices),
+                  std::end(indices),
+                  [&](int i1, int i2) { return rect_dets[i1].left() < rect_dets[i2].left(); } );
+        
+        
+        //Sort instead by left/right on screen
+        for (unsigned long i = 0; i < dets.size(); ++i){
+            final_dets[i] = rect_dets[indices[i]];
+        };
 
         return final_dets;
     }
