@@ -3,118 +3,78 @@
     {
       "idiom" : "iphone",
       "size" : "29x29",
-      "scale" : "1x"
+      "scale" : "2x",
+      "filename" : "Icon-Small@2x.png"
     },
     {
       "idiom" : "iphone",
       "size" : "29x29",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "29x29",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "Icon-Small@3x.png"
     },
     {
       "idiom" : "iphone",
       "size" : "40x40",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "Icon-40@2x.png"
     },
     {
+      "idiom" : "iphone",
       "size" : "40x40",
-      "idiom" : "iphone",
-      "filename" : "apple-icon-120x120.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "Icon-40@3x.png"
     },
     {
-      "size" : "57x57",
       "idiom" : "iphone",
-      "filename" : "apple-icon-57x57.png",
-      "scale" : "1x"
-    },
-    {
-      "size" : "57x57",
-      "idiom" : "iphone",
-      "filename" : "apple-icon-114x114.png",
-      "scale" : "2x"
-    },
-    {
       "size" : "60x60",
-      "idiom" : "iphone",
-      "filename" : "apple-icon-60x60.png",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "Icon-60@2x.png"
     },
     {
+      "idiom" : "iphone",
       "size" : "60x60",
-      "idiom" : "iphone",
-      "filename" : "apple-icon-180x180.png",
-      "scale" : "3x"
+      "scale" : "3x",
+      "filename" : "Icon-60@3x.png"
     },
     {
       "idiom" : "ipad",
       "size" : "29x29",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "Icon-Small.png"
     },
     {
       "idiom" : "ipad",
       "size" : "29x29",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "Icon-Small@2x.png"
     },
     {
       "idiom" : "ipad",
       "size" : "40x40",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "Icon-40.png"
     },
     {
       "idiom" : "ipad",
       "size" : "40x40",
-      "scale" : "2x"
+      "scale" : "2x",
+      "filename" : "Icon-40@2x.png"
     },
     {
       "idiom" : "ipad",
-      "size" : "50x50",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "50x50",
-      "scale" : "2x"
-    },
-    {
-      "size" : "72x72",
-      "idiom" : "ipad",
-      "filename" : "apple-icon-72x72.png",
-      "scale" : "1x"
-    },
-    {
-      "size" : "72x72",
-      "idiom" : "ipad",
-      "filename" : "apple-icon-144x144.png",
-      "scale" : "2x"
-    },
-    {
       "size" : "76x76",
-      "idiom" : "ipad",
-      "filename" : "apple-icon-76x76.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "Icon-76.png"
     },
     {
+      "idiom" : "ipad",
       "size" : "76x76",
-      "idiom" : "ipad",
-      "filename" : "apple-icon-152x152.png",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "apple-icon-precomposed.png",
-      "unassigned" : true
-    },
-    {
-      "filename" : "apple-icon.png",
-      "unassigned" : true
+      "scale" : "2x",
+      "filename" : "Icon-76@2x.png"
     }
   ],
   "info" : {
     "version" : 1,
-    "author" : "xcode"
+    "author" : "makeappicon"
   }
 }
