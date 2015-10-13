@@ -307,15 +307,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             }
         }
         switch warpType {
-        case .SWAP3D:
-            let (xyzArray, factrs) = warper.doSwitchFace3D(facePhiPoints)
-            for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
-                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 1.0, 1.0, 1.0))
-                drawRightEye(XY: xyPoints, UV: uvPoints)
-                drawLeftEye(XY: xyPoints, UV: uvPoints)
-                drawMouth(XY: xyPoints, UV: uvPoints)
-            }
-        case .SWAP2D:
+
+        case .SWAP:
             let (xyzArray, factrs) = warper.doSwitchFace2D(facePhiPoints)
             for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))

@@ -98,7 +98,7 @@
                                     <action selector="prettyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="MN8-2z-BTx"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1dZ-iS-pzh">
                                 <rect key="frame" x="27" y="285" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Capture">
@@ -111,7 +111,7 @@
                                     <action selector="captureTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="Flw-pS-jV5"/>
                                 </connections>
                             </button>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="efc-XM-lE0">
                                 <rect key="frame" x="0.0" y="323" width="100" height="29"/>
                                 <animations/>
                                 <segments>
@@ -136,28 +136,18 @@
                                     <action selector="tinyTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="6Cj-7p-Gga"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wVC-WP-aW7">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gh3-Dm-EZn">
                                 <rect key="frame" x="27" y="160" width="46" height="30"/>
                                 <animations/>
-                                <state key="normal" title="Switch2d">
+                                <state key="normal" title="Swap">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="switch2dTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="TE1-k3-hxZ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gh3-Dm-EZn">
-                                <rect key="frame" x="27" y="198" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Switch 3d">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="switch3dTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="fNk-Ka-Bdf"/>
+                                    <action selector="swapTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="Bzx-0O-idF"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TN8-BW-PaV">
-                                <rect key="frame" x="27" y="236" width="46" height="30"/>
+                                <rect key="frame" x="27" y="198" width="46" height="30"/>
                                 <animations/>
                                 <state key="normal" title="None">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -173,33 +163,31 @@
                         <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="0uA-TH-QiH"/>
                             <constraint firstItem="rUu-y4-h3I" firstAttribute="top" secondItem="Ifo-3D-ynA" secondAttribute="bottom" constant="8" symbolic="YES" id="4Dj-U9-TFL"/>
-                            <constraint firstItem="efc-XM-lE0" firstAttribute="centerX" secondItem="1dZ-iS-pzh" secondAttribute="centerX" id="5Jz-dn-g78"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="8Kb-gJ-f1a"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="trailing" secondItem="TN8-BW-PaV" secondAttribute="trailing" id="5NS-0q-nsi"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="8hT-Ae-vcR"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="BGm-12-2Px"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="BVX-9e-mId"/>
                             <constraint firstItem="rUu-y4-h3I" firstAttribute="leading" secondItem="Ifo-3D-ynA" secondAttribute="leading" id="Bqd-bz-NhZ"/>
-                            <constraint firstItem="wVC-WP-aW7" firstAttribute="trailing" secondItem="RJS-uQ-YAY" secondAttribute="trailing" id="Fs2-gC-fN3"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="kjs-ge-UFc" secondAttribute="leading" id="GNW-r9-pQ3"/>
-                            <constraint firstItem="wVC-WP-aW7" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="MpD-kT-M9n"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="HJo-Db-Wie"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="ID8-4R-3wH"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="LC7-mQ-BcX"/>
                             <constraint firstItem="rUu-y4-h3I" firstAttribute="leading" secondItem="kjs-ge-UFc" secondAttribute="leading" id="Nbz-Fy-3f2"/>
                             <constraint firstItem="Ifo-3D-ynA" firstAttribute="top" secondItem="E6J-LU-ujg" secondAttribute="bottom" constant="8" symbolic="YES" id="NtD-lZ-nUw"/>
                             <constraint firstItem="kjs-ge-UFc" firstAttribute="top" secondItem="rUu-y4-h3I" secondAttribute="bottom" constant="8" symbolic="YES" id="OZ2-TF-D0f"/>
-                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TN8-BW-PaV" secondAttribute="bottom" constant="30" id="Oo5-zb-njx"/>
                             <constraint firstItem="Ifo-3D-ynA" firstAttribute="trailing" secondItem="rUu-y4-h3I" secondAttribute="trailing" id="PON-kz-8aP"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="top" secondItem="kjs-ge-UFc" secondAttribute="bottom" constant="8" symbolic="YES" id="Ugg-WK-JHR"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerX" secondItem="efc-XM-lE0" secondAttribute="centerX" id="U0B-ab-xB7"/>
                             <constraint firstItem="Ifo-3D-ynA" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leadingMargin" constant="11" id="Wan-Rq-lav"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="top" secondItem="Gh3-Dm-EZn" secondAttribute="bottom" constant="8" symbolic="YES" id="WqP-St-aCw"/>
                             <constraint firstItem="kjs-ge-UFc" firstAttribute="trailing" secondItem="rUu-y4-h3I" secondAttribute="trailing" id="X8W-hn-pYa"/>
-                            <constraint firstItem="wVC-WP-aW7" firstAttribute="top" secondItem="RJS-uQ-YAY" secondAttribute="bottom" constant="8" symbolic="YES" id="Xen-Ca-yYz"/>
-                            <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="YYb-N3-M3T"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="cuR-oJ-cFf"/>
-                            <constraint firstItem="Gh3-Dm-EZn" firstAttribute="top" secondItem="wVC-WP-aW7" secondAttribute="bottom" constant="8" symbolic="YES" id="d3s-F4-aZe"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="hca-Be-Ld7"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="js5-cw-UqG"/>
+                            <constraint firstItem="Gh3-Dm-EZn" firstAttribute="top" secondItem="RJS-uQ-YAY" secondAttribute="bottom" constant="8" symbolic="YES" id="Yxr-zd-hTR"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="kjs-ge-UFc" secondAttribute="leading" id="afE-kv-nO4"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="centerX" secondItem="8IS-1i-MjM" secondAttribute="centerX" id="avd-bv-9Cy"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="centerY" secondItem="8IS-1i-MjM" secondAttribute="centerY" priority="250" id="f5p-oW-6gl"/>
                             <constraint firstItem="efc-XM-lE0" firstAttribute="leading" secondItem="8IS-1i-MjM" secondAttribute="leading" id="ksA-kv-xfL"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="oL1-fV-g3s"/>
-                            <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="1dZ-iS-pzh" secondAttribute="trailing" id="ojB-bv-AiE"/>
-                            <constraint firstItem="wVC-WP-aW7" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="uMs-cD-hY6"/>
-                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="wVC-WP-aW7" secondAttribute="leading" id="yMU-Ea-3QU"/>
+                            <constraint firstItem="RJS-uQ-YAY" firstAttribute="top" secondItem="kjs-ge-UFc" secondAttribute="bottom" constant="8" symbolic="YES" id="oqj-PS-zSk"/>
+                            <constraint firstItem="TN8-BW-PaV" firstAttribute="top" secondItem="Gh3-Dm-EZn" secondAttribute="bottom" constant="8" symbolic="YES" id="rHE-r7-Rp1"/>
+                            <constraint firstItem="1dZ-iS-pzh" firstAttribute="top" relation="greaterThanOrEqual" secondItem="TN8-BW-PaV" secondAttribute="bottom" priority="250" constant="30" id="uX9-yj-a7t"/>
                         </constraints>
                     </view>
                     <connections>
@@ -209,8 +197,7 @@
                         <outlet property="none" destination="TN8-BW-PaV" id="PQQ-GX-BST"/>
                         <outlet property="photoVideo" destination="efc-XM-lE0" id="lzN-a3-yam"/>
                         <outlet property="pretty" destination="Ifo-3D-ynA" id="1D2-ON-onp"/>
-                        <outlet property="switch2d" destination="wVC-WP-aW7" id="qjK-Uz-ed9"/>
-                        <outlet property="switch3d" destination="Gh3-Dm-EZn" id="iEp-hV-s2U"/>
+                        <outlet property="swap" destination="Gh3-Dm-EZn" id="P6n-L7-Lhn"/>
                         <outlet property="tiny" destination="RJS-uQ-YAY" id="78K-Dm-0Kb"/>
                     </connections>
                 </viewController>
