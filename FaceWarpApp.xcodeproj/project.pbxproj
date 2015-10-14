@@ -371,7 +371,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 2WHKXWB6SD;
+						DevelopmentTeam = S559Q4PGN4;
 					};
 				};
 			};
@@ -625,7 +625,7 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -667,7 +667,7 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
