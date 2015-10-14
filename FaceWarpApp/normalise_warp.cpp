@@ -246,12 +246,20 @@ double check_do_warp(dlib::matrix<double,68,2> landmarks, double nose_side_dista
     dlib::matrix<double,1,2> mean_tmp;
     dlib::matrix<double,1,2> mean_tmp2;
     
-    if ((nose_dist_check < nose_side_distance_thresh)){// && (height_nose_dist_check > nose_down_distance_thresh)){
-//        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+    if (height_nose_dist_check > nose_down_distance_thresh){
+        //        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
         mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), 1.0 - (nose_dist_check / nose_side_distance_thresh);
         do_warp[0] = std::min(do_warp[0] + dlib::mean(mean_tmp), 1.0);
         do_warp[1] = do_warp[0];
     };
+    
+    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
+        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
+//        mean_tmp = (1.0 - (nose_dist_check / nose_side_distance_thresh)), 1.0 - (nose_dist_check / nose_side_distance_thresh);
+        do_warp[0] = std::min(do_warp[0] + mean_tmp(0,0), 1.0);
+        do_warp[1] = std::min(do_warp[1] + mean_tmp(0,1), 1.0);
+    };
+
     
 //    if ((nose_dist_check < nose_side_distance_thresh) && (height_nose_dist_check > nose_down_distance_thresh)){
 //        mean_tmp2 = (1.0 - (nose_dist_check / nose_side_distance_thresh)), (nose_down_distance_thresh / height_nose_dist_check);
