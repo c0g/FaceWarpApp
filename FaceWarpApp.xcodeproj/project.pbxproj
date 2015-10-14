@@ -625,7 +625,7 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -667,7 +667,7 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
