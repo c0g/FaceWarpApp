@@ -74,6 +74,9 @@ class TextureManager {
         return UIScreen.mainScreen().bounds
     }
     
+    func destroy() {
+        
+    }
     
     // MARK: loading data from a sample buffer (video) into OpenGL
     func loadTextureFromSampleBuffer(sampleBuffer: CMSampleBuffer) { // Video texture lives in TEXTURE0
