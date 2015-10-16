@@ -86,6 +86,7 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
     var camera : Int //Default camera int---0 means back camera, 1 means front
+    var pastCamera : Int
     
     var assetWriter : AVAssetWriter? = nil
     var awAudio : AVAssetWriterInput? = nil
@@ -125,6 +126,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         context = c
         layer = l
         camera = k
+        pastCamera = k
         super.init()
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
@@ -162,6 +164,12 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
 
         let vaspect = Float(vwidth) / Float(vheight)
         let saspect = Float(width) / Float(height)
+        
+        if camera != pastCamera {
+            pastOrientation = .Unknown
+        }
+        
+        pastCamera = camera
         
         switch camera {
         
@@ -217,7 +225,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     break
                 case .LandscapeLeft:
                     vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
