@@ -224,15 +224,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 case pastOrientation:
                     break
                 case .LandscapeLeft:
-                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
                     textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                     textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                 case .LandscapeRight:
-                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+                    vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
                     vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
@@ -240,7 +240,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                     textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                 case .Portrait:
-                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
+                    vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
                     vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
                     textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
