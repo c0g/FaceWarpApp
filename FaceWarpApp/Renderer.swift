@@ -425,6 +425,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
                 drawMouth(XY: xyPoints, UV: uvPoints)
+                drawInnerMouth(XY: xyPoints, UV: xyPoints)
             }
         case _:
             for pointArray in facePoints {
@@ -495,6 +496,21 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
             vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
             vertexManager!.selectFacePart(FacePart.ALL_MOUTH)
+            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            textureManager!.bindUprightTextureToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+        }
+    }
+    
+    func drawInnerMouth(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
+            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
+            vertexManager!.selectFacePart(FacePart.INNER_MOUTH)
             let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
