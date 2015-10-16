@@ -9,6 +9,7 @@
 import Foundation
 import CoreMedia
 import CoreVideo
+import Photos
 
 class TextureManager {
     
@@ -411,6 +412,24 @@ class TextureManager {
     }
     
     // MARK: Save a given pixel buffer to camera roll
+//    func savePixelBuffer(pb : CVPixelBufferRef) {
+//        CVPixelBufferLockBaseAddress(pb, 0)
+//        let addr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(pb))
+//        let rw = CVPixelBufferGetBytesPerRow(pb)
+//        let r = CVPixelBufferGetHeight(pb)
+//        for idx in 0..<((rw * r)/4) {
+//            addr[idx * 4 + 3] = 255
+//        }
+//        let ciImage = CIImage(CVPixelBuffer: pb)
+//        let tmpContext = CIContext()
+//        let width = CGFloat(CVPixelBufferGetWidth(pb))
+//        let height = CGFloat(CVPixelBufferGetHeight(pb))
+//        let videoImage = tmpContext.createCGImage(ciImage, fromRect: CGRectMake(0, 0, width, height))
+//        let uiImage = UIImage(CGImage: videoImage)
+//        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+//        CVPixelBufferUnlockBaseAddress(pb, 0)
+//    }
+    
     func savePixelBuffer(pb : CVPixelBufferRef) {
         CVPixelBufferLockBaseAddress(pb, 0)
         let addr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(pb))
@@ -425,9 +444,30 @@ class TextureManager {
         let height = CGFloat(CVPixelBufferGetHeight(pb))
         let videoImage = tmpContext.createCGImage(ciImage, fromRect: CGRectMake(0, 0, width, height))
         let uiImage = UIImage(CGImage: videoImage)
-        UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         CVPixelBufferUnlockBaseAddress(pb, 0)
+        
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges(
+            {
+                PHAssetChangeRequest.creationRequestForAssetFromImage(uiImage)
+            }, completionHandler: {
+                (complete: Bool, error : NSError?) in
+                if let error = error {
+                    
+                }
+            })
     }
+    
+//    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+//    PHAssetChangeRequest *changeRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:<#your photo here#>];
+//    } completionHandler:^(BOOL success, NSError *error) {
+//    if (success) {
+//    <#your completion code here#>
+//    }
+//    else {
+//    <#figure out what went wrong#>
+//    }
+//    }];
+    
     
     func generatePixelBuffer(inout buffer : CVPixelBufferRef?, inout andTexture texture : CVOpenGLESTextureRef?, withSize size : CGSize) {
         let options = [
