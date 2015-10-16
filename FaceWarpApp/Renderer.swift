@@ -424,7 +424,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
-                drawMouth(XY: uvPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
             }
         case _:
             for pointArray in facePoints {
