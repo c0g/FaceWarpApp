@@ -86,6 +86,7 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
     var camera : Int //Default camera int---0 means back camera, 1 means front
+    var pastCamera : Int
     
     var assetWriter : AVAssetWriter? = nil
     var awAudio : AVAssetWriterInput? = nil
@@ -125,6 +126,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         context = c
         layer = l
         camera = k
+        pastCamera = k
         super.init()
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
@@ -162,6 +164,12 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
 
         let vaspect = Float(vwidth) / Float(vheight)
         let saspect = Float(width) / Float(height)
+        
+        if camera != pastCamera {
+            pastOrientation = .Unknown
+        }
+        
+        pastCamera = camera
         
         switch camera {
         
@@ -416,7 +424,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
-                drawMouth(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: uvPoints, UV: uvPoints)
             }
         case _:
             for pointArray in facePoints {
