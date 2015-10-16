@@ -632,7 +632,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = feck.com.phi.facewarptest;
 				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
@@ -674,7 +674,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = feck.com.phi.facewarptest;
 				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
