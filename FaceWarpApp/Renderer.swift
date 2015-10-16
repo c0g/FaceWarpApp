@@ -225,7 +225,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     break
                 case .LandscapeLeft:
                     vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
                     textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
