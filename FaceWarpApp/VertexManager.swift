@@ -93,6 +93,7 @@ class VertexManager {
     var postprocessAO : GLuint = GLuint() // Used to rotate the output to the correct orientation for display or recording
     var mouthAO : GLuint = GLuint()
     var brightermouthAO : GLuint = GLuint()
+    var fademouthAO : GLuint = GLuint()
     
     var passPositionBuffer : GLuint = GLuint()
     var passIndexBuffer : GLuint = GLuint()
@@ -109,6 +110,9 @@ class VertexManager {
     var brightermouthPositionBuffer : GLuint = GLuint()
     var brightermouthIndexBuffer : GLuint = GLuint()
     
+    var fademouthPositionBuffer : GLuint = GLuint()
+    var fademouthIndexBuffer : GLuint = GLuint()
+    
     var facePositionBuffer : GLuint = GLuint()
     var faceIndexBuffer : GLuint = GLuint()
     var numFaceIdx = 0
@@ -117,6 +121,7 @@ class VertexManager {
         setupPassVBO()
         setupPostprocessVBO()
         setupPreprocessVBO()
+        setupFadeMouthVBO()
         setupFaceVBO()
         setupPredrawMouthVBO()
         setupBrighterMouthVBO()
@@ -464,6 +469,72 @@ class VertexManager {
         glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
     }
     
+    // MARK: Fill up mouth vertices to draw inner mouth opaque, fading to outer
+    func setupFadeMouthVBO() {
+        glGenVertexArraysOES(1, &fademouthAO);
+        glGenBuffers(1, &fademouthPositionBuffer)
+        glGenBuffers(1, &fademouthIndexBuffer)
+    }
+    
+    func fillFadeMouthVBO(UV uv: [PhiPoint], XY xy : [PhiPoint], inBox box: CGRect) {
+        
+        glBindVertexArrayOES(fademouthAO);
+        
+        let mouth_vertices = (zip(uv[48..<68], xy[48..<68]).enumerate()).map { (idx, points) -> Coordinate in
+            let uv_el = points.0
+            let xy_el = points.1
+            let unorm = GLfloat(uv_el.x) / GLfloat(box.width)
+            let vnorm = GLfloat(uv_el.y) / GLfloat(box.height)
+            let xnorm = GLfloat(xy_el.x) / GLfloat(box.width) * 2 - 1
+            let ynorm = GLfloat(xy_el.y) / GLfloat(box.height) * 2 - 1
+            let alpha = idx < 12 ? GLfloat(0.0) : GLfloat(1.0)
+            return Coordinate(xyz: (xnorm, ynorm, 0), uv: (unorm, vnorm), alpha: alpha)
+        }
+
+        let these_mouth_indices = MOUTH.map{$0 - MOUTH.minElement()!}
+        
+        print(mouth_vertices.count)
+        print(these_mouth_indices.minElement())
+        print(these_mouth_indices.maxElement())
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), fademouthPositionBuffer)
+        glBufferData(GLenum(GL_ARRAY_BUFFER), mouth_vertices.size(), mouth_vertices, GLenum(GL_STATIC_DRAW))
+        
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), fademouthIndexBuffer)
+        glBufferData(GLenum(GL_ELEMENT_ARRAY_BUFFER), these_mouth_indices.size(), these_mouth_indices, GLenum(GL_STATIC_DRAW))
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
+    func bindFadeMouthVBO(withPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andAlphaSlot alphaSlot : GLuint) -> (GLint, GLenum) {
+        glBindVertexArrayOES(fademouthAO);
+        
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), fademouthPositionBuffer)
+        glEnableVertexAttribArray(positionSlot)
+        glVertexAttribPointer(positionSlot, 3, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), nil)
+        glEnableVertexAttribArray(uvSlot)
+        glVertexAttribPointer(uvSlot, 2, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(ImagePosition)))
+        glEnableVertexAttribArray(alphaSlot)
+        glVertexAttribPointer(alphaSlot, 1, GLenum(GL_FLOAT),
+            GLboolean(UInt8(GL_FALSE)), GLsizei(sizeof(Coordinate)), UnsafePointer(bitPattern: sizeof(TexturePosition) + sizeof(ImagePosition)))
+        
+        return (GLint(MOUTH.count), GLenum(GL_UNSIGNED_BYTE))
+    }
+    
+    func unbindFadeMouthVBO(fromPositionSlot positionSlot: GLuint, andUVSlot uvSlot : GLuint, andAlphaSlot alphaSlot : GLuint) {
+        glDisableVertexAttribArray(positionSlot)
+        glDisableVertexAttribArray(uvSlot)
+        glDisableVertexAttribArray(alphaSlot)
+        
+        glBindVertexArrayOES(0)
+        glBindBuffer(GLenum(GL_ELEMENT_ARRAY_BUFFER), 0)
+        glBindBuffer(GLenum(GL_ARRAY_BUFFER), 0)
+    }
+    
     // MARK: Fill up mouth vertices to draw to the final image with brightening
     func setupBrighterMouthVBO() {
         glGenVertexArraysOES(1, &brightermouthAO);
@@ -474,7 +545,7 @@ class VertexManager {
     func fillBrighterMouthVBO(UV uv: [PhiPoint], XY xy : [PhiPoint], inBox box: CGRect, withBrightness brightenFactor : GLfloat) {
         
         glBindVertexArrayOES(brightermouthAO);
-
+        
         let mouth_vertices = zip(uv, xy).enumerate().map { (idx, points) -> Coordinate in
             let uv_el = points.0
             let xy_el = points.1

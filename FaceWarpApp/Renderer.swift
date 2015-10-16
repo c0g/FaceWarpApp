@@ -493,6 +493,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     func drawMouth(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
         let box = textureManager!.uprightRect
         if let box = box {
+            
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
             vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
             vertexManager!.selectFacePart(FacePart.ALL_MOUTH)
@@ -502,21 +503,24 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             textureManager!.setViewPortForOutputTexture()
             glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
             vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            
         }
     }
     
     func drawInnerMouth(XY xy: [PhiPoint], UV uv: [PhiPoint]) {
         let box = textureManager!.uprightRect
         if let box = box {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
-            vertexManager!.fillFaceVertex(XY: xy, UV: uv, inBox: box)
-            vertexManager!.selectFacePart(FacePart.INNER_MOUTH)
-            let (num, type) = vertexManager!.bindFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            vertexManager!.fillFadeMouthVBO(UV: uv, XY: xy, inBox: box)
+            let (num, type) = vertexManager!.bindFadeMouthVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
             textureManager!.bindUprightTextureToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
             textureManager!.setViewPortForOutputTexture()
             glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
-            vertexManager!.unbindFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            vertexManager!.unbindFadeMouthVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)
+            glDisable(GLenum(GL_BLEND))
         }
     }
     
