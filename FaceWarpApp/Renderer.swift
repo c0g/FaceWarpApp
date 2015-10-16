@@ -85,6 +85,7 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
 
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
+    var camera : Int //Default camera int---0 means back camera, 1 means front
     
     var assetWriter : AVAssetWriter? = nil
     var awAudio : AVAssetWriterInput? = nil
@@ -120,14 +121,19 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     
     var hasInitedAW : Bool = false
     
-    init(withContext c: EAGLContext, andLayer l: CAEAGLLayer) {
+    init(withContext c: EAGLContext, andLayer l: CAEAGLLayer, andCamera k: Int) {
         context = c
         layer = l
+        camera = k
         super.init()
         self.textureManager = TextureManager(withContext: context, andLayer: layer)
         self.shaderManager = ShaderManager()
         self.vertexManager = VertexManager()
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    }
+    
+    func destroyTexture() {
+        textureManager!.destroy()
     }
 
     func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
@@ -157,52 +163,148 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         let vaspect = Float(vwidth) / Float(vheight)
         let saspect = Float(width) / Float(height)
         
-        switch orientation {
-        case pastOrientation:
-            break
-        case .LandscapeLeft:
-            vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
-            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-        case .LandscapeRight:
-            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
-            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-        case .Portrait:
-            vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
-            vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
-            textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
-            textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
-            textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
-            textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
-            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-        case .PortraitUpsideDown:
-            vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
-            vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
-            textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
-            textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
-            textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
-            textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
-            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-        case .Unknown:
-            vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
-            vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
-            textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
-            textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-            textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
-        }
+        switch camera {
+        
+            case 1:
+              switch orientation {
+              
+                case pastOrientation:
+                    break
+                case .LandscapeLeft:
+                    vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .LandscapeRight:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Portrait:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .PortraitUpsideDown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Unknown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                }
+            case 0:
+              switch orientation{
+                case pastOrientation:
+                    break
+                case .LandscapeLeft:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .LandscapeRight:
+                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Portrait:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .PortraitUpsideDown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Unknown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                }
+            case _:
+              switch orientation{
+                case pastOrientation:
+                    break
+                case .LandscapeLeft:
+                    vertexManager!.fillPreprocessVBO(forFlip: .HORIZONTAL, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .LandscapeRight:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Portrait:
+                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .PortraitUpsideDown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .BOTH, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vheight, andHeight: vwidth, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                case .Unknown:
+                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: false)
+                    vertexManager!.fillPostprocessVBO(forFlip: .NONE, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    textureManager!.makeUprightPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeOutputPixelBuffer(withWidth: vwidth, andHeight: vheight)
+                    textureManager!.makeSmallerPixelBuffer(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                    textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
+                }
+        
+            }
     }
-    
+
     func preprocessRender() {
         let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
         let (num, type) = vertexManager!.bindPreprocessVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andAlphaSlot: alphaSlot)

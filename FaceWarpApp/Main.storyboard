@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
@@ -159,17 +159,29 @@
                                     <action selector="noneTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="smh-ZH-JSz"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K1l-g5-DhV">
+                                <rect key="frame" x="23" y="560" width="54" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Camera">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="toggleCamera:" destination="rNt-mM-TCA" eventType="touchUpInside" id="PL0-Ci-YIE"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.5" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="efc-XM-lE0" firstAttribute="top" secondItem="1dZ-iS-pzh" secondAttribute="bottom" constant="8" symbolic="YES" id="0uA-TH-QiH"/>
+                            <constraint firstItem="K1l-g5-DhV" firstAttribute="centerX" secondItem="efc-XM-lE0" secondAttribute="centerX" id="1ss-JP-fnL"/>
                             <constraint firstItem="rUu-y4-h3I" firstAttribute="top" secondItem="Ifo-3D-ynA" secondAttribute="bottom" constant="8" symbolic="YES" id="4Dj-U9-TFL"/>
                             <constraint firstItem="1dZ-iS-pzh" firstAttribute="trailing" secondItem="TN8-BW-PaV" secondAttribute="trailing" id="5NS-0q-nsi"/>
                             <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="8hT-Ae-vcR"/>
                             <constraint firstItem="TN8-BW-PaV" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="BGm-12-2Px"/>
                             <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="kjs-ge-UFc" secondAttribute="trailing" id="BVX-9e-mId"/>
                             <constraint firstItem="rUu-y4-h3I" firstAttribute="leading" secondItem="Ifo-3D-ynA" secondAttribute="leading" id="Bqd-bz-NhZ"/>
+                            <constraint firstAttribute="bottom" secondItem="K1l-g5-DhV" secondAttribute="bottom" constant="10" id="GKP-KM-Oqq"/>
                             <constraint firstItem="RJS-uQ-YAY" firstAttribute="leading" secondItem="Gh3-Dm-EZn" secondAttribute="leading" id="HJo-Db-Wie"/>
                             <constraint firstItem="RJS-uQ-YAY" firstAttribute="trailing" secondItem="Gh3-Dm-EZn" secondAttribute="trailing" id="ID8-4R-3wH"/>
                             <constraint firstItem="TN8-BW-PaV" firstAttribute="leading" secondItem="1dZ-iS-pzh" secondAttribute="leading" id="LC7-mQ-BcX"/>

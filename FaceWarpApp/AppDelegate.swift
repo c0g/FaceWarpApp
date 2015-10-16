@@ -15,12 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let syncro = Syncro()
     var ui : ControllerController? = nil
     
+    var view : OpenGLView? = nil
+    
     func setRecordTime(time : Int) {
         if let ui = ui {
             ui.recordTime(time)
         }
     }
-                            
+    
+    func toggleCamera() {
+        if let view = view {
+            view.toggleCamera()
+        }
+    }
+    
 	var window: UIWindow?
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {

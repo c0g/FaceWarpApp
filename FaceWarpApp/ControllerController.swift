@@ -20,6 +20,10 @@ class ControllerController : UIViewController {
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var photoVideo: UISegmentedControl!
     @IBOutlet weak var swap: UIButton!
+    
+    @IBAction func toggleCamera(sender: AnyObject) {
+        delegate!.toggleCamera()
+    }
 
     @IBAction func swapTouch(sender: AnyObject) {
         delegate!.syncro.warp = WarpType.SWAP

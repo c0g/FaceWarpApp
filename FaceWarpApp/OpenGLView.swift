@@ -64,7 +64,7 @@ class OpenGLView: UIView {
     var captureManager : CaptureManager?
     var renderer : Renderer?
     
-    
+    var camera : Int = 0
     
     /* Class Methods
     ------------------------------------------*/
@@ -82,10 +82,32 @@ class OpenGLView: UIView {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         UIApplication.sharedApplication().idleTimerDisabled = true
+        
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        delegate.view = self
+        
         self.setupLayer()
         self.setupContext()
         
-        let device = CaptureManager.devices()[1]
+        self.renderer = Renderer(withContext: context, andLayer: eaglLayer, andCamera: camera)
+        setupPipelineWithCamera(camera, andRenderer: renderer!)
+        
+        
+    }
+    
+    /* Gesture recogniser
+    ------------------------------------------*/
+    
+    func singleTap(rec : UITapGestureRecognizer) {
+        self.renderer!.doFaceBlur = !(self.renderer!.doFaceBlur)
+        self.renderer!.scheduleSave()
+    }
+    
+    /* Instance Methods
+    ------------------------------------------*/
+    
+    func setupPipelineWithCamera(camera : Int, andRenderer renderer : Renderer) {
+        let device = CaptureManager.devices()[camera]
         for format in device.formats as! [AVCaptureDeviceFormat] {
             if CMVideoFormatDescriptionGetDimensions(format.formatDescription).height == 960 {
                 do {
@@ -99,10 +121,10 @@ class OpenGLView: UIView {
         }
         
         self.captureManager = CaptureManager(withDevice: device)
-        self.renderer = Renderer(withContext: context, andLayer: eaglLayer)
+        renderer.camera = camera
         
         do {
-            try self.captureManager?.connectToRenderer(self.renderer!)
+            try self.captureManager?.connectToRenderer(renderer)
         } catch {
             print("Capture manager could not connect to renderer")
             exit(1)
@@ -111,16 +133,19 @@ class OpenGLView: UIView {
         self.captureManager?.start()
     }
     
-    /* Gesture recogniser
-    ------------------------------------------*/
-    
-    func singleTap(rec : UITapGestureRecognizer) {
-        self.renderer!.doFaceBlur = !(self.renderer!.doFaceBlur)
-        self.renderer!.scheduleSave()
+    func toggleCamera() {
+        self.captureManager!.stop()
+//        self.renderer = nil
+        self.captureManager = nil
+        
+        if self.camera == 0{
+            camera = 1
+        } else {
+            camera = 0
+        }
+//
+        self.setupPipelineWithCamera(camera, andRenderer: renderer!)
     }
-    
-    /* Instance Methods
-    ------------------------------------------*/
     
     func setupLayer() {
         // CALayer's are, by default, non-opaque, which is 'bad for performance with OpenGL',
