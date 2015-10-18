@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP
+    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, GAMER
 }
 
 class Warper {
@@ -181,7 +181,7 @@ class Warper {
     
     func doAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = attractive_adjusted_warp_pretty(&landmarks, &initParam, &factr);
+        let ans = attractive_adjusted_warp_handsome(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))

@@ -33,6 +33,16 @@ PhiPoint * tiny_face_warp(PhiPoint * landmarks, double * parameters, double * fa
     
 PhiPoint * face_swap_warp(PhiPoint * landmarks_face1_ptr, PhiPoint * landmarks_face2_ptr, double * parameters_face1, double * parameters_face2, double*factr_face1, double*factr_face2);
     
+PhiPoint3D * threed_point_set(PhiPoint * landmarks, double * parameters, double * factr );
+    
+PhiPoint * golden_total_pretty(PhiPoint * landmarks, double * parameters, double * factr );
+   
+PhiPoint * golden_total_handsome(PhiPoint * landmarks, double * parameters, double * factr );
+
+PhiPoint * golden_inner_pretty(PhiPoint * landmarks, double * parameters, double * factr );
+
+PhiPoint * golden_inner_handsome(PhiPoint * landmarks, double * parameters, double * factr );
+
 #ifdef __cplusplus
 }
 #endif

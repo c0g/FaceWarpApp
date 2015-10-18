@@ -20,13 +20,16 @@ class ControllerController : UIViewController {
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var photoVideo: UISegmentedControl!
     @IBOutlet weak var swap: UIButton!
+    @IBOutlet weak var handsome: UIButton!
+    @IBOutlet weak var gamer: UIButton!
     
-    @IBAction func gamer(sender: AnyObject) {
-        delegate!.syncro.warp = WarpType.NONE
+    
+    @IBAction func gamerTouch(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.GAMER
         redrawUI()
     }
-    
-    @IBAction func handsome(sender: AnyObject) {
+
+    @IBAction func handsomeTouch(sender: AnyObject) {
         delegate!.syncro.warp = WarpType.HANDSOME
         redrawUI()
     }
@@ -90,11 +93,15 @@ class ControllerController : UIViewController {
         tiny.setTitleColor(UIColor.grayColor(), forState: .Normal)
         none.setTitleColor(UIColor.grayColor(), forState: .Normal)
         swap.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        handsome.setTitleColor(UIColor.grayColor(), forState: .Normal)
+        gamer.setTitleColor(UIColor.grayColor(), forState: .Normal)
         
         switch delegate!.syncro.warp {
         case .DYNAMIC: live.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .NONE: none.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .HANDSOME: handsome.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .GAMER: gamer.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SWAP: swap.setTitleColor(UIColor.whiteColor(), forState: .Normal)

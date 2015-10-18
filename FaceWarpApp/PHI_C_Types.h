@@ -20,4 +20,11 @@ typedef struct {
     int x;
     int y;
 } PhiPoint;
+
+typedef struct {
+    int x;
+    int y;
+    int z;
+} PhiPoint3D;
+
 #endif /* PHI_C_Types_h */

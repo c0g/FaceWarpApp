@@ -427,6 +427,21 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 drawMouth(XY: xyPoints, UV: uvPoints)
                 drawInnerMouth(XY: xyPoints, UV: xyPoints)
             }
+        case .HANDSOME:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                
+                let (xyPoints, rotationAmount) = doWarp(uvPoints)
+                drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (0.8, 1.0, 0.9, 0.9))
+                drawRightEye(XY: xyPoints, UV: uvPoints)
+                drawLeftEye(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
+                let (ratio, min, max) = prepTeeth(UVs: uvPoints)
+                drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
+            }
         case _:
             for pointArray in facePoints {
                 let uvPoints = pointArray.map {
