@@ -20,6 +20,10 @@ PhiPoint * adjusted_warp(PhiPoint * landmarks, PhiPoint * face_flat_warp, double
 PhiPoint * attractive_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr);
     
 PhiPoint * attractive_adjusted_warp2(PhiPoint * landmarks, double * parameters, double * factr);
+
+PhiPoint * attractive_adjusted_warp_pretty(PhiPoint * landmarks, double * parameters, double * factr);
+
+PhiPoint * attractive_adjusted_warp_handsome(PhiPoint * landmarks, double * parameters, double * factr);
     
 PhiPoint * silly_adjusted_warp(PhiPoint * landmarks, double * parameters, double * factr);
     

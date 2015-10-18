@@ -21,6 +21,16 @@ class ControllerController : UIViewController {
     @IBOutlet weak var photoVideo: UISegmentedControl!
     @IBOutlet weak var swap: UIButton!
     
+    @IBAction func gamer(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.NONE
+        redrawUI()
+    }
+    
+    @IBAction func handsome(sender: AnyObject) {
+        delegate!.syncro.warp = WarpType.HANDSOME
+        redrawUI()
+    }
+    
     @IBAction func toggleCamera(sender: AnyObject) {
         delegate!.toggleCamera()
     }
