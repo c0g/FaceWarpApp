@@ -417,7 +417,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             }
         }
         switch warpType {
-
+        case .NONE:
+            break
         case .SWAP:
             let (xyzArray, factrs) = warper.doSwitchFace2D(facePhiPoints)
             for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
