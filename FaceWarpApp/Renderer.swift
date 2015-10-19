@@ -450,7 +450,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 let (ratio, min, max) = prepTeeth(UVs: uvPoints)
                 drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
             }
-        case _:
+        case .PRETTY:
             for pointArray in facePoints {
                 let uvPoints = pointArray.map {
                     return $0.PhiPointValue
@@ -465,7 +465,19 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 let (ratio, min, max) = prepTeeth(UVs: uvPoints)
                 drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
             }
+        case _:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                let (xyPoints, rotationAmount) = doWarp(uvPoints)
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 1.0, 1.0, 1.0))
+                drawRightEye(XY: xyPoints, UV: uvPoints)
+                drawLeftEye(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
+            }
         }
+        
     }
     
     func drawRobotEye(UV uvs : [PhiPoint]) {
