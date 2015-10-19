@@ -26,6 +26,11 @@
 		E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E221D1011BC6DA17009F4B0B /* BrightenFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */; settings = {ASSET_TAGS = (); }; };
 		E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
+		E25C0D471BD5077C00F9157F /* camera_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D461BD5077C00F9157F /* camera_icon.png */; settings = {ASSET_TAGS = (); }; };
+		E25C0D491BD514CE00F9157F /* eye.png in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D481BD514CE00F9157F /* eye.png */; settings = {ASSET_TAGS = (); }; };
+		E25C0D4B1BD53F4A00F9157F /* overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D4A1BD53F4A00F9157F /* overlay.png */; settings = {ASSET_TAGS = (); }; };
+		E25C0D4E1BD54DF400F9157F /* PassFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */; settings = {ASSET_TAGS = (); }; };
+		E25C0D4F1BD54DF400F9157F /* PassVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D4D1BD54DF400F9157F /* PassVertex.glsl */; settings = {ASSET_TAGS = (); }; };
 		E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E26D166F1BB42F7700A0F573 /* PHItypes.m */; settings = {ASSET_TAGS = (); }; };
 		E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */; };
 		E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E28D3A9A1BAC409000ACC953 /* Assets.xcassets */; };
@@ -119,6 +124,11 @@
 		E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenVertex.glsl; sourceTree = "<group>"; };
 		E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenFragment.glsl; sourceTree = "<group>"; };
+		E25C0D461BD5077C00F9157F /* camera_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_icon.png; sourceTree = "<group>"; };
+		E25C0D481BD514CE00F9157F /* eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = eye.png; path = Art/eye.png; sourceTree = "<group>"; };
+		E25C0D4A1BD53F4A00F9157F /* overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = overlay.png; sourceTree = "<group>"; };
+		E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PassFragment.glsl; sourceTree = "<group>"; };
+		E25C0D4D1BD54DF400F9157F /* PassVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PassVertex.glsl; sourceTree = "<group>"; };
 		E264DF3E1BB950710051380D /* GTEngine.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GTEngine.xcodeproj; path = GeometricTools/GTEngine/GTEngine.xcodeproj; sourceTree = "<group>"; };
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
@@ -256,12 +266,17 @@
 		E28D3AA61BAC40D200ACC953 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E25C0D481BD514CE00F9157F /* eye.png */,
+				E25C0D4A1BD53F4A00F9157F /* overlay.png */,
 				E20FE76A1BB032AF00142050 /* Main.storyboard */,
+				E25C0D461BD5077C00F9157F /* camera_icon.png */,
 				E20FE76E1BB034BC00142050 /* TextureFragment.glsl */,
 				E20FE76F1BB034BC00142050 /* TextureVertex.glsl */,
 				E28D3AC41BAC67D100ACC953 /* facemarks.dat */,
 				E28D3A9A1BAC409000ACC953 /* Assets.xcassets */,
 				E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */,
+				E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */,
+				E25C0D4D1BD54DF400F9157F /* PassVertex.glsl */,
 				5EB989F91BC8A1F4002BF51F /* launch_logo.png */,
 				E28D3AC31BAC5D0500ACC953 /* bridging.h */,
 				E28D3A9F1BAC409000ACC953 /* Info.plist */,
@@ -437,21 +452,26 @@
 			files = (
 				E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */,
 				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
+				E25C0D4E1BD54DF400F9157F /* PassFragment.glsl in Resources */,
 				E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
 				5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
+				E25C0D4F1BD54DF400F9157F /* PassVertex.glsl in Resources */,
 				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
+				E25C0D491BD514CE00F9157F /* eye.png in Resources */,
 				E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */,
 				E28EB8091BC81DF200E639E7 /* DesaturateFragment.glsl in Resources */,
+				E25C0D4B1BD53F4A00F9157F /* overlay.png in Resources */,
 				E28EB8071BC81DE000E639E7 /* DesaturateVertex.glsl in Resources */,
 				5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
 				E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */,
 				E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */,
 				E28E56211BBC318400358D16 /* GaussianHorizontalVertex.glsl in Resources */,
+				E25C0D471BD5077C00F9157F /* camera_icon.png in Resources */,
 				E221D1011BC6DA17009F4B0B /* BrightenFragment.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -632,7 +652,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = feck.com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
 				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
@@ -674,7 +694,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = feck.com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
 				PRODUCT_NAME = "Magic Mirror";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;

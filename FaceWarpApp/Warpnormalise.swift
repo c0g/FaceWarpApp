@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, GAMER
+    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT
 }
 
 class Warper {

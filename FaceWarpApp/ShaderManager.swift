@@ -16,6 +16,12 @@ class ShaderManager {
     let passThroughAlpha : GLuint
     let passThroughTex : GLint
     
+    let basicShader : ShaderProgram
+    let basicXYZ : GLuint
+    let basicUV : GLuint
+    let basicAlpha : GLuint
+    let basicTex : GLint
+    
     let hblurShader : ShaderProgram
     let hblurXYZ : GLuint
     let hblurUV : GLuint
@@ -68,6 +74,14 @@ class ShaderManager {
         passThroughTex = GLint(glGetUniformLocation(passThroughShader.programHandle, "TextureSampler"))
         glEnableVertexAttribArray(passThroughXYZ)
         glEnableVertexAttribArray(passThroughUV)
+        
+        basicShader = ShaderProgram(withVertexShader: "PassVertex", andFragmentShader: "PassFragment")!
+        basicXYZ = GLuint(glGetAttribLocation(basicShader.programHandle, "Position"))
+        basicUV = GLuint(glGetAttribLocation(basicShader.programHandle, "TexSource"))
+        basicAlpha = GLuint(glGetAttribLocation(basicShader.programHandle, "InAlpha"))
+        basicTex = GLint(glGetUniformLocation(basicShader.programHandle, "TextureSampler"))
+        glEnableVertexAttribArray(basicXYZ)
+        glEnableVertexAttribArray(basicUV)
         
         hblurShader = ShaderProgram(withVertexShader: "GaussianHorizontalVertex", andFragmentShader: "GaussianFragment")!
         hblurXYZ = GLuint(glGetAttribLocation(hblurShader.programHandle, "Position"))
@@ -130,6 +144,11 @@ class ShaderManager {
     func activatePassThroughShader() -> (GLuint, GLuint, GLuint, GLint) {
         glUseProgram(passThroughShader.programHandle)
         return (passThroughXYZ, passThroughUV, passThroughAlpha, passThroughTex)
+    }
+    
+    func activateBasicShader() -> (GLuint, GLuint, GLuint, GLint) {
+        glUseProgram(basicShader.programHandle)
+        return (basicXYZ, basicUV, basicAlpha, basicTex)
     }
     
     func activateHBlurShader(withScale scale : GLfloat) -> (GLuint, GLuint, GLuint, GLint) {
