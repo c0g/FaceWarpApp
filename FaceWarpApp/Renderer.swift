@@ -195,8 +195,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     textureManager!.makeHBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                     textureManager!.makeVBlurTexture(withWidth: vwidth, andHeight: vheight, andScale: scale)
                 case .Portrait:
-                    vertexManager!.fillPreprocessVBO(forFlip: .VERTICAL, andRotate90: true)
-                    vertexManager!.fillPostprocessVBO(forFlip: .BOTH, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
+                    vertexManager!.fillPreprocessVBO(forFlip: .NONE, andRotate90: true)
+                    vertexManager!.fillPostprocessVBO(forFlip: .VERTICAL, andRotate90: false, forVideoAspect: vaspect, andScreenAspect: saspect)
                     textureManager!.makeUprightPixelBuffer(withWidth: vheight, andHeight: vwidth)
                     textureManager!.makeOutputPixelBuffer(withWidth: vheight, andHeight: vwidth)
                     textureManager!.makeSmallerPixelBuffer(withWidth: vheight, andHeight: vwidth, andScale: scale)
@@ -418,6 +418,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
         switch warpType {
 
+        case .ROBOT:
+            for pointArray in facePoints {
+                let uvpoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                drawRobotEye(UV: uvpoints)
+            }
         case .SWAP:
             let (xyzArray, factrs) = warper.doSwitchFace2D(facePhiPoints)
             for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
@@ -460,6 +467,23 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         }
     }
     
+    func drawRobotEye(UV uvs : [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE));
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateBasicShader()
+            vertexManager!.fillRoboEye(UV: uvs, inBox: box)
+            textureManager!.bindRoboEyeToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            let (num, type) = vertexManager!.bindRoboEyeVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager?.unbindRoboEyeVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
+            glDisable(GLenum(GL_BLEND))
+        }
+    }
+    
     func prepTeeth(UVs uvs : [PhiPoint]) -> (GLfloat, GLfloat, GLfloat) {
         let width = dist(uvs[60], uvs[64])
         let height = dist(uvs[66], uvs[62])
@@ -471,7 +495,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         let box = textureManager!.uprightRect
         if let box = box {
             glEnable(GLenum(GL_BLEND))
-            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
+            glBlendFuncSeparate(GLenum(GL_ONE), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE))
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activatePassThroughShader()
             // Fade blur in as rotation changes from 0.65 to 0.75
             let scaler = min(max(((rotation - 0.65) / 0.1), 0.0), 1.0)

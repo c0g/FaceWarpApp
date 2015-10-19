@@ -64,7 +64,7 @@ class OpenGLView: UIView {
     var captureManager : CaptureManager?
     var renderer : Renderer?
     
-    var camera : Int = 0
+    var camera : Int = 1
     
     /* Class Methods
     ------------------------------------------*/

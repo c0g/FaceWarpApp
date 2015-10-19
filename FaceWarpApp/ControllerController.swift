@@ -25,7 +25,7 @@ class ControllerController : UIViewController {
     
     
     @IBAction func gamerTouch(sender: AnyObject) {
-        delegate!.syncro.warp = WarpType.GAMER
+        delegate!.syncro.warp = WarpType.ROBOT
         redrawUI()
     }
 
@@ -101,7 +101,7 @@ class ControllerController : UIViewController {
         case .NONE: none.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .PRETTY: pretty.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .HANDSOME: handsome.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        case .GAMER: gamer.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        case .ROBOT: gamer.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SILLY: anime.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SWAP: swap.setTitleColor(UIColor.whiteColor(), forState: .Normal)

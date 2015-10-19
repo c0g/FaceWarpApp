@@ -10,6 +10,7 @@ import Foundation
 import CoreMedia
 import CoreVideo
 import Photos
+import GLKit
 
 class TextureManager {
     
@@ -51,9 +52,8 @@ class TextureManager {
     var outputTexture : CVOpenGLESTextureRef? = nil
     var outputPixelBuffer : CVPixelBufferRef? = nil
     
-    // References to 50x20 teeth texture. Lives inside TEXTURE7
-    var teethTexture : CVOpenGLESTextureRef? = nil
-    var teethPixelBuffer : CVPixelBufferRef? = nil
+    // Reference to robot eye texture. Lives inside TEXTURE 7
+    var eyeTexture : GLKTextureInfo? = nil
 
     init?(withContext cntxt : EAGLContext, andLayer lyr : CAEAGLLayer) {
         context = cntxt
@@ -67,7 +67,7 @@ class TextureManager {
         }
         setupScreen()
         setupNormalTextures()
-        makeTeethPixelBuffer()
+        loadEyeTexture()
     }
     
     var size : CGRect {
@@ -77,6 +77,8 @@ class TextureManager {
     func destroy() {
         
     }
+    
+    
     
     // MARK: loading data from a sample buffer (video) into OpenGL
     func loadTextureFromSampleBuffer(sampleBuffer: CMSampleBuffer) { // Video texture lives in TEXTURE0
@@ -265,36 +267,8 @@ class TextureManager {
         }
     }
     
-    // MARK: generate buffer for smaller textures
-    func makeTeethPixelBuffer() {
-        teethPixelBuffer = nil
-        teethTexture = nil
-        CVOpenGLESTextureCacheFlush(textureCache!, 0)
-        
-        CVOpenGLESTextureCacheFlush(textureCache!, 0)
-        let size = CGSizeMake(CGFloat(teethWidth), CGFloat(teethHeight))
-        
-        glActiveTexture(GLenum(GL_TEXTURE7)) // teeth texture lives in texture 7
-        generatePixelBuffer(&teethPixelBuffer, andTexture: &teethTexture, withSize: size)
-        glBindTexture(CVOpenGLESTextureGetTarget(teethTexture!), CVOpenGLESTextureGetName(teethTexture!))
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
-        glActiveTexture(GLenum(GL_TEXTURE0))
-    }
-    func bindTeethTextureAsOutput() {
-        glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), CVOpenGLESTextureGetName(teethTexture!), 0);
-    }
-    func bindTeethTextureToSlot(textureSlot : GLint) {
-        glUniform1i(textureSlot, 7)
-    }
-    func setViewPortForTeethTexture() {
-        if let pb = teethPixelBuffer {
-            setViewPortForTexture(pb)
-        }
-    }
     
-    
-    // MAKL: setup for non-CVPixel backed textures
+    // MARK: setup for non-CVPixel backed textures
     func setupNormalTextures() {
         glGenTextures(1, &hblurTexture)
         glGenTextures(1, &vblurTexture)
@@ -509,6 +483,32 @@ class TextureManager {
             print("Create texture from image failed with code \(res)")
             exit(1)
         }
+    }
+    
+    // MARK: Functions to load robot eye texture
+    func loadEyeTexture() {
+        let opt:[String : NSNumber] = [GLKTextureLoaderApplyPremultiplication : true, GLKTextureLoaderGenerateMipmaps: false]
+//        let pic = UIImage(named: "overlay.png")!.CGImage! //pic needs to be CGImage, not UIImage
+//        NSString *path0 = [[NSBundle mainBundle] pathForResource:fileName ofType:nil];
+        let path = NSBundle.mainBundle().pathForResource("overlay", ofType: "png")
+        do {
+            glActiveTexture(GLenum(GL_TEXTURE7))
+//            eyeTexture = try GLKTextureLoader.textureWithCGImage(pic, options: opt) //put `try` just before the method call
+            eyeTexture = try GLKTextureLoader.textureWithContentsOfFile(path!, options: opt)
+            glBindTexture(eyeTexture!.name, eyeTexture!.target)
+            switch eyeTexture!.alphaState {
+            case .None: print("none")
+            case .NonPremultiplied: print("non pre")
+            case .Premultiplied: print("pre")
+            }
+            glActiveTexture(0)
+        } catch {
+            print("failed to load eye")
+        }
+    }
+    
+    func bindRoboEyeToSlot(textureSlot : GLint) {
+        glUniform1i(textureSlot, 7)
     }
     
 }
