@@ -490,7 +490,7 @@ class TextureManager {
         let opt:[String : NSNumber] = [GLKTextureLoaderApplyPremultiplication : true, GLKTextureLoaderGenerateMipmaps: false]
 //        let pic = UIImage(named: "overlay.png")!.CGImage! //pic needs to be CGImage, not UIImage
 //        NSString *path0 = [[NSBundle mainBundle] pathForResource:fileName ofType:nil];
-        let path = NSBundle.mainBundle().pathForResource("overlay", ofType: "png")
+        let path = NSBundle.mainBundle().pathForResource("overlay2", ofType: "png")
         do {
             glActiveTexture(GLenum(GL_TEXTURE7))
 //            eyeTexture = try GLKTextureLoader.textureWithCGImage(pic, options: opt) //put `try` just before the method call
