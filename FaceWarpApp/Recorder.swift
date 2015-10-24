@@ -11,6 +11,7 @@ import CoreVideo
 import CoreMedia
 import AVFoundation
 import AssetsLibrary
+import Photos
 
 enum RecorderState {
     case Idle, Preparing, Recording, Writing, Error
@@ -114,17 +115,16 @@ class Recorder {
         awAudio!.markAsFinished()
         dispatch_async(writeQueue, {
             self.assetWriter!.finishWritingWithCompletionHandler {
-                let library = ALAssetsLibrary()
-                library.writeVideoAtPathToSavedPhotosAlbum(self.vidURL!, completionBlock: {
-                    (url : NSURL?, error : NSError?) -> Void in
-                    if let url = url {
-                        print("URL \(url)")
-                    }
-                    if let error = error {
-                        print("Error \(error)")
-                    }
-                    self.needTime = true
-                    self.state = .Idle
+                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(self.vidURL!)
+                    }, completionHandler: {
+                        (success : Bool, error : NSError?) -> Void in
+                        if let error = error {
+                            let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+                            let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+                            UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+
+                        }
                 })
             }
         })

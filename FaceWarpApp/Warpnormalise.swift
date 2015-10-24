@@ -26,7 +26,6 @@ class Warper {
         let idx = findBestFace(landmarks)
         switch warp {
         case .PRETTY:
-//            return doAttractiveWarp2(landmarks, initParam: &face_log[idx].parameters)
             return doAttractiveWarpPretty(landmarks, initParam: &face_log[idx].parameters)
         case .HANDSOME:
             return doAttractiveWarpHandsome(landmarks, initParam: &face_log[idx].parameters)
@@ -169,7 +168,7 @@ class Warper {
     
     func doAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = attractive_adjusted_warp_pretty(&landmarks, &initParam, &factr);
+        let ans = golden_inner_pretty(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
@@ -181,7 +180,7 @@ class Warper {
     
     func doAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = attractive_adjusted_warp_handsome(&landmarks, &initParam, &factr);
+        let ans = golden_inner_handsome(&landmarks, &initParam, &factr);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))

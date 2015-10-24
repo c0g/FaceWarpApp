@@ -17,14 +17,33 @@
 
 typedef dlib::matrix<double,0,1> column_vector;
 
-dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<double,6,1> &vector)
-{
-    dlib::matrix<double> rotation_matrix_cholesky(3,3);
-    rotation_matrix_cholesky = vector(0,0), 0.0,         0.0,
+dlib::matrix<double> unflattenMatrix(const dlib::matrix<double,6,1> &vector) {
+    dlib::matrix<double> matrix(3,3);
+    matrix = vector(0,0), 0.0,         0.0,
     vector(1,0), vector(2,0), 0.0,
     vector(3,0), vector(4,0), vector(5,0);
+    return matrix;
+}
+
+dlib::matrix<double> return_rotation_matrix_from_flat_vector(const dlib::matrix<double,6,1> &vector)
+{
+    dlib::matrix<double,3,3> rotation_matrix_cholesky = unflattenMatrix(vector);
     dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky * dlib::trans(rotation_matrix_cholesky);
     
+    return rotation_matrix;
+};
+
+dlib::matrix<double> return_rotation_matrix_grad_from_flat_vector_and_index(const dlib::matrix<double,6,1> &vector, const dlib::matrix<double,6,1> &idx_vector)
+{
+    dlib::matrix<double, 3, 3> rotation_matrix_cholesky_left = unflattenMatrix(vector);
+    dlib::matrix<double, 3, 3> rotation_matrix_cholesky_right = dlib::trans(rotation_matrix_cholesky_left);
+    
+    dlib::matrix<double, 3, 3> rotation_matrix_idx_left = unflattenMatrix(idx_vector);
+    dlib::matrix<double, 3, 3> rotation_matrix_idx_right = dlib::trans(rotation_matrix_idx_left);
+    
+    
+    dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky_left * rotation_matrix_idx_right + rotation_matrix_idx_left * rotation_matrix_cholesky_right;
+    std::cout << rotation_matrix;
     return rotation_matrix;
 };
 
@@ -34,7 +53,7 @@ double cost_function_3d_rotation(dlib::matrix<double> vector, const dlib::matrix
     
     dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
     dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
-    dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(rotated_3d_landmarks_subm - landmarks,2)));
+    dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::pow(rotated_3d_landmarks_subm - landmarks,2));
     //    dlib::matrix<double> mismatch_error_covariance = dlib::trans(mismatch_error) * mismatch_error;
     //    dlib::matrix<double> mismatch_error_final = dlib::trans(mismatch_error) * mismatch_error_covariance * mismatch_error;
     
@@ -52,18 +71,44 @@ dlib::matrix<double> derivative_cost_function_3d_rotation(dlib::matrix<double> v
         dlib::matrix<double, 6, 1> vector_derv;
         vector_derv = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
         vector_derv(i,0) = 1.0;
+
+        dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector);
+        dlib::matrix<double,3,3> grad_rotation_matrix = return_rotation_matrix_grad_from_flat_vector_and_index(vector, vector_derv);
+        
+        dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
+        dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
+        dlib::matrix<double> mismatch_error = dlib::sum_cols(rotated_3d_landmarks_subm - landmarks) * 2;
+        
+        dlib::matrix<double> lm_grad = dlib::colm(landmarks3d * grad_rotation_matrix, dlib::range(0,1));
+
+        double error = dlib::sum_rows(grad_rotation_matrix * mismatch_error);
+        derivatives(i,0) = error;
+        
+    }
+    return derivatives;
+};
+
+double derivative_cost_function_3d_rotation2(dlib::matrix<double> vector, const dlib::matrix<double> &landmarks3d, const dlib::matrix<double> &landmarks, dlib::matrix<double> & der){
+    
+    dlib::matrix<double,6,1> derivatives;
+    
+    for (int i = 0; i < 6; i++)
+    {
+        dlib::matrix<double, 6, 1> vector_derv;
+        vector_derv = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+        vector_derv(i,0) = 1.0;
         
         dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector_derv);
         
         dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
         dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
         dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(rotated_3d_landmarks_subm - landmarks,2)));
-
+        
         double error = dlib::sum_rows(mismatch_error);
         derivatives(i,0) = error;
-        
     }
-    return derivatives;
+    der = derivatives;
+    return cost_function_3d_rotation(vector, landmarks3d, landmarks);
 };
 
 double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<double> &centered_landmarks)
@@ -148,7 +193,7 @@ dlib::matrix<double> find_2d_rotation_matrix(const dlib::matrix<double> &landmar
     {
         std::cout << e.what() << std::endl;
     };
-    angle = (angle + startAngle[0]) / 2;
+//    angle = (angle + startAngle[0]) / 2;
     startAngle[0] = angle;
     //    dlib::matrix<double>
     dlib::matrix<double,2,2> rotation_matrix_2d = dlib::rotation_matrix(angle);
@@ -181,7 +226,9 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
     
     auto cost_function_3d_rotation_wrapper_derivative = [&centered_landmarks3d, &centered_landmarks](dlib::matrix<double,6,1> x)
     {
-        return derivative_cost_function_3d_rotation(x, centered_landmarks3d, centered_landmarks);
+        auto ans = derivative_cost_function_3d_rotation(x, centered_landmarks3d, centered_landmarks);
+//        std::cout << ans << std::endl;
+        return ans;
     };
     
     column_vector vector(6);
@@ -213,7 +260,7 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
         std::cout << "Optimisation failed with " << e.what() << std::endl;
     };
     for (int i = 0; i < 6; ++i) {
-        vector(i) = (vector(i) + matrixParams[i]) / 2; // Average
+        vector(i) = vector(i);// + matrixParams[i] * 0.1; // Average
         matrixParams[i] = vector(i); // Average
     }
     dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector);
@@ -387,7 +434,7 @@ int index_of_nearest_value(double val, dlib::matrix<double> row_matrix){
 PhiPoint * return_3d_golden_total_face_warp_pretty(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.1;
+    const double eye_scaling = 1;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -481,7 +528,7 @@ PhiPoint * return_3d_golden_total_face_warp_pretty(int * landmarks_ptr, double *
 PhiPoint * return_3d_golden_total_face_warp_handsome(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.1;
+    const double eye_scaling = 1.00;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -577,7 +624,7 @@ PhiPoint * return_3d_golden_total_face_warp_handsome(int * landmarks_ptr, double
 PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.1;
+    const double eye_scaling = 1.00;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -605,6 +652,72 @@ PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double *
     dlib::set_subm(flattened_2d_landmarks_full, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks;
     dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated = flattened_2d_landmarks_full * dlib::inv(rotation_matrix);
     
+    // Calculate scaling factors for warp
+    
+    // left eye, horizontal
+    double ideal_eyedist_lh = std::sqrt(std::pow(centered_landmarks3d(36, 0) - centered_landmarks3d(39, 0), 2.0) +  std::pow(centered_landmarks3d(36, 1) - centered_landmarks3d(39, 1), 2.0));
+    double user_eyedist_lh = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(36, 0) - flattened_2d_landmarks_full_rotated(39, 0), 2) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(36, 1) - flattened_2d_landmarks_full_rotated(39, 1), 2));
+    double leye_hscale = ideal_eyedist_lh / user_eyedist_lh;
+    
+    // left eye, vertical
+    double ideal_eyedist_lv1 = std::sqrt(std::pow(centered_landmarks3d(37, 0) - centered_landmarks3d(41, 0), 2.0) +  std::pow(centered_landmarks3d(37, 1) - centered_landmarks3d(41, 1), 2.0));
+    double user_eyedist_lv1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(37, 0) - flattened_2d_landmarks_full_rotated(41, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(37, 1) - flattened_2d_landmarks_full_rotated(41, 1), 2));
+    
+    double ideal_eyedist_lv2 = std::sqrt(std::pow(centered_landmarks3d(38, 0) - centered_landmarks3d(40, 0), 2.0) +  std::pow(centered_landmarks3d(38, 1) - centered_landmarks3d(40, 1), 2.0));
+    double user_eyedist_lv2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(38, 0) - flattened_2d_landmarks_full_rotated(40, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(38, 1) - flattened_2d_landmarks_full_rotated(40, 1), 2));
+    double leye_vscale = 0.5 * (ideal_eyedist_lv1 / user_eyedist_lv1) + 0.5 * (ideal_eyedist_lv2 / user_eyedist_lv2);
+    
+    // right eye, horizontal
+    double ideal_eyedist_rh = std::sqrt(std::pow(centered_landmarks3d(42, 0) - centered_landmarks3d(45, 0), 2.0) +  std::pow(centered_landmarks3d(42, 1) - centered_landmarks3d(45, 1), 2.0));
+    double user_eyedist_rh = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(42, 0) - flattened_2d_landmarks_full_rotated(45, 0), 2.0) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(42, 1) - flattened_2d_landmarks_full_rotated(45, 1), 2.0));
+    double reye_hscale = ideal_eyedist_rh / user_eyedist_rh;
+    
+    // right eye, vertical
+    double ideal_eyedist_rv1 = std::sqrt(std::pow(centered_landmarks3d(43, 0) - centered_landmarks3d(47, 0), 2.0) +  std::pow(centered_landmarks3d(43, 1) - centered_landmarks3d(47, 1), 2.0));
+    double user_eyedist_rv1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(43, 0) - flattened_2d_landmarks_full_rotated(47, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(43, 1) - flattened_2d_landmarks_full_rotated(47, 1), 2));
+    
+    double ideal_eyedist_rv2 = std::sqrt(std::pow(centered_landmarks3d(44, 0) - centered_landmarks3d(46, 0), 2.0) +  std::pow(centered_landmarks3d(44, 1) - centered_landmarks3d(46, 1), 2.0));
+    double user_eyedist_rv2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(44, 0) - flattened_2d_landmarks_full_rotated(46, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(44, 1) - flattened_2d_landmarks_full_rotated(46, 1), 2));
+    double reye_vscale = 0.5 * (ideal_eyedist_rv1 / user_eyedist_rv1) + 0.5 * (ideal_eyedist_rv2 / user_eyedist_rv2);
+    
+    double eye_vscale = 0.5 * leye_vscale + 0.5 * reye_vscale;
+    double eye_hscale = 0.5 * leye_hscale + 0.5 * reye_hscale;
+    
+//    std::cout << "Eyes " << eye_hscale << ", " << eye_vscale << std::endl;
+    
+    // nose hscale
+    double ideal_nosedist_h1 = std::sqrt(std::pow(centered_landmarks3d(31, 0) - centered_landmarks3d(35, 0), 2.0) +  std::pow(centered_landmarks3d(31, 1) - centered_landmarks3d(35, 1), 2.0));
+    double user_nosedist_h1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(31, 0) - flattened_2d_landmarks_full_rotated(35, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(31, 1) - flattened_2d_landmarks_full_rotated(35, 1), 2));
+    
+    double nose_hscale1 = ideal_nosedist_h1 / user_nosedist_h1;
+    
+    double ideal_nosedist_h2 = std::sqrt(std::pow(centered_landmarks3d(32, 0) - centered_landmarks3d(34, 0), 2.0) +  std::pow(centered_landmarks3d(32, 1) - centered_landmarks3d(34, 1), 2.0));
+    double user_nosedist_h2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(32, 0) - flattened_2d_landmarks_full_rotated(34, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(32, 1) - flattened_2d_landmarks_full_rotated(34, 1), 2));
+    
+    double nose_hscale2 = ideal_nosedist_h2 / user_nosedist_h2;
+    
+    double nose_hscale = 0.7 * nose_hscale1 + 0.3 * nose_hscale2; // 0.7 for the wider .: more accurate value, 0.3 of the other
+    
+    // nose vscale
+    double ideal_nosedist_v = std::sqrt(std::pow(centered_landmarks3d(27, 0) - centered_landmarks3d(33, 0), 2.0) +  std::pow(centered_landmarks3d(27, 1) - centered_landmarks3d(33, 1), 2.0));
+    double user_nosedist_v = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(27, 0) - flattened_2d_landmarks_full_rotated(33, 0), 2) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(27, 1) - flattened_2d_landmarks_full_rotated(33, 1), 2));
+    
+    double nose_vscale = ideal_nosedist_v / user_nosedist_v;
+    
+    
+    
+//    std::cout << "Nose " << nose_hscale << ", " << nose_vscale << std::endl;
+    
+    
     dlib::matrix<long> dlib_leye_range(1,leye_dlib.size());
     for (int i = 0; i < leye_dlib.size(); i++ )
     {
@@ -616,8 +729,10 @@ PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double *
     dlib_leye_mean[0] = dlib::mean(dlib::colm(dlib_leye,0));
     dlib_leye_mean[1] = dlib::mean(dlib::colm(dlib_leye,1));
     
-    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_scaling) + dlib_leye_mean[0];
-    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_scaling) + dlib_leye_mean[1];
+    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_hscale) + dlib_leye_mean[0];
+    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_vscale) + dlib_leye_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     
     dlib::matrix<long> dlib_reye_range(1,reye_dlib.size());
     for (int i = 0; i < reye_dlib.size(); i++ )
@@ -630,22 +745,27 @@ PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double *
     dlib_reye_mean[0] = dlib::mean(dlib::colm(dlib_reye,0));
     dlib_reye_mean[1] = dlib::mean(dlib::colm(dlib_reye,1));
     
-    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_scaling) + dlib_reye_mean[0];
-    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_scaling) + dlib_reye_mean[1];
+    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_hscale) + dlib_reye_mean[0];
+    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_vscale) + dlib_reye_mean[1];
     
-    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
     
     
-    dlib::matrix<long> switch_list(1,exchange_list_nose_warp.size());
-    for (int i = 0; i < exchange_list_nose_warp.size(); i++ )
+    dlib::matrix<long> dlib_nose_range(1,nose_dlib.size());
+    for (int i = 0; i < nose_dlib.size(); i++ )
     {
-        switch_list(0,i) = (long)exchange_list_nose_warp[i];
+        dlib_nose_range(0,i) = (long)nose_dlib[i];
     }
+    dlib::matrix<double> dlib_nose = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2));
     
+    double dlib_nose_mean[2];
+    dlib_nose_mean[0] = dlib::mean(dlib::colm(dlib_nose,0));
+    dlib_nose_mean[1] = dlib::mean(dlib::colm(dlib_nose,1));
     
+    dlib::set_colm(dlib_nose,0) = ((dlib::colm(dlib_nose,0) - dlib_nose_mean[0]) * nose_hscale) + dlib_nose_mean[0];
+    dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_vscale) + dlib_nose_mean[1];
     
-    dlib::set_subm(flattened_2d_landmarks_full_rotated, switch_list, dlib::range(0,1)) = dlib::subm(centered_landmarks3d, switch_list, dlib::range(0,1));
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
     
     dlib::matrix<double, 68,2> _2d_landmarks_full;
     _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
@@ -673,7 +793,7 @@ PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double *
 PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double eye_scaling = 1.1;
+    const double eye_scaling = 1.0;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -685,7 +805,6 @@ PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double
     dlib::set_colm(centered_landmarks,0) = colm(centered_landmarks,0) - mean_landmarks(0,0);
     dlib::set_colm(centered_landmarks,1) = colm(centered_landmarks,1) - mean_landmarks(0,1);
     
-    //    double *dlib_3d = landmarks3d_dlib;
     double *dlib_3d = landmarks3d_male;
     
     dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
@@ -701,6 +820,72 @@ PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double
     dlib::set_subm(flattened_2d_landmarks_full, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks;
     dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated = flattened_2d_landmarks_full * dlib::inv(rotation_matrix);
     
+    // Calculate scaling factors for warp
+    
+    // left eye, horizontal
+    double ideal_eyedist_lh = std::sqrt(std::pow(centered_landmarks3d(36, 0) - centered_landmarks3d(39, 0), 2.0) +  std::pow(centered_landmarks3d(36, 1) - centered_landmarks3d(39, 1), 2.0));
+    double user_eyedist_lh = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(36, 0) - flattened_2d_landmarks_full_rotated(39, 0), 2) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(36, 1) - flattened_2d_landmarks_full_rotated(39, 1), 2));
+    double leye_hscale = ideal_eyedist_lh / user_eyedist_lh;
+    
+    // left eye, vertical
+    double ideal_eyedist_lv1 = std::sqrt(std::pow(centered_landmarks3d(37, 0) - centered_landmarks3d(41, 0), 2.0) +  std::pow(centered_landmarks3d(37, 1) - centered_landmarks3d(41, 1), 2.0));
+    double user_eyedist_lv1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(37, 0) - flattened_2d_landmarks_full_rotated(41, 0), 2) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(37, 1) - flattened_2d_landmarks_full_rotated(41, 1), 2));
+    
+    double ideal_eyedist_lv2 = std::sqrt(std::pow(centered_landmarks3d(38, 0) - centered_landmarks3d(40, 0), 2.0) +  std::pow(centered_landmarks3d(38, 1) - centered_landmarks3d(40, 1), 2.0));
+    double user_eyedist_lv2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(38, 0) - flattened_2d_landmarks_full_rotated(40, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(38, 1) - flattened_2d_landmarks_full_rotated(40, 1), 2));
+    double leye_vscale = 0.5 * (ideal_eyedist_lv1 / user_eyedist_lv1) + 0.5 * (ideal_eyedist_lv2 / user_eyedist_lv2);
+    
+    // right eye, horizontal
+    double ideal_eyedist_rh = std::sqrt(std::pow(centered_landmarks3d(42, 0) - centered_landmarks3d(45, 0), 2.0) +  std::pow(centered_landmarks3d(42, 1) - centered_landmarks3d(45, 1), 2.0));
+    double user_eyedist_rh = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(42, 0) - flattened_2d_landmarks_full_rotated(45, 0), 2.0) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(42, 1) - flattened_2d_landmarks_full_rotated(45, 1), 2.0));
+    double reye_hscale = ideal_eyedist_rh / user_eyedist_rh;
+    
+    // right eye, vertical
+    double ideal_eyedist_rv1 = std::sqrt(std::pow(centered_landmarks3d(43, 0) - centered_landmarks3d(47, 0), 2.0) +  std::pow(centered_landmarks3d(43, 1) - centered_landmarks3d(47, 1), 2.0));
+    double user_eyedist_rv1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(43, 0) - flattened_2d_landmarks_full_rotated(47, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(43, 1) - flattened_2d_landmarks_full_rotated(47, 1), 2));
+    
+    double ideal_eyedist_rv2 = std::sqrt(std::pow(centered_landmarks3d(44, 0) - centered_landmarks3d(46, 0), 2.0) +  std::pow(centered_landmarks3d(44, 1) - centered_landmarks3d(46, 1), 2.0));
+    double user_eyedist_rv2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(44, 0) - flattened_2d_landmarks_full_rotated(46, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(44, 1) - flattened_2d_landmarks_full_rotated(46, 1), 2));
+    double reye_vscale = 0.5 * (ideal_eyedist_rv1 / user_eyedist_rv1) + 0.5 * (ideal_eyedist_rv2 / user_eyedist_rv2);
+
+    double eye_vscale = 0.5 * leye_vscale + 0.5 * reye_vscale;
+    double eye_hscale = 0.5 * leye_hscale + 0.5 * reye_hscale;
+    
+//    std::cout << "Eyes " << eye_hscale << ", " << eye_vscale << std::endl;
+    
+    // nose hscale
+    double ideal_nosedist_h1 = std::sqrt(std::pow(centered_landmarks3d(31, 0) - centered_landmarks3d(35, 0), 2.0) +  std::pow(centered_landmarks3d(31, 1) - centered_landmarks3d(35, 1), 2.0));
+    double user_nosedist_h1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(31, 0) - flattened_2d_landmarks_full_rotated(35, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(31, 1) - flattened_2d_landmarks_full_rotated(35, 1), 2));
+    
+    double nose_hscale1 = ideal_nosedist_h1 / user_nosedist_h1;
+    
+    double ideal_nosedist_h2 = std::sqrt(std::pow(centered_landmarks3d(32, 0) - centered_landmarks3d(34, 0), 2.0) +  std::pow(centered_landmarks3d(32, 1) - centered_landmarks3d(34, 1), 2.0));
+    double user_nosedist_h2 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(32, 0) - flattened_2d_landmarks_full_rotated(34, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(32, 1) - flattened_2d_landmarks_full_rotated(34, 1), 2));
+    
+    double nose_hscale2 = ideal_nosedist_h2 / user_nosedist_h2;
+    
+    double nose_hscale = 0.7 * nose_hscale1 + 0.3 * nose_hscale2; // 0.7 for the wider .: more accurate value, 0.3 of the other
+
+    // nose vscale
+    double ideal_nosedist_v = std::sqrt(std::pow(centered_landmarks3d(27, 0) - centered_landmarks3d(33, 0), 2.0) +  std::pow(centered_landmarks3d(27, 1) - centered_landmarks3d(33, 1), 2.0));
+    double user_nosedist_v = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(27, 0) - flattened_2d_landmarks_full_rotated(33, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(27, 1) - flattened_2d_landmarks_full_rotated(33, 1), 2));
+    
+    double nose_vscale = ideal_nosedist_v / user_nosedist_v;
+
+    
+    
+//    std::cout << "Nose " << nose_hscale << ", " << nose_vscale << std::endl;
+    
+    
     dlib::matrix<long> dlib_leye_range(1,leye_dlib.size());
     for (int i = 0; i < leye_dlib.size(); i++ )
     {
@@ -712,8 +897,10 @@ PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double
     dlib_leye_mean[0] = dlib::mean(dlib::colm(dlib_leye,0));
     dlib_leye_mean[1] = dlib::mean(dlib::colm(dlib_leye,1));
     
-    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_scaling) + dlib_leye_mean[0];
-    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_scaling) + dlib_leye_mean[1];
+    dlib::set_colm(dlib_leye,0) = ((dlib::colm(dlib_leye,0) - dlib_leye_mean[0]) * eye_hscale) + dlib_leye_mean[0];
+    dlib::set_colm(dlib_leye,1) = ((dlib::colm(dlib_leye,1) - dlib_leye_mean[1]) * eye_vscale) + dlib_leye_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     
     dlib::matrix<long> dlib_reye_range(1,reye_dlib.size());
     for (int i = 0; i < reye_dlib.size(); i++ )
@@ -726,21 +913,44 @@ PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double
     dlib_reye_mean[0] = dlib::mean(dlib::colm(dlib_reye,0));
     dlib_reye_mean[1] = dlib::mean(dlib::colm(dlib_reye,1));
     
-    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_scaling) + dlib_reye_mean[0];
-    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_scaling) + dlib_reye_mean[1];
+    dlib::set_colm(dlib_reye,0) = ((dlib::colm(dlib_reye,0) - dlib_reye_mean[0]) * eye_hscale) + dlib_reye_mean[0];
+    dlib::set_colm(dlib_reye,1) = ((dlib::colm(dlib_reye,1) - dlib_reye_mean[1]) * eye_vscale) + dlib_reye_mean[1];
     
-    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib_leye;
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib_reye;
-    
-    
-    dlib::matrix<long> switch_list(1,exchange_list_nose_warp.size());
-    for (int i = 0; i < exchange_list_nose_warp.size(); i++ )
-    {
-        switch_list(0,i) = (long)exchange_list_nose_warp[i];
-    }
 
     
-    dlib::set_subm(flattened_2d_landmarks_full_rotated, switch_list, dlib::range(0,1)) = dlib::subm(centered_landmarks3d, switch_list, dlib::range(0,1));
+    dlib::matrix<long> dlib_nose_range(1,nose_dlib.size());
+    for (int i = 0; i < nose_dlib.size(); i++ )
+    {
+        dlib_nose_range(0,i) = (long)nose_dlib[i];
+    }
+    dlib::matrix<double> dlib_nose = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2));
+    
+    double dlib_nose_mean[2];
+    dlib_nose_mean[0] = dlib::mean(dlib::colm(dlib_nose,0));
+    dlib_nose_mean[1] = dlib::mean(dlib::colm(dlib_nose,1));
+    
+    dlib::set_colm(dlib_nose,0) = ((dlib::colm(dlib_nose,0) - dlib_nose_mean[0]) * nose_hscale) + dlib_nose_mean[0];
+    dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_vscale) + dlib_nose_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
+
+    
+    
+////
+//
+//    
+////    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_leye_range, dlib::range(0,2)) = dlib::subm(centered_landmarks3d, dlib_leye_range, dlib::range(0,2));
+////    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_reye_range, dlib::range(0,2)) = dlib::subm(centered_landmarks3d, dlib_reye_range, dlib::range(0,2));
+//    
+//    dlib::matrix<long> switch_list(1,exchange_list_nose_warp.size());
+//    for (int i = 0; i < exchange_list_nose_warp.size(); i++ )
+//    {
+//        switch_list(0,i) = (long)exchange_list_nose_warp[i];
+//    }
+//
+//    
+//    dlib::set_subm(flattened_2d_landmarks_full_rotated, switch_list, dlib::range(0,2)) = dlib::subm(centered_landmarks3d, switch_list, dlib::range(0,2));
     
     dlib::matrix<double, 68,2> _2d_landmarks_full;
     _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
@@ -767,11 +977,11 @@ PhiPoint * return_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double
 PhiPoint * return_3d_attractive_adjusted_warp_pretty(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double nose_scaling_x = 0.75;
+    const double nose_scaling_x = 0.8;
     const double nose_scaling_y = 0.8;
     
-    const double eye_scaling_x = 1.1;
-    const double eye_scaling_y = 1.1;
+    const double eye_scaling_x = 1.05;
+    const double eye_scaling_y = 1.05;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     
@@ -870,10 +1080,10 @@ PhiPoint * return_3d_attractive_adjusted_warp_pretty(int * landmarks_ptr, double
 PhiPoint * return_3d_attractive_adjusted_warp_handsome(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double nose_scaling_x = 0.85;
+    const double nose_scaling_x = 0.9;
     const double nose_scaling_y = 0.9;
     
-    const double eye_scaling_x = 1.12;
+    const double eye_scaling_x = 1.05;
     const double eye_scaling_y = 1.02;
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
