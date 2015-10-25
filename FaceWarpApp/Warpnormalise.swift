@@ -12,6 +12,20 @@ enum WarpType {
     case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT
 }
 
+//extension Array where Element : Comparable  {
+//    mutating func bound(upper : Double, lower : Double) {
+//        self = self.map {
+//            return min(upper, max(lower, $0))
+//        }
+//    }
+//}
+
+func boundArray(array : [Double], withUpper upper : Double, andLower lower : Double) -> [Double] {
+    return array.map {
+        return min(upper, max(lower, $0))
+    }
+}
+
 let PRETTY_KEY = "phi.warp.pretty"
 let HANDSOME_KEY = "phi.warp.handsome"
 
@@ -25,7 +39,7 @@ class Warper {
             return _prettyScale
         }
         set(newScale) {
-            _prettyScale = newScale
+            _prettyScale = boundArray(newScale, withUpper: 1.07, andLower: 0.93)
             let pretty_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
             NSUserDefaults().setObject(pretty_data, forKey: PRETTY_KEY)
         }
@@ -35,7 +49,7 @@ class Warper {
             return _handsomeScale
         }
         set(newScale) {
-            _handsomeScale = newScale
+            _handsomeScale = boundArray(newScale, withUpper: 1.05, andLower: 0.95)
             let handsome_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
             NSUserDefaults().setObject(handsome_data, forKey: HANDSOME_KEY)
         }

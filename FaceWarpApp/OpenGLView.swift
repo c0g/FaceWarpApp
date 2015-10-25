@@ -152,13 +152,20 @@ class OpenGLView: UIView {
     @IBOutlet weak var instructions: UILabel!
     func hideInstructions(hidden : Bool) {
         instructions.hidden = hidden
-        overlayImage.hidden = hidden
         uiContainer.hidden = !hidden
-        instructions.text = "Face the screen\n with a neutral expression\n and hold for 3 seconds"
+        switch UIApplication.sharedApplication().statusBarOrientation {
+        case .Portrait:
+            overlayImage.hidden = hidden
+            instructions.text = "Face the screen\nwith a neutral expression\nand hold for 3 seconds"
+        case _:
+            overlayImage.hidden = true
+            instructions.text = "Rotate the device\nto portrait\nand try again"
+        }
+        
     }
     
     func setTextForCount(count : Int) {
-        instructions.text = "Face the screen\n with a neutral expression\n and hold for \(count) seconds"
+        instructions.text = "Face the screen\nwith a neutral expression\nand hold for \(count) seconds"
     }
     
     func setupLayer() {

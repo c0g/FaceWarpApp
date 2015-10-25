@@ -92,7 +92,7 @@ class ControllerController : UIViewController {
         if time > 0 {
             capture.setTitle(String(time), forState: .Normal)
         } else {
-            capture.setTitle("Capture", forState: UIControlState.Normal)
+            capture.setTitle("", forState: UIControlState.Normal)
         }
     }
     

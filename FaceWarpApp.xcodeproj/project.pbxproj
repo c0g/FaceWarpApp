@@ -62,6 +62,7 @@
 		E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8121BC8388200E639E7 /* Syncro.swift */; };
 		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; };
 		E2B3F4301BDD2C4A00B6A7E3 /* face_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */; };
+		E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4341BDD32B400B6A7E3 /* camera_button.png */; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; };
@@ -177,6 +178,7 @@
 		E29319791BC589C0006CAA6F /* fft_stuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft_stuff.cpp; sourceTree = "<group>"; };
 		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
 		E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face_overlay.png; sourceTree = "<group>"; };
+		E2B3F4341BDD32B400B6A7E3 /* camera_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_button.png; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				E25C0D5F1BD6268100F9157F /* overlay3.png */,
 				E25C0D4A1BD53F4A00F9157F /* overlay.png */,
 				E20FE76A1BB032AF00142050 /* Main.storyboard */,
+				E2B3F4341BDD32B400B6A7E3 /* camera_button.png */,
 				E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */,
 				E25C0D461BD5077C00F9157F /* camera_icon.png */,
 				E20FE76E1BB034BC00142050 /* TextureFragment.glsl */,
@@ -470,6 +473,7 @@
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
 				5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
+				E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E25C0D601BD6268100F9157F /* overlay3.png in Resources */,
 				E25C0D4F1BD54DF400F9157F /* PassVertex.glsl in Resources */,

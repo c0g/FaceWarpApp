@@ -88,6 +88,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     var pauseRenderer = false
     
     var calibrateTime : NSDate? = nil
+    var failCalibrateTime : NSDate? = nil
     
     var camera : Int //Default camera int---0 means back camera, 1 means front
     var pastCamera : Int
@@ -762,40 +763,58 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             }
             self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
         } else { // calibrating the pretty/handsome warp
-            if let time = calibrateTime {
-                let deltaT = NSDate().timeIntervalSinceDate(time)
-                self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-                if deltaT > 5.5 {
+            delegate!.hideInstructions(false) // re-draw instructions
+            switch UIApplication.sharedApplication().statusBarOrientation {
+            case .Portrait:
+                if let time = calibrateTime { // do calibration
+                    failCalibrateTime = nil // nil this out, since either: it's already nil or the clever user has rotated their device
+                    let deltaT = NSDate().timeIntervalSinceDate(time)
+                    if deltaT > 5.5 {
+                        switch warpType {
+                        case .PRETTY:
+                            warper.finaliseAttractiveWarpPretty()
+                        case .HANDSOME:
+                            warper.finaliseAttractiveWarpHandsome()
+                        case _:
+                            break
+                        }
+                        delegate!.syncro.calibrating = false
+                        calibrateTime = nil
+                        delegate!.redrawUI()
+                    }
+                    else if deltaT >= 2 {
+                        calibrateFaces()
+                        delegate!.setTextForCount(Int(ceil(5.0 - deltaT)))
+                    }
+                    blurToOutput()
+                    renderToScreen()
+                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                } else {
+                    calibrateTime = NSDate()
                     switch warpType {
                     case .PRETTY:
-                        warper.finaliseAttractiveWarpPretty()
+                        warper.resetAttractiveWarpPretty()
                     case .HANDSOME:
-                        warper.finaliseAttractiveWarpHandsome()
+                        warper.resetAttractiveWarpHandsome()
                     case _:
                         break
                     }
-                    delegate!.syncro.calibrating = false
-                    calibrateTime = nil
-                    delegate!.redrawUI()
                 }
-                else if deltaT >= 2 {
-                    calibrateFaces()
-                    delegate!.setTextForCount(Int(ceil(5.0 - deltaT)))
-                }
-                blurToOutput()
-                renderToScreen()
-            } else {
-                calibrateTime = NSDate()
-                switch warpType {
-                case .PRETTY:
-                    warper.resetAttractiveWarpPretty()
-                case .HANDSOME:
-                    warper.resetAttractiveWarpHandsome()
-                case _:
-                    break
+            case _:
+                if let time = failCalibrateTime { // display portait warning for three seconds
+                    let deltaT = NSDate().timeIntervalSinceDate(time)
+                    blurToOutput()
+                    renderToScreen()
+                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                    if deltaT > 3 {
+                        delegate!.syncro.calibrating = false
+                        calibrateTime = nil
+                        delegate!.redrawUI()
+                    }
+                } else {
+                    failCalibrateTime = NSDate()
                 }
             }
-            
         }
     }
     
