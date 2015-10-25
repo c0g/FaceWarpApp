@@ -83,82 +83,82 @@ namespace dlib
     private:
         __m128 x;
     };
-#elseif DLIB_HAVE_NEON
-    class simd4f
-    {
-    public:
-        typedef float type;
-        
-        inline simd4f() {}
-        inline simd4f(float f) { x = vdupq_n_f32(f); }
-        inline simd4f(float r0, float r1, float r2, float r3) {
-            float __attribute__ ((aligned (16))) data[4] = { r0, r1, r2, r3 };
-            x = vld1q_f32(data);
-        }
-        inline simd4f(const float32x4_t& val):x(val) {}
-        inline simd4f(const simd4i& val):x(vcvtq_f32_s32(val)) {}
-        
-        inline simd4f& operator=(const simd4i& val)
-        {
-            x = simd4f(val);
-            return *this;
-        }
-        
-        inline simd4f& operator=(const float& val)
-        {
-            x = simd4f(val);
-            return *this;
-        }
-        
-        inline simd4f& operator=(const float32x4_t& val)
-        {
-            x = val;
-            return *this;
-        }
-        
-        inline operator float32x4_t() const { return x; }
-        
-        // truncate to 32bit integers
-        inline operator int32x4_t() const { return vcvtq_s32_f32(x); }
-        
-        inline void load_aligned(const type* ptr)  { x = vld1q_f32(ptr); }
-        inline void store_aligned(type* ptr) const { vst1q_f32(ptr, x); }
-        inline void load(const type* ptr)          { x = vld1q_f32(ptr); }
-        inline void store(type* ptr)         const { vst1q_f32(ptr, x); }
-        
-        inline unsigned int size() const { return 4; }
-        inline float operator[](unsigned int idx) const
-        {
-            float temp[4];
-            store(temp);
-            return temp[idx];
-        }
-        
-    private:
-        float32x4_t x;
-    };
-    
-
-    class simd4f_bool
-    {
-    public:
-        typedef float type;
-        
-        inline simd4f_bool() {}
-        inline simd4f_bool(const float32x4_t& val):x(val) {}
-        
-        inline simd4f_bool& operator=(const float32x4_t& val)
-        {
-            x = val;
-            return *this;
-        }
-        
-        inline operator float32x4_t() const { return x; }
-        
-        
-    private:
-        float32x4_t x;
-    };
+//#elseif DLIB_HAVE_NEON
+//    class simd4f
+//    {
+//    public:
+//        typedef float type;
+//        
+//        inline simd4f() {}
+//        inline simd4f(float f) { x = vdupq_n_f32(f); }
+//        inline simd4f(float r0, float r1, float r2, float r3) {
+//            float __attribute__ ((aligned (16))) data[4] = { r0, r1, r2, r3 };
+//            x = vld1q_f32(data);
+//        }
+//        inline simd4f(const float32x4_t& val):x(val) {}
+//        inline simd4f(const simd4i& val):x(vcvtq_f32_s32(val)) {}
+//        
+//        inline simd4f& operator=(const simd4i& val)
+//        {
+//            x = simd4f(val);
+//            return *this;
+//        }
+//        
+//        inline simd4f& operator=(const float& val)
+//        {
+//            x = simd4f(val);
+//            return *this;
+//        }
+//        
+//        inline simd4f& operator=(const float32x4_t& val)
+//        {
+//            x = val;
+//            return *this;
+//        }
+//        
+//        inline operator float32x4_t() const { return x; }
+//        
+//        // truncate to 32bit integers
+//        inline operator int32x4_t() const { return vcvtq_s32_f32(x); }
+//        
+//        inline void load_aligned(const type* ptr)  { x = vld1q_f32(ptr); }
+//        inline void store_aligned(type* ptr) const { vst1q_f32(ptr, x); }
+//        inline void load(const type* ptr)          { x = vld1q_f32(ptr); }
+//        inline void store(type* ptr)         const { vst1q_f32(ptr, x); }
+//        
+//        inline unsigned int size() const { return 4; }
+//        inline float operator[](unsigned int idx) const
+//        {
+//            float temp[4];
+//            store(temp);
+//            return temp[idx];
+//        }
+//        
+//    private:
+//        float32x4_t x;
+//    };
+//    
+//
+//    class simd4f_bool
+//    {
+//    public:
+//        typedef float type;
+//        
+//        inline simd4f_bool() {}
+//        inline simd4f_bool(const float32x4_t& val):x(val) {}
+//        
+//        inline simd4f_bool& operator=(const float32x4_t& val)
+//        {
+//            x = val;
+//            return *this;
+//        }
+//        
+//        inline operator float32x4_t() const { return x; }
+//        
+//        
+//    private:
+//        float32x4_t x;
+//    };
 #else
     class simd4f
     {
