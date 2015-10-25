@@ -44,44 +44,44 @@ namespace dlib
     private:
         __m128i x;
     };
-//#elseif DLIB_HAVE_NEON
-//    class simd4i
-//    {
-//    public:
-//        typedef int32 type;
-//        
-//        inline simd4i() {}
-//        inline simd4i(int32 f) { x = vdupq_n_s32(f); }
-//        inline simd4i(int32 r0, int32 r1, int32 r2, int32 r3) {
-//            int32_t __attribute__((aligned(16))) data[4] = { r3, r2, r1, r0 };
-//            return vld1q_s32(data);
-//        }
-//        inline simd4i(const int32x4_t& val):x(val) {}
-//        
-//        inline simd4i& operator=(const int32x4_t& val)
-//        {
-//            x = val;
-//            return *this;
-//        }
-//        
-//        inline operator __m128i() const { return x; }
-//        
-//        inline void load_aligned(const type* ptr)  { x = vld1q_s32(ptr); }
-//        inline void store_aligned(type* ptr) const { vst1q_s32(ptr, x); }
-//        inline void load(const type* ptr)          { x = vld1q_s32(ptr); }
-//        inline void store(type* ptr)         const { vst1q_s32(ptr, x); }
-//        
-//        inline unsigned int size() const { return 4; }
-//        inline int32 operator[](unsigned int idx) const
-//        {
-//            int32 temp[4];
-//            store(temp);
-//            return temp[idx];
-//        }
-//        
-//    private:
-//        int32x4_t x;
-//    };
+#elseif DLIB_HAVE_NEON
+    class simd4i
+    {
+    public:
+        typedef int32 type;
+        
+        inline simd4i() {}
+        inline simd4i(int32 f) { x = vdupq_n_s32(f); }
+        inline simd4i(int32 r0, int32 r1, int32 r2, int32 r3) {
+            int32_t __attribute__((aligned(16))) data[4] = { r3, r2, r1, r0 };
+            return vld1q_s32(data);
+        }
+        inline simd4i(const int32x4_t& val):x(val) {}
+        
+        inline simd4i& operator=(const int32x4_t& val)
+        {
+            x = val;
+            return *this;
+        }
+        
+        inline operator __m128i() const { return x; }
+        
+        inline void load_aligned(const type* ptr)  { x = vld1q_s32(ptr); }
+        inline void store_aligned(type* ptr) const { vst1q_s32(ptr, x); }
+        inline void load(const type* ptr)          { x = vld1q_s32(ptr); }
+        inline void store(type* ptr)         const { vst1q_s32(ptr, x); }
+        
+        inline unsigned int size() const { return 4; }
+        inline int32 operator[](unsigned int idx) const
+        {
+            int32 temp[4];
+            store(temp);
+            return temp[idx];
+        }
+        
+    private:
+        int32x4_t x;
+    };
 #else
 
     class simd4i
