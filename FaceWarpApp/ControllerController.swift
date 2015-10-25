@@ -30,7 +30,12 @@ class ControllerController : UIViewController {
     }
 
     @IBAction func handsomeTouch(sender: AnyObject) {
-        delegate!.syncro.warp = WarpType.HANDSOME
+        switch delegate!.syncro.warp {
+        case .HANDSOME:
+            delegate!.syncro.calibrating = true
+        case _:
+            delegate!.syncro.warp = WarpType.HANDSOME
+        }
         redrawUI()
     }
     
@@ -43,7 +48,12 @@ class ControllerController : UIViewController {
         redrawUI()
     }
     @IBAction func prettyTouch(sender: AnyObject) {
-        delegate!.syncro.warp = WarpType.PRETTY
+        switch delegate!.syncro.warp {
+        case .PRETTY:
+            delegate!.syncro.calibrating = true
+        case _:
+            delegate!.syncro.warp = WarpType.PRETTY
+        }
         redrawUI()
     }
     @IBAction func noneTouch(sender: AnyObject) {
@@ -106,6 +116,24 @@ class ControllerController : UIViewController {
         case .TINY: tiny.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case .SWAP: swap.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         case _:print("Go fuck yourself")
+        }
+        
+        delegate?.hideInstructions(!delegate!.syncro.calibrating)
+        if delegate!.syncro.calibrating {
+            pretty.setTitle("Pretty", forState: UIControlState.Normal)
+            handsome.setTitle("Handsome", forState: UIControlState.Normal)
+        } else {
+            switch delegate!.syncro.warp {
+            case .PRETTY:
+                pretty.setTitle("Calibrate", forState: UIControlState.Normal)
+                handsome.setTitle("Handsome", forState: UIControlState.Normal)
+            case .HANDSOME:
+                pretty.setTitle("Pretty", forState: UIControlState.Normal)
+                handsome.setTitle("Calibrate", forState: UIControlState.Normal)
+            case _:
+                pretty.setTitle("Pretty", forState: UIControlState.Normal)
+                handsome.setTitle("Handsome", forState: UIControlState.Normal)
+            }
         }
     }
     

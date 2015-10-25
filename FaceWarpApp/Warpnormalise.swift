@@ -12,7 +12,49 @@ enum WarpType {
     case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT
 }
 
+let PRETTY_KEY = "phi.warp.pretty"
+let HANDSOME_KEY = "phi.warp.handsome"
+
 class Warper {
+    var prettyObs = 0
+    var _prettyScale : [Double] = [1.05, 1.05, 0.93, 0.93]
+    var handsomeObs = 0
+    var _handsomeScale : [Double] = [1.03, 1.03, 0.96, 0.96]
+    var prettyScale : [Double] {
+        get {
+            return _prettyScale
+        }
+        set(newScale) {
+            _prettyScale = newScale
+            let pretty_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
+            NSUserDefaults().setObject(pretty_data, forKey: PRETTY_KEY)
+        }
+    }
+    var handsomeScale : [Double] {
+        get {
+            return _handsomeScale
+        }
+        set(newScale) {
+            _handsomeScale = newScale
+            let handsome_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
+            NSUserDefaults().setObject(handsome_data, forKey: HANDSOME_KEY)
+        }
+    }
+    
+    init () {
+        let pretty_data = NSUserDefaults().dataForKey(PRETTY_KEY)
+        let handsome_data = NSUserDefaults().dataForKey(HANDSOME_KEY)
+        if let pretty_data = pretty_data {
+            var tmpScale : [Double] = Array(count: 4, repeatedValue: 0.0)
+            pretty_data.getBytes(&tmpScale, length: 4 * sizeof(Double))
+            prettyScale = tmpScale
+        }
+        if let handsome_data = handsome_data {
+            var tmpScale : [Double] = Array(count: 4, repeatedValue: 0.0)
+            handsome_data.getBytes(&tmpScale, length: 4 * sizeof(Double))
+            handsomeScale = tmpScale
+        }
+    }
     
     struct Face {
         let landmarks : [PhiPoint]
@@ -168,7 +210,7 @@ class Warper {
     
     func doAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = golden_inner_pretty(&landmarks, &initParam, &factr);
+        let ans = apply_golden_inner_pretty(&landmarks, &initParam, &factr, &prettyScale);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
@@ -180,7 +222,7 @@ class Warper {
     
     func doAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = golden_inner_handsome(&landmarks, &initParam, &factr);
+        let ans = apply_golden_inner_handsome(&landmarks, &initParam, &factr, &handsomeScale);
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
@@ -188,6 +230,56 @@ class Warper {
         free(ans)
         
         return (safeAns, factr)
+    }
+    
+    func resetAttractiveWarpPretty() {
+        _prettyScale = [0.0, 0.0, 0.0, 0.0]
+        prettyObs = 0
+    }
+    
+    func addAttractiveWarpPrettyObservation( var landmarks : [PhiPoint]) {
+        let idx = findBestFace(landmarks)
+        ++prettyObs
+        let rez = calcAttractiveWarpPretty(landmarks, initParam: &face_log[idx].parameters)
+        _prettyScale = zip(_prettyScale, rez).map { return $0 + $1 }
+    }
+    
+    func finaliseAttractiveWarpPretty() {
+        _prettyScale = _prettyScale.map { $0 / Double(prettyObs) }
+        prettyScale = _prettyScale
+        print("New pretty scale \(prettyScale)")
+    }
+    
+    func resetAttractiveWarpHandsome() {
+        _handsomeScale = [0.0, 0.0, 0.0, 0.0]
+        handsomeObs = 0
+    }
+    
+    func addAttractiveWarpHandsomeObservation( var landmarks : [PhiPoint]) {
+        let idx = findBestFace(landmarks)
+        ++handsomeObs
+        let rez = calcAttractiveWarpHandsome(landmarks, initParam: &face_log[idx].parameters)
+        _handsomeScale = zip(_handsomeScale, rez).map { return $0 + $1 }
+    }
+    
+    func finaliseAttractiveWarpHandsome() {
+        _handsomeScale = _handsomeScale.map { $0 / Double(handsomeObs) }
+        handsomeScale = _handsomeScale
+        print("New handsome scale \(handsomeScale)")
+    }
+    
+    func calcAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([Double]) {
+        var factr : Float64 = 0
+        var scaling : [Double] = Array(count: 4, repeatedValue: 0.0)
+        calc_golden_inner_handsome(&landmarks, &initParam, &factr, &scaling);
+        return scaling
+    }
+    
+    func calcAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([Double]) {
+        var factr : Float64 = 0
+        var scaling : [Double] = Array(count: 4, repeatedValue: 0.0)
+        calc_golden_inner_pretty(&landmarks, &initParam, &factr, &scaling);
+        return scaling
     }
 
     func doSillyWarp( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {

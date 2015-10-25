@@ -87,6 +87,8 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     
     var pauseRenderer = false
     
+    var calibrateTime : NSDate? = nil
+    
     var camera : Int //Default camera int---0 means back camera, 1 means front
     var pastCamera : Int
     
@@ -483,6 +485,45 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         
     }
     
+    func calibrateFaces() {
+        // Functions return a 'tidyUp' closure which we call to release the pixel buffer
+        var facePoints : [[NSValue]] = []
+        if let big = textureManager!.uprightPixelBuffer, let small = textureManager!.smallPixelBuffer {
+            facePoints = faceDetector.facesPointsInBigImage(big, andSmallImage: small, withScale: Int32(scale)) as! [[NSValue]]
+        }
+        let numFaces = facePoints.count
+        guard numFaces > 0 else {
+            return
+        }
+        let facePhiPoints = facePoints.map {
+            (perFace) -> [PhiPoint] in
+            return perFace.map {
+                (value) -> PhiPoint in
+                return value.PhiPointValue
+            }
+        }
+        switch warpType {
+        case .HANDSOME:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                warper.addAttractiveWarpHandsomeObservation(uvPoints)
+            }
+        case .PRETTY:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                warper.addAttractiveWarpPrettyObservation(uvPoints)
+            }
+        case _:
+            break
+        }
+        
+    }
+
+    
     func drawRobotEye(UV uvs : [PhiPoint]) {
         let box = textureManager!.uprightRect
         if let box = box {
@@ -681,13 +722,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     }
     
     func render(initTime: CMTime) {
-        if !pauseRenderer {
-            let _pastOrientation = orientation
-            warpType = (delegate?.syncro.warp)!
-            orientation = UIApplication.sharedApplication().statusBarOrientation
-            setupForOrientation(withScale: scale)
-            preprocessRender() // Generates upright and small-upright images
-            blurRender() // Render from small upright texture to hblurred texture to vlburred to output texture
+        let _pastOrientation = orientation
+        warpType = (delegate?.syncro.warp)!
+        orientation = UIApplication.sharedApplication().statusBarOrientation
+        setupForOrientation(withScale: scale)
+        preprocessRender() // Generates upright and small-upright images
+        blurRender() // Render from small upright texture to hblurred texture to vlburred to output texture
+        
+        if !delegate!.syncro.calibrating {
+            
             clearToOutput() // renders upright to output
             findFaces() // Finds faces and renders them to output
             renderToScreen()
@@ -718,6 +761,41 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 }
             }
             self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+        } else { // calibrating the pretty/handsome warp
+            if let time = calibrateTime {
+                let deltaT = NSDate().timeIntervalSinceDate(time)
+                self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                if deltaT > 5.5 {
+                    switch warpType {
+                    case .PRETTY:
+                        warper.finaliseAttractiveWarpPretty()
+                    case .HANDSOME:
+                        warper.finaliseAttractiveWarpHandsome()
+                    case _:
+                        break
+                    }
+                    delegate!.syncro.calibrating = false
+                    calibrateTime = nil
+                    delegate!.redrawUI()
+                }
+                else if deltaT >= 2 {
+                    calibrateFaces()
+                    delegate!.setTextForCount(Int(ceil(5.0 - deltaT)))
+                }
+                blurToOutput()
+                renderToScreen()
+            } else {
+                calibrateTime = NSDate()
+                switch warpType {
+                case .PRETTY:
+                    warper.resetAttractiveWarpPretty()
+                case .HANDSOME:
+                    warper.resetAttractiveWarpHandsome()
+                case _:
+                    break
+                }
+            }
+            
         }
     }
     

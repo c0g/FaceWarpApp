@@ -42,6 +42,14 @@ PhiPoint * golden_total_handsome(PhiPoint * landmarks, double * parameters, doub
 PhiPoint * golden_inner_pretty(PhiPoint * landmarks, double * parameters, double * factr );
 
 PhiPoint * golden_inner_handsome(PhiPoint * landmarks, double * parameters, double * factr );
+    
+void calc_golden_inner_pretty(PhiPoint * landmarks, double * parameters, double * factr, double * scaling);
+
+void calc_golden_inner_handsome(PhiPoint * landmarks, double * parameters, double * factr, double * scaling);
+
+PhiPoint * apply_golden_inner_pretty(PhiPoint * landmarks, double * parameters, double * factr, double * scaling);
+
+PhiPoint * apply_golden_inner_handsome(PhiPoint * landmarks, double * parameters, double * factr, double * scaling);
 
 #ifdef __cplusplus
 }

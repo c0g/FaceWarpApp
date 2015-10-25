@@ -138,6 +138,7 @@ namespace dlib
         float32x4_t x;
     };
     
+
     class simd4f_bool
     {
     public:

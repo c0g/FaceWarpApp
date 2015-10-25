@@ -16,4 +16,5 @@ class Syncro {
     var warp: WarpType = WarpType.ROBOT
     var capturing : Bool = false
     var capture_type : CaptureType = CaptureType.IMAGE
+    var calibrating : Bool = false
 }

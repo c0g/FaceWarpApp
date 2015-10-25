@@ -57,7 +57,8 @@ func time<O>(name: String, f : ()->O )-> O {
 
 
 class OpenGLView: UIView {
-    
+    @IBOutlet weak var uiContainer: UIView!
+
     var eaglLayer: CAEAGLLayer!
     var context: EAGLContext!
     
@@ -145,6 +146,19 @@ class OpenGLView: UIView {
         }
 //
         self.setupPipelineWithCamera(camera, andRenderer: renderer!)
+    }
+    
+    @IBOutlet weak var overlayImage: UIImageView!
+    @IBOutlet weak var instructions: UILabel!
+    func hideInstructions(hidden : Bool) {
+        instructions.hidden = hidden
+        overlayImage.hidden = hidden
+        uiContainer.hidden = !hidden
+        instructions.text = "Face the screen\n with a neutral expression\n and hold for 3 seconds"
+    }
+    
+    func setTextForCount(count : Int) {
+        instructions.text = "Face the screen\n with a neutral expression\n and hold for \(count) seconds"
     }
     
     func setupLayer() {
