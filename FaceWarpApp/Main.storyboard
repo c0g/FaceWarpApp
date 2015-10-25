@@ -47,6 +47,9 @@ and hold for 3 seconds</string>
                             <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="face_overlay.png" translatesAutoresizingMaskIntoConstraints="NO" id="NXX-DL-xyg">
                                 <rect key="frame" x="0.0" y="81" width="600" height="519"/>
                                 <animations/>
+                                <variation key="heightClass=compact-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="81" width="400" height="519"/>
+                                </variation>
                             </imageView>
                         </subviews>
                         <animations/>

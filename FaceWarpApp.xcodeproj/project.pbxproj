@@ -37,7 +37,6 @@
 		E26D16701BB42F7700A0F573 /* PHItypes.m in Sources */ = {isa = PBXBuildFile; fileRef = E26D166F1BB42F7700A0F573 /* PHItypes.m */; };
 		E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E28D3A971BAC409000ACC953 /* FaceWarpApp.xcdatamodeld */; };
 		E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E28D3A9A1BAC409000ACC953 /* Assets.xcassets */; };
-		E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */; };
 		E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3AA91BAC43E000ACC953 /* opencv2.framework */; };
 		E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */ = {isa = PBXBuildFile; fileRef = E28D3AAD1BAC442A00ACC953 /* Readme.md */; };
 		E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; };
@@ -63,6 +62,7 @@
 		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; };
 		E2B3F4301BDD2C4A00B6A7E3 /* face_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */; };
 		E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4341BDD32B400B6A7E3 /* camera_button.png */; };
+		E2B3F4371BDD53DD00B6A7E3 /* UILaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4361BDD53DD00B6A7E3 /* UILaunch.storyboard */; };
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; };
@@ -144,7 +144,6 @@
 		E28D3A8D1BAC409000ACC953 /* Mugg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mugg.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E28D3A981BAC409000ACC953 /* FaceWarpApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceWarpApp.xcdatamodel; sourceTree = "<group>"; };
 		E28D3A9A1BAC409000ACC953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		E28D3A9D1BAC409000ACC953 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E28D3A9F1BAC409000ACC953 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E28D3AA91BAC43E000ACC953 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		E28D3AAD1BAC442A00ACC953 /* Readme.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
@@ -179,6 +178,7 @@
 		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
 		E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face_overlay.png; sourceTree = "<group>"; };
 		E2B3F4341BDD32B400B6A7E3 /* camera_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_button.png; sourceTree = "<group>"; };
+		E2B3F4361BDD53DD00B6A7E3 /* UILaunch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UILaunch.storyboard; sourceTree = "<group>"; };
 		E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "Clarkson-Delaunay.c"; sourceTree = "<group>"; };
 		E2B55E4D1BB5DD340086F719 /* Clarkson-Delaunay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Clarkson-Delaunay.h"; sourceTree = "<group>"; };
 		E2B55E531BB69F390086F719 /* triangulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangulator.h; sourceTree = "<group>"; };
@@ -289,7 +289,7 @@
 				E20FE76F1BB034BC00142050 /* TextureVertex.glsl */,
 				E28D3AC41BAC67D100ACC953 /* facemarks.dat */,
 				E28D3A9A1BAC409000ACC953 /* Assets.xcassets */,
-				E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */,
+				E2B3F4361BDD53DD00B6A7E3 /* UILaunch.storyboard */,
 				E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */,
 				E25C0D4D1BD54DF400F9157F /* PassVertex.glsl */,
 				5EB989F91BC8A1F4002BF51F /* launch_logo.png */,
@@ -470,6 +470,7 @@
 				E25C0D641BD7C1FE00F9157F /* mask.png in Resources */,
 				E25C0D4E1BD54DF400F9157F /* PassFragment.glsl in Resources */,
 				E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */,
+				E2B3F4371BDD53DD00B6A7E3 /* UILaunch.storyboard in Resources */,
 				E20FE7711BB034BC00142050 /* TextureVertex.glsl in Resources */,
 				5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
@@ -477,7 +478,6 @@
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E25C0D601BD6268100F9157F /* overlay3.png in Resources */,
 				E25C0D4F1BD54DF400F9157F /* PassVertex.glsl in Resources */,
-				E28D3A9E1BAC409000ACC953 /* LaunchScreen.storyboard in Resources */,
 				E20FE7701BB034BC00142050 /* TextureFragment.glsl in Resources */,
 				E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */,
 				E28EB8091BC81DF200E639E7 /* DesaturateFragment.glsl in Resources */,
@@ -543,17 +543,6 @@
 			targetProxy = E264DF4D1BB950DA0051380D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		E28D3A9C1BAC409000ACC953 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E28D3A9D1BAC409000ACC953 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		E28D3AA01BAC409000ACC953 /* Debug */ = {

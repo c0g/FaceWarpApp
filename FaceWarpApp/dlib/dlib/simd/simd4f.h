@@ -11,7 +11,7 @@
 namespace dlib
 {
 
-#ifdef DLIB_HAVE_SSE2
+#if defined(DLIB_HAVE_SSE2)
     class simd4f
     {
     public:
@@ -83,7 +83,7 @@ namespace dlib
     private:
         __m128 x;
     };
-#elseif DLIB_HAVE_NEON
+#elif defined(DLIB_HAVE_NEON)
     class simd4f
     {
     public:
