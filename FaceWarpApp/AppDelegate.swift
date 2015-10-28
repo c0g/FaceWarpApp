@@ -23,9 +23,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func redrawUI() {
+        if let ui = ui {
+            ui.redrawUI()
+        }
+    }
+    
     func toggleCamera() {
         if let view = view {
             view.toggleCamera()
+        }
+    }
+    
+    func hideInstructions(hidden : Bool) {
+        if let view = view {
+            view.hideInstructions(hidden)
+        }
+    }
+    
+    func setTextForCount(count : Int) {
+        if let view = view {
+            view.setTextForCount(count)
         }
     }
     

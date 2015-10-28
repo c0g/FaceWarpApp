@@ -11,6 +11,7 @@ import CoreMedia
 import CoreVideo
 import Photos
 import GLKit
+import AssetsLibrary
 
 class TextureManager {
     
@@ -54,6 +55,9 @@ class TextureManager {
     
     // Reference to robot eye texture. Lives inside TEXTURE 7
     var eyeTexture : GLKTextureInfo? = nil
+    
+    // Reference to robot face texture. Lives inside TEXTURE 8
+    var faceTexture : GLKTextureInfo? = nil
 
     init?(withContext cntxt : EAGLContext, andLayer lyr : CAEAGLLayer) {
         context = cntxt
@@ -67,7 +71,8 @@ class TextureManager {
         }
         setupScreen()
         setupNormalTextures()
-        loadEyeTexture()
+//        loadEyeTexture()
+        loadRoboFaceTexture()
     }
     
     var size : CGRect {
@@ -409,12 +414,6 @@ class TextureManager {
     
     func savePixelBuffer(pb : CVPixelBufferRef) {
         CVPixelBufferLockBaseAddress(pb, 0)
-        let addr = UnsafeMutablePointer<UInt8>(CVPixelBufferGetBaseAddress(pb))
-        let rw = CVPixelBufferGetBytesPerRow(pb)
-        let r = CVPixelBufferGetHeight(pb)
-        for idx in 0..<((rw * r)/4) {
-            addr[idx * 4 + 3] = 255
-        }
         let ciImage = CIImage(CVPixelBuffer: pb)
         let tmpContext = CIContext()
         let width = CGFloat(CVPixelBufferGetWidth(pb))
@@ -423,27 +422,35 @@ class TextureManager {
         let uiImage = UIImage(CGImage: videoImage)
         CVPixelBufferUnlockBaseAddress(pb, 0)
         
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges(
-            {
-                PHAssetChangeRequest.creationRequestForAssetFromImage(uiImage)
+        let jpeg = UIImageJPEGRepresentation(uiImage, 1.0)
+        let dir =  NSTemporaryDirectory()
+        let imgURL = NSURL(fileURLWithPath: "\(dir)/img.jpeg")
+        jpeg?.writeToURL(imgURL, atomically: true)
+        
+//        NSData *pngData = UIImagePNGRepresentation(image);
+//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
+//        NSString *filePath = [documentsPath stringByAppendingPathComponent:@"image.png"]; //Add the file name
+//        [pngData writeToFile:filePath atomically:YES]; //Write the file
+        
+//        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+//            [PHAssetChangeRequest creationRequestForAssetFromImageAtFileURL:contentEditingOutput.renderedContentURL];
+//            } completionHandler:^(BOOL success, NSError *error) {
+//            ...
+//            }];
+        
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+            PHAssetChangeRequest.creationRequestForAssetFromImageAtFileURL(imgURL)
             }, completionHandler: {
-                (complete: Bool, error : NSError?) in
+                (success : Bool, error : NSError?) -> Void in
                 if let error = error {
-                    
+                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+
                 }
-            })
+        })
     }
-    
-//    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-//    PHAssetChangeRequest *changeRequest = [PHAssetChangeRequest creationRequestForAssetFromImage:<#your photo here#>];
-//    } completionHandler:^(BOOL success, NSError *error) {
-//    if (success) {
-//    <#your completion code here#>
-//    }
-//    else {
-//    <#figure out what went wrong#>
-//    }
-//    }];
     
     
     func generatePixelBuffer(inout buffer : CVPixelBufferRef?, inout andTexture texture : CVOpenGLESTextureRef?, withSize size : CGSize) {
@@ -485,29 +492,42 @@ class TextureManager {
         }
     }
     
-    // MARK: Functions to load robot eye texture
-    func loadEyeTexture() {
+//    // MARK: Functions to load robot eye texture
+//    func loadEyeTexture() {
+//        let opt:[String : NSNumber] = [GLKTextureLoaderApplyPremultiplication : true, GLKTextureLoaderGenerateMipmaps: false]
+//        let path = NSBundle.mainBundle().pathForResource("eye", ofType: "png")
+//        do {
+////            glActiveTexture(GLenum(GL_TEXTURE7))
+//            eyeTexture = try GLKTextureLoader.textureWithContentsOfFile(path!, options: opt)
+////            glBindTexture(eyeTexture!.name, eyeTexture!.target)
+////            glActiveTexture(0)
+//        } catch {
+//            print("failed to load robot eye")
+//        }
+//    }
+//    
+//    func bindRoboEyeToSlot(textureSlot : GLint) {
+//        glActiveTexture(GLenum(GL_TEXTURE7))
+//        glBindTexture(eyeTexture!.name, eyeTexture!.target)
+//        glUniform1i(textureSlot, 7)
+//    }
+    
+    // MARK: Functions to load robot face texture
+    func loadRoboFaceTexture() {
         let opt:[String : NSNumber] = [GLKTextureLoaderApplyPremultiplication : true, GLKTextureLoaderGenerateMipmaps: false]
-//        let pic = UIImage(named: "overlay.png")!.CGImage! //pic needs to be CGImage, not UIImage
-//        NSString *path0 = [[NSBundle mainBundle] pathForResource:fileName ofType:nil];
-        let path = NSBundle.mainBundle().pathForResource("overlay2", ofType: "png")
+        let path = NSBundle.mainBundle().pathForResource("mask", ofType: "png")
         do {
             glActiveTexture(GLenum(GL_TEXTURE7))
-//            eyeTexture = try GLKTextureLoader.textureWithCGImage(pic, options: opt) //put `try` just before the method call
-            eyeTexture = try GLKTextureLoader.textureWithContentsOfFile(path!, options: opt)
-            glBindTexture(eyeTexture!.name, eyeTexture!.target)
-            switch eyeTexture!.alphaState {
-            case .None: print("none")
-            case .NonPremultiplied: print("non pre")
-            case .Premultiplied: print("pre")
-            }
+            faceTexture = try GLKTextureLoader.textureWithContentsOfFile(path!, options: opt)
+            glBindTexture(faceTexture!.name, faceTexture!.target)
             glActiveTexture(0)
-        } catch {
-            print("failed to load eye")
+        } catch let error {
+            print(error)
+            print("failed to load robot mask")
         }
     }
     
-    func bindRoboEyeToSlot(textureSlot : GLint) {
+    func bindRoboFaceToSlot(textureSlot : GLint) {
         glUniform1i(textureSlot, 7)
     }
     

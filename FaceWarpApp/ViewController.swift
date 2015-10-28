@@ -23,7 +23,7 @@ class ViewController: UIViewController {
     
     override func shouldAutorotate() -> Bool {
         let del = UIApplication.sharedApplication().delegate as! AppDelegate
-        if del.syncro.capturing && del.syncro.capture_type == .VIDEO {
+        if (del.syncro.capturing && del.syncro.capture_type == .VIDEO) {
             return false
         } else {
             return true

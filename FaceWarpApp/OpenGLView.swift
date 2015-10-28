@@ -57,7 +57,8 @@ func time<O>(name: String, f : ()->O )-> O {
 
 
 class OpenGLView: UIView {
-    
+    @IBOutlet weak var uiContainer: UIView!
+
     var eaglLayer: CAEAGLLayer!
     var context: EAGLContext!
     
@@ -107,30 +108,32 @@ class OpenGLView: UIView {
     ------------------------------------------*/
     
     func setupPipelineWithCamera(camera : Int, andRenderer renderer : Renderer) {
-        let device = CaptureManager.devices()[camera]
-        for format in device.formats as! [AVCaptureDeviceFormat] {
-            if CMVideoFormatDescriptionGetDimensions(format.formatDescription).height == 960 {
-                do {
-                    try device.lockForConfiguration()
-                    device.activeFormat = format
-                    device.unlockForConfiguration()
-                } catch {
-                    print("Could not set config")
+        if CaptureManager.devices().count > 0 { // check if we're running in the sim to debug ui shit
+            let device = CaptureManager.devices()[camera]
+            for format in device.formats as! [AVCaptureDeviceFormat] {
+                if CMVideoFormatDescriptionGetDimensions(format.formatDescription).height == 960 {
+                    do {
+                        try device.lockForConfiguration()
+                        device.activeFormat = format
+                        device.unlockForConfiguration()
+                    } catch {
+                        print("Could not set config")
+                    }
                 }
             }
+            
+            self.captureManager = CaptureManager(withDevice: device)
+            renderer.camera = camera
+            
+            do {
+                try self.captureManager?.connectToRenderer(renderer)
+            } catch {
+                print("Capture manager could not connect to renderer")
+                exit(1)
+            }
+            
+            self.captureManager?.start()
         }
-        
-        self.captureManager = CaptureManager(withDevice: device)
-        renderer.camera = camera
-        
-        do {
-            try self.captureManager?.connectToRenderer(renderer)
-        } catch {
-            print("Capture manager could not connect to renderer")
-            exit(1)
-        }
-        
-        self.captureManager?.start()
     }
     
     func toggleCamera() {
@@ -145,6 +148,26 @@ class OpenGLView: UIView {
         }
 //
         self.setupPipelineWithCamera(camera, andRenderer: renderer!)
+    }
+    
+    @IBOutlet weak var overlayImage: UIImageView!
+    @IBOutlet weak var instructions: UILabel!
+    func hideInstructions(hidden : Bool) {
+        instructions.hidden = hidden
+        uiContainer.hidden = !hidden
+        switch UIApplication.sharedApplication().statusBarOrientation {
+        case .Portrait:
+            overlayImage.hidden = hidden
+            instructions.text = "Face the screen\nwith a neutral expression\nand hold for 3 seconds"
+        case _:
+            overlayImage.hidden = true
+            instructions.text = "Rotate the device\nto portrait\nand try again"
+        }
+        
+    }
+    
+    func setTextForCount(count : Int) {
+        instructions.text = "Face the screen\nwith a neutral expression\nand hold for \(count) seconds"
     }
     
     func setupLayer() {

@@ -64,7 +64,7 @@
 // ----------------------------------------------------------------------------------------
 
 #ifdef DLIB_HAVE_NEON
-    #include <arm_neon.h>
+    #include "SSE2TONEON.h"
 #endif
 
 #ifdef DLIB_HAVE_SSE2

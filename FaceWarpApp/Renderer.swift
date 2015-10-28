@@ -85,6 +85,11 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
 
 class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
+    var pauseRenderer = false
+    
+    var calibrateTime : NSDate? = nil
+    var failCalibrateTime : NSDate? = nil
+    
     var camera : Int //Default camera int---0 means back camera, 1 means front
     var pastCamera : Int
     
@@ -425,10 +430,11 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                     return $0.PhiPointValue
                 }
                 drawRobotEye(UV: uvpoints)
+                drawRobotFace(UV: uvpoints)
             }
         case .SWAP:
             let (xyzArray, factrs) = warper.doSwitchFace2D(facePhiPoints)
-            for (uvPoints, (xyPoints, rotationAmount)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
+            for (uvPoints, (xyPoints, _)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
@@ -450,7 +456,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 let (ratio, min, max) = prepTeeth(UVs: uvPoints)
                 drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
             }
-        case _:
+        case .PRETTY:
             for pointArray in facePoints {
                 let uvPoints = pointArray.map {
                     return $0.PhiPointValue
@@ -465,8 +471,59 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 let (ratio, min, max) = prepTeeth(UVs: uvPoints)
                 drawBrighterMouth(XY: xyPoints, UV: uvPoints, withMin: min, andMax: max, andRatio: ratio, andRotation: Float(rotationAmount))
             }
+        case _:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                let (xyPoints, _) = doWarp(uvPoints)
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 1.0, 1.0, 1.0))
+                drawRightEye(XY: xyPoints, UV: uvPoints)
+                drawLeftEye(XY: xyPoints, UV: uvPoints)
+                drawMouth(XY: xyPoints, UV: uvPoints)
+            }
         }
+        
     }
+    
+    func calibrateFaces() {
+        // Functions return a 'tidyUp' closure which we call to release the pixel buffer
+        var facePoints : [[NSValue]] = []
+        if let big = textureManager!.uprightPixelBuffer, let small = textureManager!.smallPixelBuffer {
+            facePoints = faceDetector.facesPointsInBigImage(big, andSmallImage: small, withScale: Int32(scale)) as! [[NSValue]]
+        }
+        let numFaces = facePoints.count
+        guard numFaces > 0 else {
+            return
+        }
+        let facePhiPoints = facePoints.map {
+            (perFace) -> [PhiPoint] in
+            return perFace.map {
+                (value) -> PhiPoint in
+                return value.PhiPointValue
+            }
+        }
+        switch warpType {
+        case .HANDSOME:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                warper.addAttractiveWarpHandsomeObservation(uvPoints)
+            }
+        case .PRETTY:
+            for pointArray in facePoints {
+                let uvPoints = pointArray.map {
+                    return $0.PhiPointValue
+                }
+                warper.addAttractiveWarpPrettyObservation(uvPoints)
+            }
+        case _:
+            break
+        }
+        
+    }
+
     
     func drawRobotEye(UV uvs : [PhiPoint]) {
         let box = textureManager!.uprightRect
@@ -475,12 +532,29 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
             glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE));
             let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateBasicShader()
             vertexManager!.fillRoboEye(UV: uvs, inBox: box)
-            textureManager!.bindRoboEyeToSlot(textureSlot)
+            textureManager!.bindRoboFaceToSlot(textureSlot)
             textureManager!.bindOutputTextureAsOutput()
             textureManager!.setViewPortForOutputTexture()
             let (num, type) = vertexManager!.bindRoboEyeVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
             glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
             vertexManager?.unbindRoboEyeVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
+            glDisable(GLenum(GL_BLEND))
+        }
+    }
+    
+    func drawRobotFace(UV uvs : [PhiPoint]) {
+        let box = textureManager!.uprightRect
+        if let box = box {
+            glEnable(GLenum(GL_BLEND))
+            glBlendFuncSeparate(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA), GLenum(GL_ZERO), GLenum(GL_ONE));
+            let (xyzSlot, uvSlot, alphaSlot, textureSlot) = shaderManager!.activateBasicShader()
+            vertexManager!.fillRoboFace(UV: uvs, inBox: box)
+            textureManager!.bindRoboFaceToSlot(textureSlot)
+            textureManager!.bindOutputTextureAsOutput()
+            textureManager!.setViewPortForOutputTexture()
+            let (num, type) = vertexManager!.bindRoboFaceVBO(withPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
+            glDrawElements(GLenum(GL_TRIANGLES), num, type, nil)
+            vertexManager?.unbindRoboFaceVBO(fromPositionSlot: xyzSlot, andUVSlot: uvSlot, andBrightenSlot: alphaSlot)
             glDisable(GLenum(GL_BLEND))
         }
     }
@@ -655,36 +729,93 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         setupForOrientation(withScale: scale)
         preprocessRender() // Generates upright and small-upright images
         blurRender() // Render from small upright texture to hblurred texture to vlburred to output texture
-        clearToOutput() // renders upright to output
-        findFaces() // Finds faces and renders them to output
-        renderToScreen()
-        pastOrientation = _pastOrientation
-        if delegate!.syncro.capturing {
-            if delegate!.syncro.capture_type == .IMAGE {
-                delegate!.syncro.capturing = false
-                glFinish()
-                textureManager!.saveOutput()
-            } else {
-                if recorder.state == .Idle {
-                    let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
-                    let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
-                    recorder.prepareRecord(forWidth: width, andHeight: height)
-                    videoStartTime = NSDate()
-                }  else if recorder.state == .Recording {
-                    let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
-                    delegate!.setRecordTime(intVal)
-                    if let pb = textureManager?.outputPixelBuffer {
-                        recorder.addVideoFrame(pb, atTime: initTime)
+        
+        if !delegate!.syncro.calibrating {
+            
+            clearToOutput() // renders upright to output
+            findFaces() // Finds faces and renders them to output
+            renderToScreen()
+            pastOrientation = _pastOrientation
+            if delegate!.syncro.capturing {
+                if delegate!.syncro.capture_type == .IMAGE {
+                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                    delegate!.syncro.capturing = false
+                    textureManager!.saveOutput()
+                } else {
+                    if recorder.state == .Idle {
+                        let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
+                        let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
+                        recorder.prepareRecord(forWidth: width, andHeight: height)
+                        videoStartTime = NSDate()
+                    }  else if recorder.state == .Recording {
+                        let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
+                        delegate!.setRecordTime(intVal)
+                        if let pb = textureManager?.outputPixelBuffer {
+                            recorder.addVideoFrame(pb, atTime: initTime)
+                        }
+                    }
+                    if NSDate().timeIntervalSinceDate(videoStartTime) >= 10 {
+                        delegate!.setRecordTime(0)
+                        delegate!.syncro.capturing = false
+                        recorder.stopRecordingAndSave()
                     }
                 }
-                if NSDate().timeIntervalSinceDate(videoStartTime) >= 10 {
-                    delegate!.setRecordTime(0)
-                    delegate!.syncro.capturing = false
-                    recorder.stopRecordingAndSave()
+            }
+            self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+        } else { // calibrating the pretty/handsome warp
+            delegate!.hideInstructions(false) // re-draw instructions
+            switch UIApplication.sharedApplication().statusBarOrientation {
+            case .Portrait:
+                if let time = calibrateTime { // do calibration
+                    failCalibrateTime = nil // nil this out, since either: it's already nil or the clever user has rotated their device
+                    let deltaT = NSDate().timeIntervalSinceDate(time)
+                    if deltaT > 5.5 {
+                        switch warpType {
+                        case .PRETTY:
+                            warper.finaliseAttractiveWarpPretty()
+                        case .HANDSOME:
+                            warper.finaliseAttractiveWarpHandsome()
+                        case _:
+                            break
+                        }
+                        delegate!.syncro.calibrating = false
+                        calibrateTime = nil
+                        delegate!.redrawUI()
+                    }
+                    else if deltaT >= 2 {
+                        calibrateFaces()
+                        delegate!.setTextForCount(Int(ceil(5.0 - deltaT)))
+                    }
+                    blurToOutput()
+                    renderToScreen()
+                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                } else {
+                    calibrateTime = NSDate()
+                    switch warpType {
+                    case .PRETTY:
+                        warper.resetAttractiveWarpPretty()
+                    case .HANDSOME:
+                        warper.resetAttractiveWarpHandsome()
+                    case _:
+                        break
+                    }
+                }
+            case _:
+                if let time = failCalibrateTime { // display portait warning for three seconds
+                    let deltaT = NSDate().timeIntervalSinceDate(time)
+                    blurToOutput()
+                    renderToScreen()
+                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+                    if deltaT > 3 {
+                        delegate!.syncro.calibrating = false
+                        calibrateTime = nil
+                        delegate!.redrawUI()
+                    }
+                } else {
+                    failCalibrateTime = NSDate()
                 }
             }
         }
-        self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
     
 }
