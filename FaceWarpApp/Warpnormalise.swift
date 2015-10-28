@@ -146,8 +146,8 @@ class Warper {
             let pidx2 = findBestFace(face2)
             
             
-            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
-//            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+//            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
             let warped1 = Array(warped_faces[0..<68])
             let warped2 = Array(warped_faces[68..<136])
             tmp_faces[idx1] = warped1
@@ -224,8 +224,8 @@ class Warper {
     
     func doAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = apply_golden_inner_pretty(&landmarks, &initParam, &factr, &prettyScale);
-        var safeAns : [PhiPoint] = [];
+        let ans = attractive_adjusted_warp_pretty(&landmarks, &initParam, &factr)
+        var safeAns : [PhiPoint] = []
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
         }
@@ -236,7 +236,7 @@ class Warper {
     
     func doAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = apply_golden_inner_handsome(&landmarks, &initParam, &factr, &handsomeScale);
+        let ans = attractive_adjusted_warp_handsome(&landmarks, &initParam, &factr)
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))

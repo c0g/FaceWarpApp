@@ -704,7 +704,7 @@ PhiPoint * return_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double *
     
     double nose_hscale2 = ideal_nosedist_h2 / user_nosedist_h2;
     
-    double nose_hscale = 0.7 * nose_hscale1 + 0.3 * nose_hscale2; // 0.7 for the wider .: more accurate value, 0.3 of the other
+    double nose_hscale = nose_hscale1; // 0.7 for the wider .: more accurate value, 0.3 of the other
     
     // nose vscale
     double ideal_nosedist_v = std::sqrt(std::pow(centered_landmarks3d(27, 0) - centered_landmarks3d(33, 0), 2.0) +  std::pow(centered_landmarks3d(27, 1) - centered_landmarks3d(33, 1), 2.0));
@@ -1364,8 +1364,8 @@ PhiPoint * apply_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double 
 PhiPoint * return_3d_attractive_adjusted_warp_pretty(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double nose_scaling_x = 0.8;
-    const double nose_scaling_y = 0.8;
+    const double nose_scaling_x = 0.9;
+    const double nose_scaling_y = 0.9;
     
     const double eye_scaling_x = 1.05;
     const double eye_scaling_y = 1.05;
@@ -1467,8 +1467,8 @@ PhiPoint * return_3d_attractive_adjusted_warp_pretty(int * landmarks_ptr, double
 PhiPoint * return_3d_attractive_adjusted_warp_handsome(int * landmarks_ptr, double * parameters, double * factr)
 {
     // CALLER MUST FREE MEMORY ON RETURN.
-    const double nose_scaling_x = 0.9;
-    const double nose_scaling_y = 0.9;
+    const double nose_scaling_x = 0.95;
+    const double nose_scaling_y = 0.92;
     
     const double eye_scaling_x = 1.05;
     const double eye_scaling_y = 1.02;

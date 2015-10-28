@@ -444,10 +444,9 @@ class TextureManager {
             }, completionHandler: {
                 (success : Bool, error : NSError?) -> Void in
                 if let error = error {
-                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
-                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
-                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
-
+//                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+//                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+//                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
                 }
         })
     }

@@ -401,7 +401,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = S559Q4PGN4;
+						DevelopmentTeam = 743SUN8HL9;
 					};
 				};
 			};
@@ -654,14 +654,14 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = upper.phiresearch.facewarptest;
 				PRODUCT_NAME = Mugg;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
@@ -696,14 +696,14 @@
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = upper.phiresearch.facewarptest;
 				PRODUCT_NAME = Mugg;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
