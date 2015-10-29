@@ -81,35 +81,35 @@ dlib::matrix<double> derivative_cost_function_3d_rotation(dlib::matrix<double> v
         
         dlib::matrix<double> lm_grad = dlib::colm(landmarks3d * grad_rotation_matrix, dlib::range(0,1));
 
-        double error = dlib::sum_rows(grad_rotation_matrix * mismatch_error);
+        double error = dlib::sum_rows(dlib::pointwise_multiply(lm_grad, mismatch_error));
         derivatives(i,0) = error;
         
     }
     return derivatives;
 };
 
-double derivative_cost_function_3d_rotation2(dlib::matrix<double> vector, const dlib::matrix<double> &landmarks3d, const dlib::matrix<double> &landmarks, dlib::matrix<double> & der){
-    
-    dlib::matrix<double,6,1> derivatives;
-    
-    for (int i = 0; i < 6; i++)
-    {
-        dlib::matrix<double, 6, 1> vector_derv;
-        vector_derv = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
-        vector_derv(i,0) = 1.0;
-        
-        dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector_derv);
-        
-        dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
-        dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
-        dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(rotated_3d_landmarks_subm - landmarks,2)));
-        
-        double error = dlib::sum_rows(mismatch_error);
-        derivatives(i,0) = error;
-    }
-    der = derivatives;
-    return cost_function_3d_rotation(vector, landmarks3d, landmarks);
-};
+//double derivative_cost_function_3d_rotation2(dlib::matrix<double> vector, const dlib::matrix<double> &landmarks3d, const dlib::matrix<double> &landmarks, dlib::matrix<double> & der){
+//    
+//    dlib::matrix<double,6,1> derivatives;
+//    
+//    for (int i = 0; i < 6; i++)
+//    {
+//        dlib::matrix<double, 6, 1> vector_derv;
+//        vector_derv = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0;
+//        vector_derv(i,0) = 1.0;
+//        
+//        dlib::matrix<double,3,3> rotation_matrix = return_rotation_matrix_from_flat_vector(vector_derv);
+//        
+//        dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
+//        dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
+//        dlib::matrix<double> mismatch_error = dlib::sum_cols(dlib::sqrt(dlib::pow(rotated_3d_landmarks_subm - landmarks,2)));
+//        
+//        double error = dlib::sum_rows(mismatch_error);
+//        derivatives(i,0) = error;
+//    }
+//    der = derivatives;
+//    return cost_function_3d_rotation(vector, landmarks3d, landmarks);
+//};
 
 double cost_function_2d_rotation(dlib::matrix<double> angle, const dlib::matrix<double> &centered_landmarks)
 {
@@ -1048,10 +1048,26 @@ void calculate_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double * pa
     
     double nose_vscale = ideal_nosedist_v / user_nosedist_v;
     
+    // mouth hscale
+    double ideal_mouthdist_h1 = std::sqrt(std::pow(centered_landmarks3d(48, 0) - centered_landmarks3d(54, 0), 2.0) +  std::pow(centered_landmarks3d(48, 1) - centered_landmarks3d(54, 1), 2.0));
+    double user_mouthdist_h1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(48, 0) - flattened_2d_landmarks_full_rotated(54, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(48, 1) - flattened_2d_landmarks_full_rotated(54, 1), 2));
+    
+    double mouth_hscale = ideal_mouthdist_h1 / user_mouthdist_h1;
+    
+    // mouth vscale
+    double ideal_mouthdist_v = std::sqrt(std::pow(centered_landmarks3d(51, 0) - centered_landmarks3d(57, 0), 2.0) +  std::pow(centered_landmarks3d(51, 1) - centered_landmarks3d(57, 1), 2.0));
+    double user_mouthdist_v = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(51, 0) - flattened_2d_landmarks_full_rotated(57, 0), 2) +
+                                       std::pow(flattened_2d_landmarks_full_rotated(51, 1) - flattened_2d_landmarks_full_rotated(57, 1), 2));
+    
+    double mouth_vscale = ideal_mouthdist_v / user_mouthdist_v;
+    
     scaling_factors[0] = eye_hscale;
     scaling_factors[1] = eye_vscale;
     scaling_factors[2] = nose_hscale;
     scaling_factors[3] = nose_vscale;
+    scaling_factors[4] = 0.96;//mouth_hscale;
+    scaling_factors[5] = 0.96;//mouth_vscale;
 }
 
 PhiPoint * apply_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double * parameters, double * factr, double * scaling_factors) {
@@ -1062,6 +1078,8 @@ PhiPoint * apply_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double * 
     double eye_vscale = scaling_factors[1];
     double nose_hscale = scaling_factors[2];
     double nose_vscale = scaling_factors[3];
+    double mouth_hscale = scaling_factors[4];
+    double mouth_vscale = scaling_factors[5];
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -1137,6 +1155,44 @@ PhiPoint * apply_3d_golden_inner_face_warp_pretty(int * landmarks_ptr, double * 
     dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_vscale) + dlib_nose_mean[1];
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
+    
+    
+    
+    //
+    dlib::matrix<long> dlib_mouth_range(1,outermouth_dlib.size());
+    for (int i = 0; i < outermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_range(0,i) = (long)outermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2));
+    
+    double dlib_mouth_mean[2];
+    dlib_mouth_mean[0] = dlib::mean(dlib::colm(dlib_mouth,0));
+    dlib_mouth_mean[1] = dlib::mean(dlib::colm(dlib_mouth,1));
+    
+    dlib::set_colm(dlib_mouth,0) = ((dlib::colm(dlib_mouth,0) - dlib_mouth_mean[0]) * mouth_hscale) + dlib_mouth_mean[0];
+    dlib::set_colm(dlib_mouth,1) = ((dlib::colm(dlib_mouth,1) - dlib_mouth_mean[1]) * mouth_vscale) + dlib_mouth_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2)) = dlib_mouth;
+    //
+    dlib::matrix<long> dlib_mouth_inner_range(1,innermouth_dlib.size());
+    for (int i = 0; i < innermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_inner_range(0,i) = (long)innermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth_inner = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2));
+    
+    double dlib_mouth_inner_mean[2];
+    dlib_mouth_inner_mean[0] = dlib::mean(dlib::colm(dlib_mouth_inner,0));
+    dlib_mouth_inner_mean[1] = dlib::mean(dlib::colm(dlib_mouth_inner,1));
+    
+    dlib::set_colm(dlib_mouth_inner,0) = ((dlib::colm(dlib_mouth_inner,0) - dlib_mouth_inner_mean[0]) * mouth_hscale) + dlib_mouth_inner_mean[0];
+    dlib::set_colm(dlib_mouth_inner,1) = ((dlib::colm(dlib_mouth_inner,1) - dlib_mouth_inner_mean[1]) * mouth_vscale) + dlib_mouth_inner_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2)) = dlib_mouth_inner;
+    
+    //
+    
     
     dlib::matrix<double, 68,2> _2d_landmarks_full;
     _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));
@@ -1249,10 +1305,26 @@ void calculate_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double * 
     
     double nose_vscale = ideal_nosedist_v / user_nosedist_v;
     
+    // mouth hscale
+    double ideal_mouthdist_h1 = std::sqrt(std::pow(centered_landmarks3d(48, 0) - centered_landmarks3d(54, 0), 2.0) +  std::pow(centered_landmarks3d(48, 1) - centered_landmarks3d(54, 1), 2.0));
+    double user_mouthdist_h1 = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(48, 0) - flattened_2d_landmarks_full_rotated(54, 0), 2) +
+                                         std::pow(flattened_2d_landmarks_full_rotated(48, 1) - flattened_2d_landmarks_full_rotated(54, 1), 2));
+    
+    double mouth_hscale = ideal_mouthdist_h1 / user_mouthdist_h1;
+    
+    // mouth vscale
+    double ideal_mouthdist_v = std::sqrt(std::pow(centered_landmarks3d(51, 0) - centered_landmarks3d(57, 0), 2.0) +  std::pow(centered_landmarks3d(51, 1) - centered_landmarks3d(57, 1), 2.0));
+    double user_mouthdist_v = std::sqrt(std::pow(flattened_2d_landmarks_full_rotated(51, 0) - flattened_2d_landmarks_full_rotated(57, 0), 2) +
+                                        std::pow(flattened_2d_landmarks_full_rotated(51, 1) - flattened_2d_landmarks_full_rotated(57, 1), 2));
+    
+    double mouth_vscale = ideal_mouthdist_v / user_mouthdist_v;
+    
     scaling_factors[0] = eye_hscale;
     scaling_factors[1] = eye_vscale;
     scaling_factors[2] = nose_hscale;
     scaling_factors[3] = nose_vscale;
+    scaling_factors[4] = 0.98;//mouth_hscale;
+    scaling_factors[5] = 0.98;//mouth_vscale;
 }
 
 PhiPoint * apply_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double * parameters, double * factr, double * scaling_factors) {
@@ -1263,6 +1335,8 @@ PhiPoint * apply_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double 
     double eye_vscale = scaling_factors[1];
     double nose_hscale = scaling_factors[2];
     double nose_vscale = scaling_factors[3];
+    double mouth_hscale = scaling_factors[4];
+    double mouth_vscale = scaling_factors[5];
     
     dlib::matrix<int, 68, 2> landmarks_i = dlib::mat(landmarks_ptr, 68, 2);
     //    std::cout << landmarks_i << std::endl;
@@ -1338,6 +1412,45 @@ PhiPoint * apply_3d_golden_inner_face_warp_handsome(int * landmarks_ptr, double 
     dlib::set_colm(dlib_nose,1) = ((dlib::colm(dlib_nose,1) - dlib_nose_mean[1]) * nose_vscale) + dlib_nose_mean[1];
     
     dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_nose_range, dlib::range(0,2)) = dlib_nose;
+    
+    
+    
+    //
+    dlib::matrix<long> dlib_mouth_range(1,outermouth_dlib.size());
+    for (int i = 0; i < outermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_range(0,i) = (long)outermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2));
+    
+    double dlib_mouth_mean[2];
+    dlib_mouth_mean[0] = dlib::mean(dlib::colm(dlib_mouth,0));
+    dlib_mouth_mean[1] = dlib::mean(dlib::colm(dlib_mouth,1));
+    
+    dlib::set_colm(dlib_mouth,0) = ((dlib::colm(dlib_mouth,0) - dlib_mouth_mean[0]) * mouth_hscale) + dlib_mouth_mean[0];
+    dlib::set_colm(dlib_mouth,1) = ((dlib::colm(dlib_mouth,1) - dlib_mouth_mean[1]) * mouth_vscale) + dlib_mouth_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_range, dlib::range(0,2)) = dlib_mouth;
+    //
+    dlib::matrix<long> dlib_mouth_inner_range(1,innermouth_dlib.size());
+    for (int i = 0; i < innermouth_dlib.size(); i++ )
+    {
+        dlib_mouth_inner_range(0,i) = (long)innermouth_dlib[i];
+    }
+    dlib::matrix<double> dlib_mouth_inner = dlib::subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2));
+    
+    double dlib_mouth_inner_mean[2];
+    dlib_mouth_inner_mean[0] = dlib::mean(dlib::colm(dlib_mouth_inner,0));
+    dlib_mouth_inner_mean[1] = dlib::mean(dlib::colm(dlib_mouth_inner,1));
+    
+    dlib::set_colm(dlib_mouth_inner,0) = ((dlib::colm(dlib_mouth_inner,0) - dlib_mouth_inner_mean[0]) * mouth_hscale) + dlib_mouth_inner_mean[0];
+    dlib::set_colm(dlib_mouth_inner,1) = ((dlib::colm(dlib_mouth_inner,1) - dlib_mouth_inner_mean[1]) * mouth_vscale) + dlib_mouth_inner_mean[1];
+    
+    dlib::set_subm(flattened_2d_landmarks_full_rotated, dlib_mouth_inner_range, dlib::range(0,2)) = dlib_mouth_inner;
+    
+    //
+
+    
 
     dlib::matrix<double, 68,2> _2d_landmarks_full;
     _2d_landmarks_full = dlib::subm(flattened_2d_landmarks_full_rotated * rotation_matrix, dlib::range(0,67), dlib::range(0,1));

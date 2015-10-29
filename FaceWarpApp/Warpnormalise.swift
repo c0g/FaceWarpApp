@@ -31,16 +31,16 @@ let HANDSOME_KEY = "phi.warp.handsome"
 
 class Warper {
     var prettyObs = 0
-    var _prettyScale : [Double] = [1.05, 1.05, 0.93, 0.93]
+    var _prettyScale : [Double] = [1.05, 1.05, 0.93, 0.93, 1.05, 1.05]
     var handsomeObs = 0
-    var _handsomeScale : [Double] = [1.03, 1.03, 0.96, 0.96]
+    var _handsomeScale : [Double] = [1.03, 1.03, 0.96, 0.96, 1.03, 1.02]
     var prettyScale : [Double] {
         get {
             return _prettyScale
         }
         set(newScale) {
-            _prettyScale = boundArray(newScale, withUpper: 1.07, andLower: 0.93)
-            let pretty_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
+            _prettyScale = boundArray(newScale, withUpper: 1.2, andLower: 0.8)
+            let pretty_data = NSData(bytes: &_prettyScale, length: 6 * sizeof(Double))
             NSUserDefaults().setObject(pretty_data, forKey: PRETTY_KEY)
         }
     }
@@ -49,8 +49,8 @@ class Warper {
             return _handsomeScale
         }
         set(newScale) {
-            _handsomeScale = boundArray(newScale, withUpper: 1.05, andLower: 0.95)
-            let handsome_data = NSData(bytes: &_prettyScale, length: 4 * sizeof(Double))
+            _handsomeScale = boundArray(newScale, withUpper: 1.2, andLower: 0.8)
+            let handsome_data = NSData(bytes: &_prettyScale, length: 6 * sizeof(Double))
             NSUserDefaults().setObject(handsome_data, forKey: HANDSOME_KEY)
         }
     }
@@ -59,12 +59,12 @@ class Warper {
         let pretty_data = NSUserDefaults().dataForKey(PRETTY_KEY)
         let handsome_data = NSUserDefaults().dataForKey(HANDSOME_KEY)
         if let pretty_data = pretty_data {
-            var tmpScale : [Double] = Array(count: 4, repeatedValue: 0.0)
+            var tmpScale : [Double] = Array(count: 6, repeatedValue: 1.0)
             pretty_data.getBytes(&tmpScale, length: 4 * sizeof(Double))
             prettyScale = tmpScale
         }
         if let handsome_data = handsome_data {
-            var tmpScale : [Double] = Array(count: 4, repeatedValue: 0.0)
+            var tmpScale : [Double] = Array(count: 6, repeatedValue: 1.0)
             handsome_data.getBytes(&tmpScale, length: 4 * sizeof(Double))
             handsomeScale = tmpScale
         }
@@ -247,7 +247,7 @@ class Warper {
     }
     
     func resetAttractiveWarpPretty() {
-        _prettyScale = [0.0, 0.0, 0.0, 0.0]
+        _prettyScale = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         prettyObs = 0
     }
     
@@ -265,7 +265,7 @@ class Warper {
     }
     
     func resetAttractiveWarpHandsome() {
-        _handsomeScale = [0.0, 0.0, 0.0, 0.0]
+        _handsomeScale = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         handsomeObs = 0
     }
     
@@ -284,14 +284,14 @@ class Warper {
     
     func calcAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([Double]) {
         var factr : Float64 = 0
-        var scaling : [Double] = Array(count: 4, repeatedValue: 0.0)
+        var scaling : [Double] = Array(count: 6, repeatedValue: 1.0)
         calc_golden_inner_handsome(&landmarks, &initParam, &factr, &scaling);
         return scaling
     }
     
     func calcAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([Double]) {
         var factr : Float64 = 0
-        var scaling : [Double] = Array(count: 4, repeatedValue: 0.0)
+        var scaling : [Double] = Array(count: 6, repeatedValue: 1.0)
         calc_golden_inner_pretty(&landmarks, &initParam, &factr, &scaling);
         return scaling
     }
