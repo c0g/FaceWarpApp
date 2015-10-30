@@ -449,7 +449,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 
                 let (xyPoints, rotationAmount) = doWarp(uvPoints)
                 drawBlurFace(XY: xyPoints, UV: uvPoints, withRotation: Float(rotationAmount))
-                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (0.8, 1.0, 0.9, 0.9))
+                drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (0.7, 1.0, 0.9, 0.9))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
                 drawMouth(XY: xyPoints, UV: uvPoints)
