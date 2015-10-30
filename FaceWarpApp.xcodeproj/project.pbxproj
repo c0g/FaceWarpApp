@@ -141,7 +141,7 @@
 		E26D166F1BB42F7700A0F573 /* PHItypes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHItypes.m; sourceTree = "<group>"; };
 		E26D16711BB42F8400A0F573 /* PHItypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHItypes.h; sourceTree = "<group>"; };
 		E26D16721BB58F9B00A0F573 /* __fix_triangulation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = __fix_triangulation.hpp; sourceTree = "<group>"; };
-		E28D3A8D1BAC409000ACC953 /* Mugg.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mugg.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E28D3A8D1BAC409000ACC953 /* Pixurgery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pixurgery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E28D3A981BAC409000ACC953 /* FaceWarpApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FaceWarpApp.xcdatamodel; sourceTree = "<group>"; };
 		E28D3A9A1BAC409000ACC953 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E28D3A9F1BAC409000ACC953 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 		E28D3A8E1BAC409000ACC953 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E28D3A8D1BAC409000ACC953 /* Mugg.app */,
+				E28D3A8D1BAC409000ACC953 /* Pixurgery.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -385,7 +385,7 @@
 			);
 			name = FaceWarpApp;
 			productName = FaceWarpApp;
-			productReference = E28D3A8D1BAC409000ACC953 /* Mugg.app */;
+			productReference = E28D3A8D1BAC409000ACC953 /* Pixurgery.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -661,8 +661,8 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = upper.phiresearch.facewarptest;
-				PRODUCT_NAME = Mugg;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.pixurgery;
+				PRODUCT_NAME = Pixurgery;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -703,8 +703,8 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = upper.phiresearch.facewarptest;
-				PRODUCT_NAME = Mugg;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.pixurgery;
+				PRODUCT_NAME = Pixurgery;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
