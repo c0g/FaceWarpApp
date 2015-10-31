@@ -401,7 +401,7 @@
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = S559Q4PGN4;
+						DevelopmentTeam = 2WHKXWB6SD;
 					};
 				};
 			};
@@ -661,7 +661,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = fexk.com.phi.facewarptest;
 				PRODUCT_NAME = Mugg;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
@@ -703,7 +703,7 @@
 					"$(PROJECT_DIR)/FaceWarpApp",
 				);
 				LLVM_LTO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.phi.facewarptest;
+				PRODUCT_BUNDLE_IDENTIFIER = fexk.com.phi.facewarptest;
 				PRODUCT_NAME = Mugg;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
