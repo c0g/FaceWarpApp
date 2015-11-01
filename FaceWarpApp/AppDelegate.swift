@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let syncro = Syncro()
     var ui : ControllerController? = nil
     
-    var view : OpenGLView? = nil
+    var view : LiveOGLView? = nil
     
     func setRecordTime(time : Int) {
         if let ui = ui {

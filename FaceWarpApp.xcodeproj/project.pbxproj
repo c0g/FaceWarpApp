@@ -60,6 +60,34 @@
 		E28EB8111BC8368B00E639E7 /* SpinnyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8101BC8368B00E639E7 /* SpinnyController.swift */; };
 		E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8121BC8388200E639E7 /* Syncro.swift */; };
 		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; };
+		E2ACB18A1BE627A000837CA7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ACB1891BE627A000837CA7 /* AppDelegate.swift */; };
+		E2ACB18C1BE627A000837CA7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ACB18B1BE627A000837CA7 /* ViewController.swift */; };
+		E2ACB18F1BE627A000837CA7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2ACB18D1BE627A000837CA7 /* Main.storyboard */; };
+		E2ACB1911BE627A000837CA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2ACB1901BE627A000837CA7 /* Assets.xcassets */; };
+		E2ACB1941BE627A000837CA7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2ACB1921BE627A000837CA7 /* LaunchScreen.storyboard */; };
+		E2ACB19B1BE6288900837CA7 /* LiveOGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ACB19A1BE6288900837CA7 /* LiveOGLView.swift */; };
+		E2ACB19D1BE629EF00837CA7 /* StaticOpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ACB19C1BE629EF00837CA7 /* StaticOpenGLView.swift */; };
+		E2ACB19E1BE62A4200837CA7 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7681BB032A800142050 /* OpenGLView.swift */; };
+		E2ACB19F1BE62A6600837CA7 /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFF1BBABE28003EDAEB /* triangle.c */; };
+		E2ACB1A01BE62A6A00837CA7 /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; };
+		E2ACB1A11BE62A6D00837CA7 /* triangle_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */; };
+		E2ACB1A21BE62A7100837CA7 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; };
+		E2ACB1A31BE62A7300837CA7 /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; };
+		E2ACB1A41BE62A7700837CA7 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; };
+		E2ACB1A51BE62A7900837CA7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
+		E2ACB1A61BE62A7C00837CA7 /* Syncro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8121BC8388200E639E7 /* Syncro.swift */; };
+		E2ACB1A71BE62A9200837CA7 /* TextureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E562B1BBD246A00358D16 /* TextureManager.swift */; };
+		E2ACB1A81BE62A9600837CA7 /* VertexManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E562D1BBD247700358D16 /* VertexManager.swift */; };
+		E2ACB1A91BE62A9900837CA7 /* ShaderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56311BBD248C00358D16 /* ShaderManager.swift */; };
+		E2ACB1AA1BE62A9900837CA7 /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56331BBD254900358D16 /* CaptureManager.swift */; };
+		E2ACB1AB1BE62A9900837CA7 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56351BBD26CF00358D16 /* Texture.swift */; };
+		E2ACB1AC1BE62A9900837CA7 /* PixelBufferTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56371BBD279600358D16 /* PixelBufferTexture.swift */; };
+		E2ACB1AD1BE62A9900837CA7 /* ShaderProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28E56391BBD324700358D16 /* ShaderProgram.swift */; };
+		E2ACB1AE1BE62A9900837CA7 /* Recorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E21069581BCA873700E28B33 /* Recorder.swift */; };
+		E2ACB1AF1BE62A9F00837CA7 /* source.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E28D3ABC1BAC464700ACC953 /* source.cpp */; };
+		E2ACB1B01BE62ACF00837CA7 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E20FE7881BB092CF00142050 /* Accelerate.framework */; };
+		E2ACB1B11BE62B0400837CA7 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3AA91BAC43E000ACC953 /* opencv2.framework */; };
+		E2ACB1B21BE62B0A00837CA7 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E28D3ABE1BAC480500ACC953 /* libjpeg.a */; };
 		E2B3F4301BDD2C4A00B6A7E3 /* face_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */; };
 		E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4341BDD32B400B6A7E3 /* camera_button.png */; };
 		E2B3F4371BDD53DD00B6A7E3 /* UILaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4361BDD53DD00B6A7E3 /* UILaunch.storyboard */; };
@@ -176,6 +204,15 @@
 		E28EB8121BC8388200E639E7 /* Syncro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syncro.swift; sourceTree = "<group>"; };
 		E29319791BC589C0006CAA6F /* fft_stuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft_stuff.cpp; sourceTree = "<group>"; };
 		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
+		E2ACB1871BE627A000837CA7 /* SelfiePerfect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelfiePerfect.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2ACB1891BE627A000837CA7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E2ACB18B1BE627A000837CA7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E2ACB18E1BE627A000837CA7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E2ACB1901BE627A000837CA7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E2ACB1931BE627A000837CA7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		E2ACB1951BE627A000837CA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2ACB19A1BE6288900837CA7 /* LiveOGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveOGLView.swift; sourceTree = "<group>"; };
+		E2ACB19C1BE629EF00837CA7 /* StaticOpenGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StaticOpenGLView.swift; sourceTree = "<group>"; };
 		E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face_overlay.png; sourceTree = "<group>"; };
 		E2B3F4341BDD32B400B6A7E3 /* camera_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_button.png; sourceTree = "<group>"; };
 		E2B3F4361BDD53DD00B6A7E3 /* UILaunch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = UILaunch.storyboard; sourceTree = "<group>"; };
@@ -198,6 +235,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2ACB1841BE627A000837CA7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2ACB1B01BE62ACF00837CA7 /* Accelerate.framework in Frameworks */,
+				E2ACB1B11BE62B0400837CA7 /* opencv2.framework in Frameworks */,
+				E2ACB1B21BE62B0A00837CA7 /* libjpeg.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -215,9 +262,11 @@
 		E28D3A841BAC409000ACC953 = {
 			isa = PBXGroup;
 			children = (
+				E2ACB1991BE627DE00837CA7 /* Common */,
 				E20FE7881BB092CF00142050 /* Accelerate.framework */,
 				E28D3ABC1BAC464700ACC953 /* source.cpp */,
 				E28D3A8F1BAC409000ACC953 /* FaceWarpApp */,
+				E2ACB1881BE627A000837CA7 /* SelfiePerfect */,
 				E28D3A8E1BAC409000ACC953 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -226,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				E28D3A8D1BAC409000ACC953 /* Pixurgery.app */,
+				E2ACB1871BE627A000837CA7 /* SelfiePerfect.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -233,13 +283,13 @@
 		E28D3A8F1BAC409000ACC953 /* FaceWarpApp */ = {
 			isa = PBXGroup;
 			children = (
-				E28E562A1BBD245100358D16 /* OpenGL */,
-				E2B55E501BB5DD540086F719 /* Swift */,
+				E28E56471BBD7A1100358D16 /* Renderer.swift */,
 				E20FE76C1BB0348400142050 /* AppDelegate.swift */,
-				E28D3AA81BAC436A00ACC953 /* External Projects */,
-				E28D3AA71BAC434500ACC953 /* Interface */,
+				E2ACB19A1BE6288900837CA7 /* LiveOGLView.swift */,
+				E20FE7661BB0326C00142050 /* ViewController.swift */,
+				E28EB80E1BC8317A00E639E7 /* ControllerController.swift */,
+				E28EB8101BC8368B00E639E7 /* SpinnyController.swift */,
 				E28D3AA61BAC40D200ACC953 /* Supporting Files */,
-				E28D3AA51BAC409C00ACC953 /* ObjectiveCpp */,
 			);
 			path = FaceWarpApp;
 			sourceTree = "<group>";
@@ -271,6 +321,7 @@
 				E293197A1BC589C0006CAA6F /* fft_stuff.hpp */,
 			);
 			name = ObjectiveCpp;
+			path = FaceWarpApp;
 			sourceTree = "<group>";
 		};
 		E28D3AA61BAC40D200ACC953 /* Supporting Files */ = {
@@ -310,17 +361,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E28D3AA71BAC434500ACC953 /* Interface */ = {
-			isa = PBXGroup;
-			children = (
-				E20FE7681BB032A800142050 /* OpenGLView.swift */,
-				E20FE7661BB0326C00142050 /* ViewController.swift */,
-				E28EB80E1BC8317A00E639E7 /* ControllerController.swift */,
-				E28EB8101BC8368B00E639E7 /* SpinnyController.swift */,
-			);
-			name = Interface;
-			sourceTree = "<group>";
-		};
 		E28D3AA81BAC436A00ACC953 /* External Projects */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,11 +370,13 @@
 				E28D3AA91BAC43E000ACC953 /* opencv2.framework */,
 			);
 			name = "External Projects";
+			path = FaceWarpApp;
 			sourceTree = "<group>";
 		};
 		E28E562A1BBD245100358D16 /* OpenGL */ = {
 			isa = PBXGroup;
 			children = (
+				E20FE7681BB032A800142050 /* OpenGLView.swift */,
 				E28E562B1BBD246A00358D16 /* TextureManager.swift */,
 				E28E562D1BBD247700358D16 /* VertexManager.swift */,
 				E28E56311BBD248C00358D16 /* ShaderManager.swift */,
@@ -342,10 +384,35 @@
 				E28E56351BBD26CF00358D16 /* Texture.swift */,
 				E28E56371BBD279600358D16 /* PixelBufferTexture.swift */,
 				E28E56391BBD324700358D16 /* ShaderProgram.swift */,
-				E28E56471BBD7A1100358D16 /* Renderer.swift */,
 				E21069581BCA873700E28B33 /* Recorder.swift */,
 			);
 			name = OpenGL;
+			path = FaceWarpApp;
+			sourceTree = "<group>";
+		};
+		E2ACB1881BE627A000837CA7 /* SelfiePerfect */ = {
+			isa = PBXGroup;
+			children = (
+				E2ACB1891BE627A000837CA7 /* AppDelegate.swift */,
+				E2ACB18B1BE627A000837CA7 /* ViewController.swift */,
+				E2ACB18D1BE627A000837CA7 /* Main.storyboard */,
+				E2ACB1901BE627A000837CA7 /* Assets.xcassets */,
+				E2ACB1921BE627A000837CA7 /* LaunchScreen.storyboard */,
+				E2ACB1951BE627A000837CA7 /* Info.plist */,
+				E2ACB19C1BE629EF00837CA7 /* StaticOpenGLView.swift */,
+			);
+			path = SelfiePerfect;
+			sourceTree = "<group>";
+		};
+		E2ACB1991BE627DE00837CA7 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E28D3AA51BAC409C00ACC953 /* ObjectiveCpp */,
+				E2B55E501BB5DD540086F719 /* Swift */,
+				E28D3AA81BAC436A00ACC953 /* External Projects */,
+				E28E562A1BBD245100358D16 /* OpenGL */,
+			);
+			name = Common;
 			sourceTree = "<group>";
 		};
 		E2B55E4F1BB5DD380086F719 /* delaunay */ = {
@@ -365,6 +432,7 @@
 				E28EB8121BC8388200E639E7 /* Syncro.swift */,
 			);
 			name = Swift;
+			path = FaceWarpApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -388,6 +456,23 @@
 			productReference = E28D3A8D1BAC409000ACC953 /* Pixurgery.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E2ACB1861BE627A000837CA7 /* SelfiePerfect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2ACB1961BE627A000837CA7 /* Build configuration list for PBXNativeTarget "SelfiePerfect" */;
+			buildPhases = (
+				E2ACB1831BE627A000837CA7 /* Sources */,
+				E2ACB1841BE627A000837CA7 /* Frameworks */,
+				E2ACB1851BE627A000837CA7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SelfiePerfect;
+			productName = SelfiePerfect;
+			productReference = E2ACB1871BE627A000837CA7 /* SelfiePerfect.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -395,12 +480,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Phi Research";
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 743SUN8HL9;
+					};
+					E2ACB1861BE627A000837CA7 = {
+						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = 743SUN8HL9;
 					};
 				};
@@ -425,6 +514,7 @@
 			projectRoot = "";
 			targets = (
 				E28D3A8C1BAC409000ACC953 /* FaceWarpApp */,
+				E2ACB1861BE627A000837CA7 /* SelfiePerfect */,
 			);
 		};
 /* End PBXProject section */
@@ -496,6 +586,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2ACB1851BE627A000837CA7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2ACB1941BE627A000837CA7 /* LaunchScreen.storyboard in Resources */,
+				E2ACB1911BE627A000837CA7 /* Assets.xcassets in Resources */,
+				E2ACB18F1BE627A000837CA7 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -522,6 +622,7 @@
 				E20FE76D1BB0348400142050 /* AppDelegate.swift in Sources */,
 				E28D3AAE1BAC442A00ACC953 /* Readme.md in Sources */,
 				E28EB80F1BC8317A00E639E7 /* ControllerController.swift in Sources */,
+				E2ACB19B1BE6288900837CA7 /* LiveOGLView.swift in Sources */,
 				E21069591BCA873700E28B33 /* Recorder.swift in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */,
@@ -534,6 +635,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2ACB1831BE627A000837CA7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2ACB1A71BE62A9200837CA7 /* TextureManager.swift in Sources */,
+				E2ACB1A11BE62A6D00837CA7 /* triangle_wrapper.c in Sources */,
+				E2ACB1A61BE62A7C00837CA7 /* Syncro.swift in Sources */,
+				E2ACB1A31BE62A7300837CA7 /* fft_stuff.cpp in Sources */,
+				E2ACB1AF1BE62A9F00837CA7 /* source.cpp in Sources */,
+				E2ACB1AB1BE62A9900837CA7 /* Texture.swift in Sources */,
+				E2ACB1A01BE62A6A00837CA7 /* normalise_warp.cpp in Sources */,
+				E2ACB1A81BE62A9600837CA7 /* VertexManager.swift in Sources */,
+				E2ACB18C1BE627A000837CA7 /* ViewController.swift in Sources */,
+				E2ACB1AC1BE62A9900837CA7 /* PixelBufferTexture.swift in Sources */,
+				E2ACB1AD1BE62A9900837CA7 /* ShaderProgram.swift in Sources */,
+				E2ACB19F1BE62A6600837CA7 /* triangle.c in Sources */,
+				E2ACB18A1BE627A000837CA7 /* AppDelegate.swift in Sources */,
+				E2ACB1A21BE62A7100837CA7 /* triangulator.cpp in Sources */,
+				E2ACB1A51BE62A7900837CA7 /* Warpnormalise.swift in Sources */,
+				E2ACB1A41BE62A7700837CA7 /* Triangulator.swift in Sources */,
+				E2ACB1AE1BE62A9900837CA7 /* Recorder.swift in Sources */,
+				E2ACB1A91BE62A9900837CA7 /* ShaderManager.swift in Sources */,
+				E2ACB19D1BE629EF00837CA7 /* StaticOpenGLView.swift in Sources */,
+				E2ACB1AA1BE62A9900837CA7 /* CaptureManager.swift in Sources */,
+				E2ACB19E1BE62A4200837CA7 /* OpenGLView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -543,6 +672,25 @@
 			targetProxy = E264DF4D1BB950DA0051380D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E2ACB18D1BE627A000837CA7 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E2ACB18E1BE627A000837CA7 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		E2ACB1921BE627A000837CA7 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E2ACB1931BE627A000837CA7 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		E28D3AA01BAC409000ACC953 /* Debug */ = {
@@ -712,6 +860,50 @@
 			};
 			name = Release;
 		};
+		E2ACB1971BE627A000837CA7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FaceWarpApp",
+				);
+				INFOPLIST_FILE = SelfiePerfect/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FaceWarpApp",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.SelfiePerfect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		E2ACB1981BE627A000837CA7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FaceWarpApp",
+				);
+				INFOPLIST_FILE = SelfiePerfect/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/FaceWarpApp",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.SelfiePerfect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -732,6 +924,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		E2ACB1961BE627A000837CA7 /* Build configuration list for PBXNativeTarget "SelfiePerfect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2ACB1971BE627A000837CA7 /* Debug */,
+				E2ACB1981BE627A000837CA7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 

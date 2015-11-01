@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import GL
 
 class Texture {
     var name : GLuint = GLuint()
