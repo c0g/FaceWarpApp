@@ -42,7 +42,7 @@ dlib::matrix<double> return_rotation_matrix_grad_from_flat_vector_and_index(cons
     dlib::matrix<double, 3, 3> rotation_matrix_idx_right = dlib::trans(rotation_matrix_idx_left);
     
     
-    dlib::matrix<double,3,3> rotation_matrix = rotation_matrix_cholesky_left * rotation_matrix_idx_right + rotation_matrix_idx_left * rotation_matrix_cholesky_right;
+    dlib::matrix<double, 3, 3> rotation_matrix = rotation_matrix_cholesky_left * rotation_matrix_idx_right + rotation_matrix_idx_left * rotation_matrix_cholesky_right;
     std::cout << rotation_matrix;
     return rotation_matrix;
 };
@@ -77,11 +77,11 @@ dlib::matrix<double> derivative_cost_function_3d_rotation(dlib::matrix<double> v
         
         dlib::matrix<double> rotated_3d_landmarks = landmarks3d * rotation_matrix;
         dlib::matrix<double> rotated_3d_landmarks_subm = dlib::colm(rotated_3d_landmarks, dlib::range(0,1));
-        dlib::matrix<double> mismatch_error = dlib::sum_cols(rotated_3d_landmarks_subm - landmarks) * 2;
+        dlib::matrix<double> mismatch_error = 2 * (rotated_3d_landmarks_subm - landmarks);
         
         dlib::matrix<double> lm_grad = dlib::colm(landmarks3d * grad_rotation_matrix, dlib::range(0,1));
 
-        double error = dlib::sum_rows(dlib::pointwise_multiply(lm_grad, mismatch_error));
+        double error = dlib::sum_rows(dlib::sum_cols(dlib::pointwise_multiply(lm_grad, mismatch_error)));
         derivatives(i,0) = error;
         
     }
@@ -236,22 +236,54 @@ dlib::matrix<double> find_3d_rotation_matrix(const dlib::matrix<double> &landmar
         vector(i) = matrixParams[i];
     }
     
+//    dlib::matrix<double> true_deriv = cost_function_3d_rotation_wrapper_derivative(vector);
+//    //        dlib::central_differences<double> approx_deriv = dlib::derivative(cost_function_3d_rotation_wrapper)(vector, 1e-7);
+//    
+//    std::cout << dlib::csv << true_deriv << "<-- our derivs" << std::endl;
+//    
+//    dlib::matrix<double,6,1> approx_deriv;
+//    
+//    for (int i = 0; i < 7; i++)
+//    {
+//        dlib::matrix<double> new_vector = vector;
+//        new_vector(i,0) += 1e-7;
+//        approx_deriv(i,0) = (cost_function_3d_rotation_wrapper(new_vector) - cost_function_3d_rotation_wrapper(vector)) / 1e-7;
+//    }
+//    
+//    dlib::matrix<double,6,1> true_derivss;
+//    
+//    for (int i = 0; i < 7; i++)
+//    {
+//        true_derivss(i,0) = true_deriv(i,0);
+//    }
+//    
+//    std::cout << dlib::csv << approx_deriv << "<-- approx derivs" << std::endl;
+    
     try {
         //        double min_f;
         //        double dervative_eps = 1e-7;
         
-        dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
-                                                     dlib::objective_delta_stop_strategy(1e-3),
-                                                     cost_function_3d_rotation_wrapper,
-                                                     vector,
-                                                     1e-10);
+//        dlib::find_min_using_approximate_derivatives(dlib::bfgs_search_strategy(),
+//                                                     dlib::objective_delta_stop_strategy(1e-3),
+//                                                     cost_function_3d_rotation_wrapper,
+//                                                     vector,
+//                                                     1e-10);
 
-//        dlib::find_min(dlib::bfgs_search_strategy(),
-//                     dlib::objective_delta_stop_strategy(1e-3),
-//                     cost_function_3d_rotation_wrapper,
-//                     cost_function_3d_rotation_wrapper_derivative,
-//                     vector,
-//                     1e-10);
+//        dlib::matrix<double> true_deriv = cost_function_3d_rotation_wrapper_derivative(vector);
+//        dlib::central_differences<double> approx_deriv = dlib::derivative(cost_function_3d_rotation_wrapper)(vector, 1e-7);
+        
+//        std::cout << dlib::csv << true_deriv << "<-- our derivs" << std::endl;
+//        std::cout << dlib::length(dlib::derivative(cost_function_3d_rotation_wrapper)(vector));
+        
+//        std::cout << "Difference between analytic derivative and numerical approximation of derivative: "
+//        << dlib::length(dlib::derivative(cost_function_3d_rotation_wrapper)(vector) - true_deriv) << std::endl;
+        
+        dlib::find_min(dlib::bfgs_search_strategy(),
+                     dlib::objective_delta_stop_strategy(1e-3),
+                     cost_function_3d_rotation_wrapper,
+                     cost_function_3d_rotation_wrapper_derivative,
+                     vector,
+                     1e-10);
 
         
     }
