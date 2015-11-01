@@ -43,7 +43,7 @@ dlib::matrix<double> return_rotation_matrix_grad_from_flat_vector_and_index(cons
     
     
     dlib::matrix<double, 3, 3> rotation_matrix = rotation_matrix_cholesky_left * rotation_matrix_idx_right + rotation_matrix_idx_left * rotation_matrix_cholesky_right;
-    std::cout << rotation_matrix;
+//    std::cout << rotation_matrix;
     return rotation_matrix;
 };
 

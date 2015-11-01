@@ -31,8 +31,8 @@ class ControllerController : UIViewController {
 
     @IBAction func handsomeTouch(sender: AnyObject) {
         switch delegate!.syncro.warp {
-//        case .HANDSOME:
-//            delegate!.syncro.calibrating = true
+        case .HANDSOME:
+            delegate!.syncro.calibrating = true
         case _:
             delegate!.syncro.warp = WarpType.HANDSOME
         }
@@ -49,8 +49,8 @@ class ControllerController : UIViewController {
     }
     @IBAction func prettyTouch(sender: AnyObject) {
         switch delegate!.syncro.warp {
-//        case .PRETTY:
-//            delegate!.syncro.calibrating = true
+        case .PRETTY:
+            delegate!.syncro.calibrating = true
         case _:
             delegate!.syncro.warp = WarpType.PRETTY
         }
@@ -124,12 +124,12 @@ class ControllerController : UIViewController {
             handsome.setTitle("Handsome", forState: UIControlState.Normal)
         } else {
             switch delegate!.syncro.warp {
-//            case .PRETTY:
-//                pretty.setTitle("Calibrate", forState: UIControlState.Normal)
-//                handsome.setTitle("Handsome", forState: UIControlState.Normal)
-//            case .HANDSOME:
-//                pretty.setTitle("Pretty", forState: UIControlState.Normal)
-//                handsome.setTitle("Calibrate", forState: UIControlState.Normal)
+            case .PRETTY:
+                pretty.setTitle("Calibrate", forState: UIControlState.Normal)
+                handsome.setTitle("Handsome", forState: UIControlState.Normal)
+            case .HANDSOME:
+                pretty.setTitle("Pretty", forState: UIControlState.Normal)
+                handsome.setTitle("Calibrate", forState: UIControlState.Normal)
             case _:
                 pretty.setTitle("Pretty", forState: UIControlState.Normal)
                 handsome.setTitle("Handsome", forState: UIControlState.Normal)

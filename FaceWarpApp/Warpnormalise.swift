@@ -224,7 +224,8 @@ class Warper {
     
     func doAttractiveWarpPretty( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = attractive_adjusted_warp_pretty(&landmarks, &initParam, &factr)
+//        let ans = golden_inner_pretty(&landmarks, &initParam, &factr)
+        let ans = apply_golden_inner_pretty(&landmarks, &initParam, &factr, &prettyScale)
         var safeAns : [PhiPoint] = []
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
@@ -236,7 +237,8 @@ class Warper {
     
     func doAttractiveWarpHandsome( var landmarks : [PhiPoint], inout initParam : [CDouble]) -> ([PhiPoint], Float64) {
         var factr : Float64 = 0
-        let ans = attractive_adjusted_warp_handsome(&landmarks, &initParam, &factr)
+//        let ans = golden_inner_handsome(&landmarks, &initParam, &factr)
+        let ans = apply_golden_inner_handsome(&landmarks, &initParam, &factr, &handsomeScale)
         var safeAns : [PhiPoint] = [];
         for idx in 0..<landmarks.count {
             safeAns.append((ans[Int(idx)]))
