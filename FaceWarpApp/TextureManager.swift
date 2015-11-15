@@ -322,7 +322,7 @@ class TextureManager {
     func makeVBlurTexture(withWidth inWidth : Int, andHeight inHeight : Int, andScale scale : Int = 2) {
         vblurwidth = inWidth / scale
         vblurheight = inHeight / scale
-        glActiveTexture(GLenum(GL_TEXTURE5))
+        glActiveTexture(GLenum(GL_TEXTURE0))
         glBindTexture(GLenum(GL_TEXTURE_2D), vblurTexture)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
         glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
@@ -346,6 +346,8 @@ class TextureManager {
         glFramebufferTexture2D(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_TEXTURE_2D), vblurTexture, 0);
     }
     func bindVBlurTextureToSlot(textureSlot : GLint) {
+        glActiveTexture(GLenum(GL_TEXTURE5))
+        glBindTexture(GLenum(GL_TEXTURE_2D), vblurTexture)
         glUniform1i(textureSlot, 5)
     }
     func setViewPortForVBlurTexture() {
