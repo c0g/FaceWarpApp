@@ -15,6 +15,7 @@ import CoreVideo
 import CoreGraphics
 import CoreFoundation
 import AVFoundation
+import Photos
 
 import ImageIO
 
@@ -91,9 +92,42 @@ class OpenGLView: UIView {
         self.setupContext()
         
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer, andCamera: camera)
+        doPhotoAlbum()
         setupPipelineWithCamera(camera, andRenderer: renderer!)
-        
-        
+    }
+    
+    func doPhotoAlbum() {
+        //Check if the folder exists, if not, create it
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", "Pixurgery")
+        let collection:PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
+        var assetCollection : PHAssetCollection? = nil
+        if let first_Obj:AnyObject = collection.firstObject{
+            //found the album
+            //            albumFound = true
+            assetCollection = first_Obj as! PHAssetCollection
+                    }else{
+            //Album placeholder for the asset collection, used to reference collection in completion handler
+            var albumPlaceholder:PHObjectPlaceholder!
+            //create the folder
+            NSLog("\nFolder \"%@\" does not exist\nCreating now...", "Pixurgery")
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                let request = PHAssetCollectionChangeRequest.creationRequestForAssetCollectionWithTitle("Pixurgery")
+                albumPlaceholder = request.placeholderForCreatedAssetCollection
+                },
+                completionHandler: {(success:Bool, error:NSError?)in
+                    if(success){
+                        print("Successfully created folder")
+                        //                        self.albumFound = true
+                        let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
+                        assetCollection = collection.firstObject as! PHAssetCollection
+                    }else{
+                        print("Error creating folder")
+                        //                        self.albumFound = false
+                    }
+            })
+        }
+
     }
     
     /* Gesture recogniser

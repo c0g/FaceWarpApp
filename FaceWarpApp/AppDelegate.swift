@@ -28,6 +28,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ui.redrawUI()
         }
     }
+    func disableUI() {
+        if let ui = ui {
+            ui.disableUI()
+        }
+    }
+    func enableUI() {
+        if let ui = ui {
+            ui.enableUI()
+        }
+    }
     
     func toggleCamera() {
         if let view = view {

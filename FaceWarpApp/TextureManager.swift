@@ -15,6 +15,8 @@ import AssetsLibrary
 
 class TextureManager {
     
+    let albumName = "Pixurgery"
+    
     let teethHeight = 20
     let teethWidth = 50
     
@@ -429,28 +431,55 @@ class TextureManager {
         let imgURL = NSURL(fileURLWithPath: "\(dir)/img.jpeg")
         jpeg?.writeToURL(imgURL, atomically: true)
         
-//        NSData *pngData = UIImagePNGRepresentation(image);
-//        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsPath = [paths objectAtIndex:0]; //Get the docs directory
-//        NSString *filePath = [documentsPath stringByAppendingPathComponent:@"image.png"]; //Add the file name
-//        [pngData writeToFile:filePath atomically:YES]; //Write the file
-        
-//        [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
-//            [PHAssetChangeRequest creationRequestForAssetFromImageAtFileURL:contentEditingOutput.renderedContentURL];
-//            } completionHandler:^(BOOL success, NSError *error) {
-//            ...
-//            }];
-        
-        PHPhotoLibrary.sharedPhotoLibrary().performChanges({
-            PHAssetChangeRequest.creationRequestForAssetFromImageAtFileURL(imgURL)
-            }, completionHandler: {
-                (success : Bool, error : NSError?) -> Void in
-                if let error = error {
-//                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
-//                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
-//                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+        //Check if the folder exists, if not, create it
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let collection:PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
+        var assetCollection : PHAssetCollection? = nil
+        if let first_Obj:AnyObject = collection.firstObject{
+            //found the album
+//            albumFound = true
+            assetCollection = first_Obj as! PHAssetCollection
+            saveImageAssetAtURL(imgURL, inCollection: assetCollection!)
+        }else{
+            //Album placeholder for the asset collection, used to reference collection in completion handler
+            var albumPlaceholder:PHObjectPlaceholder!
+            //create the folder
+            NSLog("\nFolder \"%@\" does not exist\nCreating now...", albumName)
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                let request = PHAssetCollectionChangeRequest.creationRequestForAssetCollectionWithTitle(self.albumName)
+                albumPlaceholder = request.placeholderForCreatedAssetCollection
+                },
+                completionHandler: {(success:Bool, error:NSError?)in
+                    if(success){
+                        print("Successfully created folder")
+//                        self.albumFound = true
+                        let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
+                        assetCollection = collection.firstObject as! PHAssetCollection
+                        self.saveImageAssetAtURL(imgURL, inCollection: assetCollection!)
+                    }else{
+                        print("Error creating folder")
+//                        self.albumFound = false
+                    }
+            })
+        }
+    }
+    func saveImageAssetAtURL(url : NSURL, inCollection collection : PHAssetCollection) {
+            let photosAsset = PHAsset.fetchAssetsInAssetCollection(collection, options: nil)
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                let createAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromImageAtFileURL(url)
+                let assetPlaceholder = createAssetRequest!.placeholderForCreatedAsset
+                if let albumChangeRequest = PHAssetCollectionChangeRequest(forAssetCollection: collection, assets: photosAsset) {
+                    albumChangeRequest.addAssets([assetPlaceholder!])
                 }
-        })
+                }, completionHandler: {
+                    (success : Bool, error : NSError?) -> Void in
+                    if let error = error {
+    //                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+    //                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+    //                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+                    }
+            })
     }
     
     

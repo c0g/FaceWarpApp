@@ -759,6 +759,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                         let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
                         let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
                         recorder.prepareRecord(forWidth: width, andHeight: height)
+                        delegate!.disableUI()
                         videoStartTime = NSDate()
                     }  else if recorder.state == .Recording {
                         let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
@@ -771,6 +772,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                         delegate!.setRecordTime(0)
                         delegate!.syncro.capturing = false
                         recorder.stopRecordingAndSave()
+                        delegate!.enableUI()
                     }
                 }
             }

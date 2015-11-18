@@ -18,7 +18,7 @@ enum RecorderState {
 }
 
 class Recorder {
-    
+    let albumName = "Pixurgery"
     let audioQueue = dispatch_queue_create("com.PHI.AudioQueue", nil)
     let videoQueue = dispatch_queue_create("com.PHI.VideoQueue", nil)
     let writeQueue = dispatch_queue_create("com.PHI.WriteQueue", nil)
@@ -113,30 +113,89 @@ class Recorder {
         state = .Writing
         awVideo!.markAsFinished()
         awAudio!.markAsFinished()
+        
         dispatch_async(writeQueue, {
             self.assetWriter!.finishWritingWithCompletionHandler {
-                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
-                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(self.vidURL!)
-                    }, completionHandler: {
-                        (success : Bool, error : NSError?) -> Void in
-                        if let error = error {
-//                            let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
-//                            let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
-//                            UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
-
-                        }
-                })
+                
+                //Check if the folder exists, if not, create it
+                let fetchOptions = PHFetchOptions()
+                fetchOptions.predicate = NSPredicate(format: "title = %@", self.albumName)
+                let collection:PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
+                var assetCollection : PHAssetCollection? = nil
+                if let first_Obj:AnyObject = collection.firstObject{
+                    //found the album
+                    //            albumFound = true
+                    assetCollection = first_Obj as! PHAssetCollection
+                    self.saveVideoAssetAtURL(self.vidURL!, inCollection: assetCollection!)
+                }else{
+                    //Album placeholder for the asset collection, used to reference collection in completion handler
+                    var albumPlaceholder:PHObjectPlaceholder!
+                    //create the folder
+                    NSLog("\nFolder \"%@\" does not exist\nCreating now...", self.albumName)
+                    PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                        let request = PHAssetCollectionChangeRequest.creationRequestForAssetCollectionWithTitle(self.albumName)
+                        albumPlaceholder = request.placeholderForCreatedAssetCollection
+                        },
+                        completionHandler: {(success:Bool, error:NSError?)in
+                            if(success){
+                                print("Successfully created folder")
+                                //                        self.albumFound = true
+                                let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
+                                assetCollection = collection.firstObject as! PHAssetCollection
+                                self.saveVideoAssetAtURL(self.vidURL!, inCollection: assetCollection!)
+                            }else{
+                                print("Error creating folder")
+                                //                        self.albumFound = false
+                            }
+                    })
+                }
             }
         })
     }
+
+
     
+                
+//                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+//                    PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(self.vidURL!)
+//                    }, completionHandler: {
+//                        (success : Bool, error : NSError?) -> Void in
+//                        if let error = error {
+////                            let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+////                            let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+////                            UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+//
+//                        }
+//                })
+//            }
+//        })
+//    }
+
+func saveVideoAssetAtURL(url : NSURL, inCollection collection : PHAssetCollection) {
+    let photosAsset = PHAsset.fetchAssetsInAssetCollection(collection, options: nil)
+    PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+        let createAssetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(url)
+        let assetPlaceholder = createAssetRequest!.placeholderForCreatedAsset
+        if let albumChangeRequest = PHAssetCollectionChangeRequest(forAssetCollection: collection, assets: photosAsset) {
+            albumChangeRequest.addAssets([assetPlaceholder!])
+        }
+        }, completionHandler: {
+            (success : Bool, error : NSError?) -> Void in
+            if let error = error {
+                //                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
+                //                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+                //                    UIApplication.sharedApplication().openURL(NSURL(string: url!)!)
+            }
+    })
+}
+
     func setTime(time : CMTime) {
         if needTime {
             needTime = false
             assetWriter?.startSessionAtSourceTime(time)
         }
     }
-    
+
     func addVideoFrame(frame : CVPixelBufferRef, atTime time: CMTime){
         setTime(time)
         if state == .Recording {
