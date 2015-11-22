@@ -139,7 +139,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="185" y="-250" width="30" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="mAg-H2-8Ju"/>
                                     </mask>
@@ -160,7 +161,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="12" y="-249" width="35" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="stn-YP-cxi"/>
                                     </mask>
@@ -218,7 +220,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="185" y="-214" width="30" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="GI4-67-5Q4"/>
                                     </mask>
@@ -238,7 +241,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="185" y="-60" width="31" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="kti-h3-oPq"/>
                                     </mask>
@@ -259,7 +263,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="360" y="-214" width="30" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="Xqd-C1-baU"/>
                                     </mask>
@@ -279,7 +284,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="358" y="-250" width="34" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="Pgo-uo-lSx"/>
                                     </mask>
@@ -308,7 +314,8 @@ and hold for 3 seconds</string>
                                         <exclude reference="kXG-vM-7iK"/>
                                     </mask>
                                 </variation>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="358" y="-215" width="30" height="30"/>
                                     <mask key="constraints">
                                         <exclude reference="7HZ-U5-PWq"/>
                                         <include reference="CAY-nE-sCG"/>
@@ -339,6 +346,9 @@ and hold for 3 seconds</string>
                                         <include reference="ZUr-MC-x70"/>
                                     </mask>
                                 </variation>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="28" y="-214" width="48" height="27"/>
+                                </variation>
                                 <connections>
                                     <action selector="modeselectorTouch:" destination="rNt-mM-TCA" eventType="touchUpInside" id="bCM-tB-zQ3"/>
                                 </connections>
@@ -354,7 +364,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="12" y="-60" width="36" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="gyM-iN-J3n"/>
                                     </mask>
@@ -371,6 +382,9 @@ and hold for 3 seconds</string>
                                     <segment title="Video"/>
                                 </segments>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="149" y="-186" width="101" height="278.5"/>
+                                </variation>
                                 <connections>
                                     <action selector="selValChange:" destination="rNt-mM-TCA" eventType="valueChanged" id="8Qi-R3-zOV"/>
                                 </connections>
@@ -386,7 +400,8 @@ and hold for 3 seconds</string>
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <variation key="heightClass=regular-widthClass=compact">
+                                <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
+                                    <rect key="frame" x="12" y="-215" width="61" height="27"/>
                                     <mask key="constraints">
                                         <exclude reference="IWR-OT-yda"/>
                                     </mask>
@@ -495,34 +510,19 @@ and hold for 3 seconds</string>
                                 <exclude reference="9Lk-6E-R1C"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="LDi-hy-lXb"/>
+                                <exclude reference="NXs-ss-0O7"/>
+                                <exclude reference="Z2g-Q1-s2R"/>
+                                <exclude reference="tve-mJ-w52"/>
+                                <exclude reference="vyJ-9N-Buc"/>
                                 <exclude reference="Be5-qd-ySf"/>
                                 <exclude reference="HLc-41-lSB"/>
                                 <exclude reference="Zhp-yy-YgI"/>
                                 <exclude reference="ey5-fV-uKQ"/>
                                 <exclude reference="k8m-nT-WpK"/>
                                 <exclude reference="oAy-w9-tP8"/>
-                                <exclude reference="LDi-hy-lXb"/>
-                                <exclude reference="NXs-ss-0O7"/>
-                                <exclude reference="Z2g-Q1-s2R"/>
-                                <exclude reference="tve-mJ-w52"/>
-                                <exclude reference="vyJ-9N-Buc"/>
                                 <exclude reference="mtK-eU-3aN"/>
                                 <exclude reference="xNc-RI-Api"/>
-                                <exclude reference="dvc-6w-iy4"/>
-                                <exclude reference="abr-tM-EbC"/>
-                                <exclude reference="hot-I3-0Us"/>
-                                <exclude reference="iM0-IA-BE8"/>
-                                <exclude reference="iSE-Du-vxc"/>
-                                <exclude reference="u0i-0P-Tdm"/>
-                                <exclude reference="zQl-cE-n0S"/>
-                                <exclude reference="4dB-2b-wMl"/>
-                                <exclude reference="7Uo-n9-WyT"/>
-                                <exclude reference="EIT-of-yt7"/>
-                                <exclude reference="Osq-5f-d6p"/>
-                                <exclude reference="dkA-Kn-vD9"/>
-                                <exclude reference="hBr-Iu-0oX"/>
-                                <exclude reference="i3l-SV-6lp"/>
-                                <exclude reference="n2U-az-w1p"/>
                                 <exclude reference="7ox-if-RF6"/>
                                 <exclude reference="OrW-sG-HHL"/>
                                 <exclude reference="cIj-DY-mkF"/>
@@ -538,13 +538,28 @@ and hold for 3 seconds</string>
                                 <exclude reference="G9T-A2-Pit"/>
                                 <exclude reference="MdR-n2-Nzf"/>
                                 <exclude reference="SWd-Aw-r0M"/>
+                                <exclude reference="ODo-8d-cY2"/>
+                                <exclude reference="4dB-2b-wMl"/>
+                                <exclude reference="7Uo-n9-WyT"/>
+                                <exclude reference="EIT-of-yt7"/>
+                                <exclude reference="Osq-5f-d6p"/>
+                                <exclude reference="dkA-Kn-vD9"/>
+                                <exclude reference="hBr-Iu-0oX"/>
+                                <exclude reference="i3l-SV-6lp"/>
+                                <exclude reference="n2U-az-w1p"/>
+                                <exclude reference="abr-tM-EbC"/>
+                                <exclude reference="hot-I3-0Us"/>
+                                <exclude reference="iM0-IA-BE8"/>
+                                <exclude reference="iSE-Du-vxc"/>
+                                <exclude reference="u0i-0P-Tdm"/>
+                                <exclude reference="zQl-cE-n0S"/>
                                 <exclude reference="6Vb-oN-hif"/>
                                 <exclude reference="Ey9-fA-Ovl"/>
                                 <exclude reference="Gfr-Cd-N9v"/>
                                 <exclude reference="SVX-Zj-M5G"/>
                                 <exclude reference="fVV-hN-V4R"/>
                                 <exclude reference="vQV-yL-10B"/>
-                                <exclude reference="ODo-8d-cY2"/>
+                                <exclude reference="dvc-6w-iy4"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact">
@@ -564,6 +579,8 @@ and hold for 3 seconds</string>
                         </variation>
                         <variation key="heightClass=regular-widthClass=compact">
                             <mask key="constraints">
+                                <include reference="LDi-hy-lXb"/>
+                                <include reference="vyJ-9N-Buc"/>
                                 <exclude reference="7ZU-RY-i5a"/>
                                 <include reference="Be5-qd-ySf"/>
                                 <exclude reference="Eto-aO-1F1"/>
@@ -577,27 +594,11 @@ and hold for 3 seconds</string>
                                 <exclude reference="fc4-yr-AVj"/>
                                 <include reference="k8m-nT-WpK"/>
                                 <include reference="oAy-w9-tP8"/>
-                                <include reference="LDi-hy-lXb"/>
-                                <include reference="vyJ-9N-Buc"/>
                                 <exclude reference="0r0-LO-tiF"/>
                                 <exclude reference="2PU-gt-W2Y"/>
                                 <exclude reference="Bb8-gP-Xd7"/>
                                 <include reference="mtK-eU-3aN"/>
                                 <include reference="xNc-RI-Api"/>
-                                <exclude reference="XHq-kX-lcG"/>
-                                <include reference="dvc-6w-iy4"/>
-                                <exclude reference="BfT-ia-yXp"/>
-                                <exclude reference="Tgk-sB-OP5"/>
-                                <include reference="hot-I3-0Us"/>
-                                <exclude reference="iM0-IA-BE8"/>
-                                <exclude reference="u0i-0P-Tdm"/>
-                                <include reference="zQl-cE-n0S"/>
-                                <include reference="4dB-2b-wMl"/>
-                                <include reference="7Uo-n9-WyT"/>
-                                <exclude reference="Ftm-0F-iI6"/>
-                                <exclude reference="hBr-Iu-0oX"/>
-                                <exclude reference="n2U-az-w1p"/>
-                                <exclude reference="qZe-lQ-zdU"/>
                                 <exclude reference="3g6-oI-uSu"/>
                                 <exclude reference="6sv-S5-ZQc"/>
                                 <include reference="7ox-if-RF6"/>
@@ -625,6 +626,20 @@ and hold for 3 seconds</string>
                                 <include reference="SWd-Aw-r0M"/>
                                 <exclude reference="ZPJ-3Y-upq"/>
                                 <exclude reference="fpf-lK-rIj"/>
+                                <exclude reference="cpD-tL-I0b"/>
+                                <exclude reference="egW-Z5-uBT"/>
+                                <include reference="4dB-2b-wMl"/>
+                                <include reference="7Uo-n9-WyT"/>
+                                <exclude reference="Ftm-0F-iI6"/>
+                                <exclude reference="hBr-Iu-0oX"/>
+                                <exclude reference="n2U-az-w1p"/>
+                                <exclude reference="qZe-lQ-zdU"/>
+                                <exclude reference="BfT-ia-yXp"/>
+                                <exclude reference="Tgk-sB-OP5"/>
+                                <include reference="hot-I3-0Us"/>
+                                <exclude reference="iM0-IA-BE8"/>
+                                <exclude reference="u0i-0P-Tdm"/>
+                                <include reference="zQl-cE-n0S"/>
                                 <include reference="6Vb-oN-hif"/>
                                 <exclude reference="Ey9-fA-Ovl"/>
                                 <exclude reference="FaJ-F2-ki5"/>
@@ -632,8 +647,8 @@ and hold for 3 seconds</string>
                                 <exclude reference="SVX-Zj-M5G"/>
                                 <include reference="fVV-hN-V4R"/>
                                 <exclude reference="vQV-yL-10B"/>
-                                <exclude reference="cpD-tL-I0b"/>
-                                <exclude reference="egW-Z5-uBT"/>
+                                <exclude reference="XHq-kX-lcG"/>
+                                <include reference="dvc-6w-iy4"/>
                             </mask>
                         </variation>
                     </view>
