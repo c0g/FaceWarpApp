@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C6568ECB8F40DE1F4367045 /* libPods-FaceWarpApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */; };
 		5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */; };
 		5E386B001BBABE28003EDAEB /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFF1BBABE28003EDAEB /* triangle.c */; };
 		5E65128E1BD587AA00455528 /* overlay2.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E65128D1BD587AA00455528 /* overlay2.png */; };
 		5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */ = {isa = PBXBuildFile; fileRef = 5E8A4EF71BC4355C001B3CF1 /* total_detector.svm */; };
 		5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EB989F91BC8A1F4002BF51F /* launch_logo.png */; };
 		5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */; };
+		E20F9F171C01B66600871A94 /* AKPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F9F161C01B66600871A94 /* AKPickerView.swift */; };
+		E20F9F191C01BD5800871A94 /* image_grid.png in Resources */ = {isa = PBXBuildFile; fileRef = E20F9F181C01BD5800871A94 /* image_grid.png */; };
+		E20F9FBF1C021F4C00871A94 /* WarpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F9F141C01B55A00871A94 /* WarpController.swift */; };
+		E20F9FC01C021F5100871A94 /* CaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20F9F0F1C01B54F00871A94 /* CaptureController.swift */; };
 		E20FE7671BB0326C00142050 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7661BB0326C00142050 /* ViewController.swift */; };
 		E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20FE7681BB032A800142050 /* OpenGLView.swift */; };
 		E20FE76B1BB032AF00142050 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E20FE76A1BB032AF00142050 /* Main.storyboard */; };
@@ -107,6 +112,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FaceWarpApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E2897471BB578DB00166D83 /* normalise_warp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = normalise_warp.h; sourceTree = "<group>"; };
 		5E386AF91BBA04CD003EDAEB /* triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle.h; sourceTree = "<group>"; };
 		5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle_wrapper.c; sourceTree = "<group>"; };
@@ -117,6 +123,12 @@
 		5EB989F91BC8A1F4002BF51F /* launch_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = launch_logo.png; sourceTree = "<group>"; };
 		5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Warpnormalise.swift; sourceTree = "<group>"; };
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
+		89D21CF769FAE21081AD9007 /* Pods-FaceWarpApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceWarpApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp.release.xcconfig"; sourceTree = "<group>"; };
+		973D73F67C624E898908DCBC /* Pods-FaceWarpApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceWarpApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp.debug.xcconfig"; sourceTree = "<group>"; };
+		E20F9F0F1C01B54F00871A94 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureController.swift; sourceTree = "<group>"; };
+		E20F9F141C01B55A00871A94 /* WarpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpController.swift; sourceTree = "<group>"; };
+		E20F9F161C01B66600871A94 /* AKPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKPickerView.swift; sourceTree = "<group>"; };
+		E20F9F181C01BD5800871A94 /* image_grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image_grid.png; sourceTree = "<group>"; };
 		E20FE7661BB0326C00142050 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		E20FE7681BB032A800142050 /* OpenGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLView.swift; sourceTree = "<group>"; };
 		E20FE76A1BB032AF00142050 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -195,12 +207,30 @@
 				E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */,
 				E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */,
 				E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */,
+				4C6568ECB8F40DE1F4367045 /* libPods-FaceWarpApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5265A42D2D3DA911F1F3D654 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				973D73F67C624E898908DCBC /* Pods-FaceWarpApp.debug.xcconfig */,
+				89D21CF769FAE21081AD9007 /* Pods-FaceWarpApp.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D1DEEB671C581D0FD8859698 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		E264DF3F1BB950710051380D /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -219,6 +249,8 @@
 				E28D3ABC1BAC464700ACC953 /* source.cpp */,
 				E28D3A8F1BAC409000ACC953 /* FaceWarpApp */,
 				E28D3A8E1BAC409000ACC953 /* Products */,
+				5265A42D2D3DA911F1F3D654 /* Pods */,
+				D1DEEB671C581D0FD8859698 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -282,6 +314,7 @@
 				E25C0D5F1BD6268100F9157F /* overlay3.png */,
 				E25C0D4A1BD53F4A00F9157F /* overlay.png */,
 				E20FE76A1BB032AF00142050 /* Main.storyboard */,
+				E20F9F181C01BD5800871A94 /* image_grid.png */,
 				E2B3F4341BDD32B400B6A7E3 /* camera_button.png */,
 				E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */,
 				E25C0D461BD5077C00F9157F /* camera_icon.png */,
@@ -316,7 +349,10 @@
 				E20FE7681BB032A800142050 /* OpenGLView.swift */,
 				E20FE7661BB0326C00142050 /* ViewController.swift */,
 				E28EB80E1BC8317A00E639E7 /* ControllerController.swift */,
+				E20F9F0F1C01B54F00871A94 /* CaptureController.swift */,
+				E20F9F141C01B55A00871A94 /* WarpController.swift */,
 				E28EB8101BC8368B00E639E7 /* SpinnyController.swift */,
+				E20F9F161C01B66600871A94 /* AKPickerView.swift */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -374,9 +410,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E28D3AA21BAC409000ACC953 /* Build configuration list for PBXNativeTarget "FaceWarpApp" */;
 			buildPhases = (
+				172A9B86C996FD3BDB7AE241 /* Check Pods Manifest.lock */,
 				E28D3A891BAC409000ACC953 /* Sources */,
 				E28D3A8A1BAC409000ACC953 /* Frameworks */,
 				E28D3A8B1BAC409000ACC953 /* Resources */,
+				C8F1D09B415157375A6C6DCD /* Embed Pods Frameworks */,
+				DBC4561DC95649D98DDF2990 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -484,6 +523,7 @@
 				E25C0D4B1BD53F4A00F9157F /* overlay.png in Resources */,
 				E28EB8071BC81DE000E639E7 /* DesaturateVertex.glsl in Resources */,
 				5E8A4EF81BC4355C001B3CF1 /* total_detector.svm in Resources */,
+				E20F9F191C01BD5800871A94 /* image_grid.png in Resources */,
 				E28D3A9B1BAC409000ACC953 /* Assets.xcassets in Resources */,
 				E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */,
 				5E65128E1BD587AA00455528 /* overlay2.png in Resources */,
@@ -498,15 +538,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		172A9B86C996FD3BDB7AE241 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		C8F1D09B415157375A6C6DCD /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DBC4561DC95649D98DDF2990 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		E28D3A891BAC409000ACC953 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E20F9FC01C021F5100871A94 /* CaptureController.swift in Sources */,
 				E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */,
 				E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */,
 				E28E56361BBD26CF00358D16 /* Texture.swift in Sources */,
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
+				E20F9F171C01B66600871A94 /* AKPickerView.swift in Sources */,
 				E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */,
 				E28E562E1BBD247700358D16 /* VertexManager.swift in Sources */,
 				E28E56481BBD7A1100358D16 /* Renderer.swift in Sources */,
@@ -525,6 +615,7 @@
 				E21069591BCA873700E28B33 /* Recorder.swift in Sources */,
 				E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */,
 				E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */,
+				E20F9FBF1C021F4C00871A94 /* WarpController.swift in Sources */,
 				5E386B001BBABE28003EDAEB /* triangle.c in Sources */,
 				E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */,
 				E28E562C1BBD246A00358D16 /* TextureManager.swift in Sources */,
@@ -630,6 +721,7 @@
 		};
 		E28D3AA31BAC409000ACC953 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 973D73F67C624E898908DCBC /* Pods-FaceWarpApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
@@ -666,12 +758,13 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		E28D3AA41BAC409000ACC953 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89D21CF769FAE21081AD9007 /* Pods-FaceWarpApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_OPTIMIZATION = "";
@@ -708,7 +801,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = FaceWarpApp/bridging.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

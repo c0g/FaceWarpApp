@@ -13,7 +13,7 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let syncro = Syncro()
-    var ui : ControllerController? = nil
+    var ui : CaptureController? = nil
     
     var view : OpenGLView? = nil
     
@@ -25,9 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func redrawUI() {
         if let ui = ui {
-            ui.redrawUI()
+            ui.updateUI()
         }
     }
+
     func disableUI() {
         if let ui = ui {
             ui.disableUI()
@@ -36,6 +37,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func enableUI() {
         if let ui = ui {
             ui.enableUI()
+        }
+    }
+    
+    func pulseAlbum() {
+        if let ui = ui {
+            ui.pulseAlbum()
         }
     }
     

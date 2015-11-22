@@ -14,6 +14,7 @@
 //#import "triangulator.h"
 #import "triangle_wrapper.h"
 #import "normalise_warp.h"
+#import "MWPhotoBrowser.h"
 
 
 #endif /* bridging_h */

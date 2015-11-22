@@ -110,7 +110,7 @@ class Recorder {
     
     func stopRecordingAndSave() {
         print("Stopping")
-        state = .Writing
+        state = .Idle
         awVideo!.markAsFinished()
         awAudio!.markAsFinished()
         
