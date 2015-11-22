@@ -15,6 +15,8 @@ import AssetsLibrary
 
 class TextureManager {
     
+    var delegate : AppDelegate? = nil
+    
     let albumName = "Pixurgery"
     
     let teethHeight = 20
@@ -62,6 +64,7 @@ class TextureManager {
     var faceTexture : GLKTextureInfo? = nil
 
     init?(withContext cntxt : EAGLContext, andLayer lyr : CAEAGLLayer) {
+        delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         context = cntxt
         layer = lyr
         
@@ -134,9 +137,9 @@ class TextureManager {
         glUniform1i(textureSlot, 1)
     }
     
-    func saveOutput() {
+    func saveOutput(flip : Bool = false) {
         if let pb = outputPixelBuffer {
-            savePixelBuffer(pb)
+            savePixelBuffer(pb, flip : flip)
         }
     }
     
@@ -416,15 +419,17 @@ class TextureManager {
 //        CVPixelBufferUnlockBaseAddress(pb, 0)
 //    }
     
-    func savePixelBuffer(pb : CVPixelBufferRef) {
+    func savePixelBuffer(pb : CVPixelBufferRef, flip : Bool = false) {
         CVPixelBufferLockBaseAddress(pb, 0)
         let ciImage = CIImage(CVPixelBuffer: pb)
         let tmpContext = CIContext()
         let width = CGFloat(CVPixelBufferGetWidth(pb))
         let height = CGFloat(CVPixelBufferGetHeight(pb))
         let videoImage = tmpContext.createCGImage(ciImage, fromRect: CGRectMake(0, 0, width, height))
-        let uiImage = UIImage(CGImage: videoImage)
+        let orientation : UIImageOrientation = flip ? UIImageOrientation.UpMirrored : UIImageOrientation.Up
+        let uiImage = UIImage(CGImage: videoImage, scale: 1.0, orientation: orientation)
         CVPixelBufferUnlockBaseAddress(pb, 0)
+ 
         
         let jpeg = UIImageJPEGRepresentation(uiImage, 1.0)
         let dir =  NSTemporaryDirectory()
@@ -474,6 +479,7 @@ class TextureManager {
                 }
                 }, completionHandler: {
                     (success : Bool, error : NSError?) -> Void in
+                    self.delegate!.updateImageIcon()
                     if let error = error {
     //                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
     //                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)

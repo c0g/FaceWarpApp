@@ -18,6 +18,7 @@ enum RecorderState {
 }
 
 class Recorder {
+    var delegate : AppDelegate? = nil
     let albumName = "Pixurgery"
     let audioQueue = dispatch_queue_create("com.PHI.AudioQueue", nil)
     let videoQueue = dispatch_queue_create("com.PHI.VideoQueue", nil)
@@ -33,7 +34,12 @@ class Recorder {
     var assetWriterPixelBufferInput : AVAssetWriterInputPixelBufferAdaptor? = nil
     var vidURL : NSURL?
     
+    init() {
+        delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    }
+    
     func prepareRecord(forWidth width : Int, andHeight height : Int) {
+        
         state = .Preparing
         print("Preparing")
         let dir =  NSTemporaryDirectory()
@@ -181,6 +187,7 @@ func saveVideoAssetAtURL(url : NSURL, inCollection collection : PHAssetCollectio
         }
         }, completionHandler: {
             (success : Bool, error : NSError?) -> Void in
+            self.delegate!.updateImageIcon()
             if let error = error {
                 //                    let mailURL = "mailto:tom.nickson@gmail.com?subject=\"error\"&body=\(error)"
                 //                    let url = mailURL.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)

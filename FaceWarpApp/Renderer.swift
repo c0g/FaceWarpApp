@@ -739,7 +739,7 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 if delegate!.syncro.capture_type == .IMAGE {
                     self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
                     delegate!.syncro.capturing = false
-                    textureManager!.saveOutput()
+                    textureManager!.saveOutput(camera == 1) // camera == 1 is true if using front camera!
                 } else {
                     if recorder.state == .Idle {
                         let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)

@@ -134,7 +134,7 @@
                         <viewControllerLayoutGuide type="top" id="5E7-Bn-7cN"/>
                         <viewControllerLayoutGuide type="bottom" id="BE2-VB-UEB"/>
                     </layoutGuides>
-                    <view key="view" alpha="0.69999999999999996" contentMode="scaleToFill" id="inx-oT-b0Z">
+                    <view key="view" contentMode="scaleToFill" id="inx-oT-b0Z">
                         <rect key="frame" x="0.0" y="0.0" width="100" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -243,7 +243,7 @@
                             </button>
                         </subviews>
                         <animations/>
-                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.70370565878378377" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="BE2-VB-UEB" firstAttribute="top" secondItem="Z70-gz-8tu" secondAttribute="bottom" constant="5" id="0M3-1y-06a"/>
                             <constraint firstItem="fH6-uM-tmT" firstAttribute="centerY" secondItem="inx-oT-b0Z" secondAttribute="centerY" id="58M-IJ-oYo"/>

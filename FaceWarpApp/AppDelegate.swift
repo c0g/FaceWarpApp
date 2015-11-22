@@ -17,6 +17,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var view : OpenGLView? = nil
     
+    func updateImageIcon() {
+        if let ui = ui {
+            ui.updateImageIcon()
+        }
+    }
+    
     func setRecordTime(time : Int) {
         if let ui = ui {
             ui.recordTime(time)

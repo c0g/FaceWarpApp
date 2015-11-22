@@ -15,6 +15,7 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     
     var images : [MWPhoto] = []
     var thumbs : [MWPhoto] = []
+    var uithumb : UIImage? = nil
     
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var openGrid: UIButton!
@@ -38,6 +39,7 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     }
     func fillImages(collection : PHAssetCollection) {
         images = []
+        thumbs = []
         let result = PHAsset.fetchAssetsInAssetCollection(collection, options: nil)
         for idx in 0..<result.count {
             let screen = UIScreen.mainScreen()
@@ -50,6 +52,7 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
             let photo = MWPhoto(asset: asset, targetSize: imageTargetSize)
             images.append(photo)
             thumbs.append(MWPhoto(asset: asset, targetSize: thumbTargetSize))
+            
         }
         images = images.reverse()
         thumbs = thumbs.reverse()
@@ -113,33 +116,41 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
 //                self.view.autoresizesSubviews = NO;
 //                [self.buttoner setTransform:CGAffineTransformRotate(self.buttoner.transform, 90.0f)];
 //                } completion:nil];
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animateWithDuration(0.3, delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseInOut,
+                animations: {
                 self.capture.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
                 self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
                 self.selectCamera.transform = CGAffineTransformMakeRotation(CGFloat(M_PI_2))
-            })
+                }, completion: nil)
 
         case .LandscapeRight:
             print("Landscape right")
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animateWithDuration(0.3, delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseInOut,
+                animations: {
                 self.capture.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI_2))
                 self.openGrid.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI_2))
                 self.selectCamera.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI_2))
-            })
+            }, completion: nil)
                 case .PortraitUpsideDown:
             print("Portrait Upside Down")
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animateWithDuration(0.3, delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseInOut,
+                animations: {
                 self.capture.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
                 self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
                 self.selectCamera.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
-            })
+            }, completion: nil)
         case _:
             print("Portrait or other")
-            UIView.animateWithDuration(0.3, animations: {
+            UIView.animateWithDuration(0.3, delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseInOut,
+                animations: {
                 self.capture.transform = CGAffineTransformMakeRotation(CGFloat(0))
                 self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(0))
                 self.selectCamera.transform = CGAffineTransformMakeRotation(CGFloat(0))
-            })
+            }, completion: nil)
 
         }
     }
@@ -163,8 +174,98 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
         
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         delegate!.ui = self
+        updateImageIcon()
     }
     
+    func wobbleOpenGrid() {
+        var current = 0.0
+        switch UIDevice.currentDevice().orientation {
+        case .LandscapeRight:
+            current = -M_PI_2
+        case .LandscapeLeft:
+            current = M_PI_2
+        case .PortraitUpsideDown:
+            current = M_PI
+        case _:
+            current = 0.0
+            }
+        UIView.animateWithDuration(0.1, delay: 0.0,
+            options: UIViewAnimationOptions.CurveEaseIn,
+            animations: {
+                self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(current + M_PI / 8))
+            }, completion: nil)
+        UIView.animateWithDuration(0.1, delay: 0.1,
+            options: UIViewAnimationOptions.CurveLinear,
+            animations: {
+                self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(current - M_PI / 8))
+            }, completion: nil)
+        UIView.animateWithDuration(0.1, delay: 0.2,
+            options: UIViewAnimationOptions.CurveEaseOut,
+            animations: {
+                self.openGrid.transform = CGAffineTransformMakeRotation(CGFloat(current))
+            }, completion: nil)
+    }
+    
+    func updateImageIcon() {
+//        dispatch_sync(dispatch_get_main_queue()) {
+            //Check if the folder exists, if not, create it
+            let fetchOptions = PHFetchOptions()
+            fetchOptions.predicate = NSPredicate(format: "title = %@", self.albumName)
+            let collection:PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
+            var assetCollection : PHAssetCollection? = nil
+            if let first_Obj:AnyObject = collection.firstObject{
+                //found the album
+                //            albumFound = true
+                assetCollection = first_Obj as! PHAssetCollection
+                let result = PHAsset.fetchAssetsInAssetCollection(assetCollection!, options: nil)
+                let manager = PHImageManager.defaultManager()
+                var option = PHImageRequestOptions()
+
+                if let asset = result.lastObject as? PHAsset {
+                    option.synchronous = false
+                    option.resizeMode = PHImageRequestOptionsResizeMode.Fast
+                    option.deliveryMode = PHImageRequestOptionsDeliveryMode.HighQualityFormat
+                    manager.requestImageForAsset(asset, targetSize: CGSize(width: 50.0, height: 50.0), contentMode: .AspectFit, options: option, resultHandler: {(result, info)->Void in
+                        self.openGrid.setImage(result, forState: .Normal)
+                        self.wobbleOpenGrid()
+                    })
+                }
+            }else{
+                //Album placeholder for the asset collection, used to reference collection in completion handler
+                var albumPlaceholder:PHObjectPlaceholder!
+                //create the folder
+                NSLog("\nFolder \"%@\" does not exist\nCreating now...", self.albumName)
+                PHPhotoLibrary.sharedPhotoLibrary().performChanges({
+                    let request = PHAssetCollectionChangeRequest.creationRequestForAssetCollectionWithTitle(self.albumName)
+                    albumPlaceholder = request.placeholderForCreatedAssetCollection
+                    },
+                    completionHandler: {(success:Bool, error:NSError?)in
+                        if(success){
+                            print("Successfully created folder")
+                            //                        self.albumFound = true
+                            let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
+                            assetCollection = collection.firstObject as! PHAssetCollection
+                            let result = PHAsset.fetchAssetsInAssetCollection(assetCollection!, options: nil)
+                            let manager = PHImageManager.defaultManager()
+                            var option = PHImageRequestOptions()
+                            if let asset = result.lastObject as? PHAsset {
+                                option.synchronous = false
+                                option.resizeMode = PHImageRequestOptionsResizeMode.Fast
+                                option.deliveryMode = PHImageRequestOptionsDeliveryMode.HighQualityFormat
+                                manager.requestImageForAsset(asset, targetSize: CGSize(width: 50.0, height: 50.0), contentMode: .AspectFit, options: option, resultHandler: {(result, info)->Void in
+                                    self.openGrid.setImage(result, forState: .Normal)
+                                    self.wobbleOpenGrid()
+                                })
+                            }
+                            }else{
+                            print("Error creating folder")
+                            //                        self.albumFound = false
+                        }
+                })
+            }
+//        }
+
+    }
     
     func enableUI() {
         self.pickerView.hidden = false
