@@ -1,0 +1,6 @@
+framework module Pods_FaceWarpApp {
+  umbrella header "Pods-FaceWarpApp-umbrella.h"
+
+  export *
+  module * { export * }
+}

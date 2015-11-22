@@ -82,3 +82,16 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods-FaceWarpApp/DACircularProgress.framework"
+  install_framework "Pods-FaceWarpApp/MBProgressHUD.framework"
+  install_framework "Pods-FaceWarpApp/MWPhotoBrowser.framework"
+  install_framework "Pods-FaceWarpApp/SDWebImage.framework"
+fi
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods-FaceWarpApp/DACircularProgress.framework"
+  install_framework "Pods-FaceWarpApp/MBProgressHUD.framework"
+  install_framework "Pods-FaceWarpApp/MWPhotoBrowser.framework"
+  install_framework "Pods-FaceWarpApp/SDWebImage.framework"
+fi

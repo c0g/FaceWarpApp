@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4C6568ECB8F40DE1F4367045 /* libPods-FaceWarpApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */; };
+		083A14DF4A05AEDE0220EFCA /* Pods_FaceWarpApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD85E8ABDA40CCB1C6586C9F /* Pods_FaceWarpApp.framework */; };
 		5E386AFD1BBA04EC003EDAEB /* triangle_wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */; };
 		5E386B001BBABE28003EDAEB /* triangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 5E386AFF1BBABE28003EDAEB /* triangle.c */; };
 		5E65128E1BD587AA00455528 /* overlay2.png in Resources */ = {isa = PBXBuildFile; fileRef = 5E65128D1BD587AA00455528 /* overlay2.png */; };
@@ -112,7 +112,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FaceWarpApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E2897471BB578DB00166D83 /* normalise_warp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = normalise_warp.h; sourceTree = "<group>"; };
 		5E386AF91BBA04CD003EDAEB /* triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = triangle.h; sourceTree = "<group>"; };
 		5E386AFC1BBA04EC003EDAEB /* triangle_wrapper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = triangle_wrapper.c; sourceTree = "<group>"; };
@@ -125,6 +124,7 @@
 		5ED3AB8A1BB6C14E0092A7CE /* normalise_warp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = normalise_warp.cpp; sourceTree = "<group>"; };
 		89D21CF769FAE21081AD9007 /* Pods-FaceWarpApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceWarpApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp.release.xcconfig"; sourceTree = "<group>"; };
 		973D73F67C624E898908DCBC /* Pods-FaceWarpApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FaceWarpApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FaceWarpApp/Pods-FaceWarpApp.debug.xcconfig"; sourceTree = "<group>"; };
+		CD85E8ABDA40CCB1C6586C9F /* Pods_FaceWarpApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FaceWarpApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E20F9F0F1C01B54F00871A94 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureController.swift; sourceTree = "<group>"; };
 		E20F9F141C01B55A00871A94 /* WarpController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarpController.swift; sourceTree = "<group>"; };
 		E20F9F161C01B66600871A94 /* AKPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AKPickerView.swift; sourceTree = "<group>"; };
@@ -207,7 +207,7 @@
 				E20FE7891BB092CF00142050 /* Accelerate.framework in Frameworks */,
 				E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */,
 				E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */,
-				4C6568ECB8F40DE1F4367045 /* libPods-FaceWarpApp.a in Frameworks */,
+				083A14DF4A05AEDE0220EFCA /* Pods_FaceWarpApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +226,7 @@
 		D1DEEB671C581D0FD8859698 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				18D7CB5D1693BE555243F43F /* libPods-FaceWarpApp.a */,
+				CD85E8ABDA40CCB1C6586C9F /* Pods_FaceWarpApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
