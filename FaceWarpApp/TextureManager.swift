@@ -551,7 +551,7 @@ class TextureManager {
     // MARK: Functions to load robot face texture
     func loadRoboFaceTexture() {
         let opt:[String : NSNumber] = [GLKTextureLoaderApplyPremultiplication : true, GLKTextureLoaderGenerateMipmaps: false]
-        let path = NSBundle.mainBundle().pathForResource("mask", ofType: "png")
+        let path = NSBundle.mainBundle().pathForResource("robot", ofType: "png")
         do {
             glActiveTexture(GLenum(GL_TEXTURE7))
             faceTexture = try GLKTextureLoader.textureWithContentsOfFile(path!, options: opt)

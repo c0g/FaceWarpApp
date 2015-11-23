@@ -280,7 +280,7 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     }
     
     func recordTime(time : Int) {
-        print(time)
+
         if time > 0 {
             capture.setTitle(String(time), forState: .Normal)
         } else {

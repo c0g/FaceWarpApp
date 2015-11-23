@@ -71,6 +71,7 @@
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; };
+		E2CB65B51C02A02800E92E38 /* robot.png in Resources */ = {isa = PBXBuildFile; fileRef = E2CB65B41C02A02800E92E38 /* robot.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -197,6 +198,7 @@
 		E2B55E541BB69F390086F719 /* triangulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = triangulator.cpp; sourceTree = "<group>"; };
 		E2B55E561BB6B9590086F719 /* Triangulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangulator.swift; sourceTree = "<group>"; };
 		E2B55E581BB6E2F70086F719 /* PHI_C_Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHI_C_Types.h; sourceTree = "<group>"; };
+		E2CB65B41C02A02800E92E38 /* robot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = robot.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -308,6 +310,7 @@
 		E28D3AA61BAC40D200ACC953 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E2CB65B41C02A02800E92E38 /* robot.png */,
 				E25C0D611BD7C1FE00F9157F /* eye.png */,
 				E25C0D621BD7C1FE00F9157F /* mask.png */,
 				5E65128D1BD587AA00455528 /* overlay2.png */,
@@ -504,6 +507,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2CB65B51C02A02800E92E38 /* robot.png in Resources */,
 				E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */,
 				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
 				E25C0D641BD7C1FE00F9157F /* mask.png in Resources */,
