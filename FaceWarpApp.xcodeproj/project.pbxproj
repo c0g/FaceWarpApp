@@ -746,6 +746,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
+					"$(PROJECT_DIR)/Pods/**",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -789,6 +790,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/FaceWarpApp/dlib",
 					"$(PROJECT_DIR)/GeometricTools/GTEngine/Include",
+					"$(PROJECT_DIR)/Pods/**",
 				);
 				INFOPLIST_FILE = FaceWarpApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

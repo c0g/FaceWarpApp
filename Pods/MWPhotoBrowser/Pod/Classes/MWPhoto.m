@@ -100,6 +100,10 @@
     self.isVideo = YES;
 }
 
+- (void)getAsset:(void (^)(PHAsset * ))completion {
+    completion(_asset);
+}
+
 - (void)getVideoURL:(void (^)(NSURL *url))completion {
     if (_videoURL) {
         completion(_videoURL);

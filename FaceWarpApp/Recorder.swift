@@ -43,11 +43,11 @@ class Recorder {
         state = .Preparing
         print("Preparing")
         let dir =  NSTemporaryDirectory()
-        vidURL = NSURL(fileURLWithPath: "\(dir)/movie.mov")
+        vidURL = NSURL(fileURLWithPath: "\(dir)/movie.m4v")
         do {
             try NSFileManager.defaultManager().removeItemAtURL(vidURL!)
         } catch {
-            print("Delete movie.mov failed")
+            print("Delete movie.m4v failed")
         }
         do {
             assetWriter = try AVAssetWriter(URL: vidURL!, fileType: AVFileTypeAppleM4V)

@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 #import "MWCommon.h"
 #import "MWPhotoBrowser.h"
 #import "MWPhotoBrowserPrivate.h"
@@ -175,9 +176,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
         _previousButton = [[UIBarButtonItem alloc] initWithImage:previousButtonImage style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousPage)];
         _nextButton = [[UIBarButtonItem alloc] initWithImage:nextButtonImage style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextPage)];
     }
-    if (self.displayActionButton) {
+//    if (self.displayActionButton) {
         _actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
-    }
+//    }
     
     // Update
     [self reloadData];
@@ -1103,7 +1104,7 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     
     // Disable action button if there is no image or it's a video
     MWPhoto *photo = [self photoAtIndex:_currentPageIndex];
-    if ([photo underlyingImage] == nil || ([photo respondsToSelector:@selector(isVideo)] && photo.isVideo)) {
+    if ([photo underlyingImage] == nil /*|| ([photo respondsToSelector:@selector(isVideo)] && photo.isVideo )*/) {
         _actionButton.enabled = NO;
         _actionButton.tintColor = [UIColor clearColor]; // Tint to hide button
     } else {
@@ -1551,6 +1552,10 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 
 #pragma mark - Actions
 
+- (UIViewController *) documentInteractionControllerViewControllerForPreview: (UIDocumentInteractionController *) controller {
+    return self;
+}
+
 - (void)actionButtonPressed:(id)sender {
 
     // Only react when image has loaded
@@ -1563,8 +1568,102 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             // Let delegate handle things
             [self.delegate photoBrowser:self actionButtonPressedForPhotoAtIndex:_currentPageIndex];
             
+        } else if ([photo respondsToSelector:@selector(isVideo)] && photo.isVideo ) {
+            NSLog(@"Tom's video hack!\n");
+            NSLog(@"URL:");
+            [photo getAsset:^(PHAsset * asset) {
+                if (asset) {
+//                        dispatch_async(dispatch_get_main_queue(), ^{
+//                        PHImageManager.defaultManager().requestAVAssetForVideo(asset, options: nil) { (avAsset:AVAsset!, audioMix:AVAudioMix!, info:[NSObject : AnyObject]!) -> Void in
+//                            var videoURL = avAsset as AVURLAsset
+//                            var activityVC = UIActivityViewController(activityItems: [videoURL], applicationActivities: nil)
+//                            activityVC.completionHandler = {(str: String!, value: Bool) -> Void in
+//                            }
+//                            self.presentViewController(activityVC, animated: true, completion: nil)
+//                        }
+                    
+                        [[PHImageManager defaultManager] requestAVAssetForVideo:asset options:nil resultHandler: ^(AVAsset * asset, AVAudioMix * mix, NSDictionary * info) {
+                            AVAssetExportSession * session = [AVAssetExportSession exportSessionWithAsset:asset presetName:AVAssetExportPresetPassthrough];
+                            NSString *documentsDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+                            
+                            NSURL * tmpFile = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingPathComponent:@"pixurgery.m4v"]];
+                            [[NSFileManager defaultManager] removeItemAtURL: tmpFile error:NULL];
+                            [session setOutputURL: tmpFile];
+                            [session setOutputFileType:AVFileTypeAppleM4V];
+                            [session exportAsynchronouslyWithCompletionHandler:^{
+                                switch (session.status) {
+                                    case AVAssetExportSessionStatusFailed:
+                                        NSLog(@"failed");
+                                        break;
+                                    default:
+                                        NSLog(@"Something else");
+                                        break;
+                                }
+                                dispatch_sync(dispatch_get_main_queue(), ^{
+                                NSLog(@"Completed export!");
+                                NSLog(tmpFile.absoluteString);
+                                
+                                NSMutableArray *items = [NSMutableArray arrayWithObject:tmpFile];
+                                self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+                                // Show loading spinner after a couple of seconds
+                                double delayInSeconds = 2.0;
+                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                    if (self.activityViewController) {
+                                        [self showProgressHUDWithMessage:nil];
+                                    }
+                                });
+    
+                                // Show
+                                typeof(self) __weak weakSelf = self;
+                                [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+                                    weakSelf.activityViewController = nil;
+                                    [weakSelf hideControlsAfterDelay];
+                                    [weakSelf hideProgressHUD:YES];
+                                     [[NSFileManager defaultManager] removeItemAtURL: tmpFile error:NULL];
+                                }];
+                                // iOS 8 - Set the Anchor Point for the popover
+                                if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
+                                    self.activityViewController.popoverPresentationController.barButtonItem = _actionButton;
+                                }
+                                    [self presentViewController:self.activityViewController animated:YES completion:nil];
+                            });
+                            }];
+                        }];
+//                            NSMutableArray *items = [NSMutableArray arrayWithObject:url ];
+//                            self.activityViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+//                            // Show loading spinner after a couple of seconds
+//                            double delayInSeconds = 2.0;
+//                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//                                if (self.activityViewController) {
+//                                    [self showProgressHUDWithMessage:nil];
+//                                }
+//                            });
+//                            
+//                            // Show
+//                            typeof(self) __weak weakSelf = self;
+//                            [self.activityViewController setCompletionHandler:^(NSString *activityType, BOOL completed) {
+//                                weakSelf.activityViewController = nil;
+//                                [weakSelf hideControlsAfterDelay];
+//                                [weakSelf hideProgressHUD:YES];
+//                            }];
+//                            // iOS 8 - Set the Anchor Point for the popover
+//                            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8")) {
+//                                self.activityViewController.popoverPresentationController.barButtonItem = _actionButton;
+//                            }
+//                                [self presentViewController:self.activityViewController animated:YES completion:nil];
+//                        });
+                    
+                        
+
+                    
+                } else {
+                    NSLog(@"arse");
+                }
+            }];
         } else {
-            
+        
             // Show activity view controller
             NSMutableArray *items = [NSMutableArray arrayWithObject:[photo underlyingImage]];
             if (photo.caption) {
