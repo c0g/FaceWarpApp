@@ -12,16 +12,16 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
     
-    let titles = ["Anime", "Swap", "Tiny", "Live", "Robot"]
+    let titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT", "PRETTY", "HANDSOME", "NONE"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.pickerView.delegate = self
         self.pickerView.dataSource = self
         
-        self.pickerView.font = UIFont.systemFontOfSize(17)
-        self.pickerView.highlightedFont = UIFont.systemFontOfSize(18)
-        self.pickerView.pickerViewStyle = .Wheel
+        self.pickerView.font = UIFont.systemFontOfSize(15)
+        self.pickerView.highlightedFont = UIFont.systemFontOfSize(15)
+        self.pickerView.pickerViewStyle = .Flat
         self.pickerView.maskDisabled = false
         self.pickerView.reloadData()
         
@@ -41,6 +41,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     Please comment '-pickerView:titleForItem:' entirely and
     uncomment '-pickerView:imageForItem:' to see how it works.
     */
+    
     func pickerView(pickerView: AKPickerView, titleForItem item: Int) -> String {
         return self.titles[item]
     }
@@ -64,6 +65,12 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
             delegate!.syncro.warp = .DYNAMIC
         case 4:
             delegate!.syncro.warp = .ROBOT
+        case 5:
+            delegate!.syncro.warp = .PRETTY
+        case 6:
+            delegate!.syncro.warp = .HANDSOME
+        case 7:
+            delegate!.syncro.warp = .NONE
         case _:
             print("Shouldn't be here!")
         }
@@ -102,6 +109,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     */
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        // println("\(scrollView.contentOffset.x)")
+        print("scrolling")
     }
+
 }
