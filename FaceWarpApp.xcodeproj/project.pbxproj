@@ -32,6 +32,7 @@
 		E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */; };
 		E221D1011BC6DA17009F4B0B /* BrightenFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */; };
 		E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
+		E23BB5FE1C120264001D2AB6 /* img.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E23BB5FD1C120264001D2AB6 /* img.jpg */; };
 		E25C0D471BD5077C00F9157F /* camera_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D461BD5077C00F9157F /* camera_icon.png */; };
 		E25C0D4B1BD53F4A00F9157F /* overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D4A1BD53F4A00F9157F /* overlay.png */; };
 		E25C0D4E1BD54DF400F9157F /* PassFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */; };
@@ -148,6 +149,7 @@
 		E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageHorizontalVertex.glsl; sourceTree = "<group>"; };
 		E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenVertex.glsl; sourceTree = "<group>"; };
 		E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenFragment.glsl; sourceTree = "<group>"; };
+		E23BB5FD1C120264001D2AB6 /* img.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = img.jpg; sourceTree = "<group>"; };
 		E25C0D461BD5077C00F9157F /* camera_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_icon.png; sourceTree = "<group>"; };
 		E25C0D4A1BD53F4A00F9157F /* overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = overlay.png; sourceTree = "<group>"; };
 		E25C0D4C1BD54DF400F9157F /* PassFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PassFragment.glsl; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				E2CB65B41C02A02800E92E38 /* robot.png */,
+				E23BB5FD1C120264001D2AB6 /* img.jpg */,
 				E25C0D611BD7C1FE00F9157F /* eye.png */,
 				E25C0D621BD7C1FE00F9157F /* mask.png */,
 				5E65128D1BD587AA00455528 /* overlay2.png */,
@@ -563,6 +566,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2CB65B51C02A02800E92E38 /* robot.png in Resources */,
+				E23BB5FE1C120264001D2AB6 /* img.jpg in Resources */,
 				E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */,
 				E28D3AC51BAC67F800ACC953 /* facemarks.dat in Resources */,
 				E25C0D641BD7C1FE00F9157F /* mask.png in Resources */,

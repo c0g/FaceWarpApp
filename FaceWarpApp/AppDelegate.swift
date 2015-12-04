@@ -54,19 +54,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func toggleCamera() {
         if let view = view {
-            view.toggleCamera()
+//            view.toggleCamera()
         }
     }
     
     func hideInstructions(hidden : Bool) {
         if let view = view {
-            view.hideInstructions(hidden)
+//            view.hideInstructions(hidden)
         }
     }
     
     func setTextForCount(count : Int) {
         if let view = view {
-            view.setTextForCount(count)
+//            view.setTextForCount(count)
         }
     }
     

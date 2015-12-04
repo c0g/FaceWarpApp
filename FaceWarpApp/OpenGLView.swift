@@ -57,7 +57,8 @@ func time<O>(name: String, f : ()->O )-> O {
 
 
 
-class OpenGLView: UIView {
+class OpenGLView: UIImageView
+{
     @IBOutlet weak var uiContainer: UIView!
 
     var eaglLayer: CAEAGLLayer!
@@ -68,175 +69,15 @@ class OpenGLView: UIView {
     
     var camera : Int = 1
     
-    /* Class Methods
-    ------------------------------------------*/
-    
-    override class func layerClass() -> AnyClass {
-        // In order for our view to display OpenGL content, we need to set it's
-        //   default layer to be a CAEAGLayer
-        return CAEAGLLayer.self
-    }
-    
     
     /* Lifecycle
     ------------------------------------------*/
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        UIApplication.sharedApplication().idleTimerDisabled = true
-        
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        delegate.view = self
-        
-        self.setupLayer()
-        self.setupContext()
-        
-        self.renderer = Renderer(withContext: context, andLayer: eaglLayer, andCamera: camera)
-        doPhotoAlbum()
-        setupPipelineWithCamera(camera, andRenderer: renderer!)
-    }
-    
-    func doPhotoAlbum() {
-        //Check if the folder exists, if not, create it
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.predicate = NSPredicate(format: "title = %@", "Pixurgery")
-        let collection:PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(.Album, subtype: .Any, options: fetchOptions)
-        var assetCollection : PHAssetCollection? = nil
-        if let first_Obj:AnyObject = collection.firstObject{
-            //found the album
-            //            albumFound = true
-            assetCollection = first_Obj as! PHAssetCollection
-                    }else{
-            //Album placeholder for the asset collection, used to reference collection in completion handler
-            var albumPlaceholder:PHObjectPlaceholder!
-            //create the folder
-            NSLog("\nFolder \"%@\" does not exist\nCreating now...", "Pixurgery")
-            PHPhotoLibrary.sharedPhotoLibrary().performChanges({
-                let request = PHAssetCollectionChangeRequest.creationRequestForAssetCollectionWithTitle("Pixurgery")
-                albumPlaceholder = request.placeholderForCreatedAssetCollection
-                },
-                completionHandler: {(success:Bool, error:NSError?)in
-                    if(success){
-                        print("Successfully created folder")
-                        //                        self.albumFound = true
-                        let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
-                        assetCollection = collection.firstObject as! PHAssetCollection
-                    }else{
-                        print("Error creating folder")
-                        //                        self.albumFound = false
-                    }
-            })
-        }
 
-    }
-    
-    /* Gesture recogniser
-    ------------------------------------------*/
-    
-    func singleTap(rec : UITapGestureRecognizer) {
-        self.renderer!.doFaceBlur = !(self.renderer!.doFaceBlur)
-        self.renderer!.scheduleSave()
-    }
-    
-    /* Instance Methods
-    ------------------------------------------*/
-    
-    func setupPipelineWithCamera(camera : Int, andRenderer renderer : Renderer) {
-        if CaptureManager.devices().count > 0 { // check if we're running in the sim to debug ui shit
-            let device = CaptureManager.devices()[camera]
-            for format in device.formats as! [AVCaptureDeviceFormat] {
-                if CMVideoFormatDescriptionGetDimensions(format.formatDescription).height == 960 {
-                    do {
-                        try device.lockForConfiguration()
-                        device.activeFormat = format
-                        device.unlockForConfiguration()
-                    } catch {
-                        print("Could not set config")
-                    }
-                }
-            }
-            
-            self.captureManager = CaptureManager(withDevice: device)
-            renderer.camera = camera
-            
-            do {
-                try self.captureManager?.connectToRenderer(renderer)
-            } catch {
-                print("Capture manager could not connect to renderer")
-                exit(1)
-            }
-            
-            self.captureManager?.start()
-        }
-    }
-    
-    func toggleCamera() {
-        self.captureManager!.stop()
-//        self.renderer = nil
-        self.captureManager = nil
-        
-        if self.camera == 0{
-            camera = 1
-        } else {
-            camera = 0
-        }
-//
-        self.setupPipelineWithCamera(camera, andRenderer: renderer!)
-    }
-    
-    @IBOutlet weak var overlayImage: UIImageView!
-    @IBOutlet weak var instructions: UILabel!
-    func hideInstructions(hidden : Bool) {
-        instructions.hidden = hidden
-        uiContainer.hidden = !hidden
-        switch UIApplication.sharedApplication().statusBarOrientation {
-        case .Portrait:
-            overlayImage.hidden = hidden
-            instructions.text = "Face the screen\nwith a neutral expression\nand hold for 3 seconds"
-        case _:
-            overlayImage.hidden = true
-            instructions.text = "Rotate the device\nto portrait\nand try again"
-        }
-        
-    }
-    
-    func setTextForCount(count : Int) {
-        instructions.text = "Face the screen\nwith a neutral expression\nand hold for \(count) seconds"
-    }
-    
-    func setupLayer() {
-        // CALayer's are, by default, non-opaque, which is 'bad for performance with OpenGL',
-        //   so let's set our CAEAGLLayer layer to be opaque.
-        self.eaglLayer	= self.layer as! CAEAGLLayer
-        self.eaglLayer.opaque = true
-        self.contentScaleFactor = UIScreen.mainScreen().scale
-        self.eaglLayer.contentsScale = UIScreen.mainScreen().scale
-        if #available(iOS 8.0, *) {
-            self.eaglLayer.bounds.size.width = UIScreen.mainScreen().fixedCoordinateSpace.bounds.width
-            self.eaglLayer.bounds.size.height = UIScreen.mainScreen().fixedCoordinateSpace.bounds.height
-        } else {
-            self.eaglLayer.bounds.size.width = UIScreen.mainScreen().bounds.width
-            self.eaglLayer.bounds.size.height = UIScreen.mainScreen().bounds.height
-        }
-        
-    }
-    
-    func setupContext() {
-        // Just like with CoreGraphics, in order to do much with OpenGL, we need a context.
-        //   Here we create a new context with the version of the rendering API we want and
-        //   tells OpenGL that when we draw, we want to do so within this context.
-        let api: EAGLRenderingAPI = EAGLRenderingAPI.OpenGLES2
-        self.context = EAGLContext(API: api)
-        
-        if (self.context == nil) {
-            print("Failed to initialize OpenGLES 3.0 context!")
-            exit(1)
-        }
-        
-        if (!EAGLContext.setCurrentContext(self.context)) {
-            print("Failed to set current OpenGL context!")
-            exit(1)
-        }
+        self.image = UIImage(named: "img.jpg")!
+        contentMode = .ScaleAspectFit
     }
 }
 ///////////////////////////////////////
