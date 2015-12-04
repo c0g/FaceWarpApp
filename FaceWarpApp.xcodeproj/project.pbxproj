@@ -64,6 +64,11 @@
 		E28EB80F1BC8317A00E639E7 /* ControllerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB80E1BC8317A00E639E7 /* ControllerController.swift */; };
 		E28EB8111BC8368B00E639E7 /* SpinnyController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8101BC8368B00E639E7 /* SpinnyController.swift */; };
 		E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28EB8121BC8388200E639E7 /* Syncro.swift */; };
+		E292D5F41C0B6948008E576C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E292D5F31C0B6948008E576C /* AppDelegate.swift */; };
+		E292D5F61C0B6948008E576C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E292D5F51C0B6948008E576C /* ViewController.swift */; };
+		E292D5F81C0B6948008E576C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E292D5F71C0B6948008E576C /* Assets.xcassets */; };
+		E292D5FB1C0B6948008E576C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E292D5F91C0B6948008E576C /* Main.storyboard */; };
+		E292D6011C0B69A9008E576C /* OpenGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E292D6001C0B69A9008E576C /* OpenGLView.swift */; };
 		E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E29319791BC589C0006CAA6F /* fft_stuff.cpp */; };
 		E2B3F4301BDD2C4A00B6A7E3 /* face_overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */; };
 		E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */ = {isa = PBXBuildFile; fileRef = E2B3F4341BDD32B400B6A7E3 /* camera_button.png */; };
@@ -187,6 +192,13 @@
 		E28EB80E1BC8317A00E639E7 /* ControllerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerController.swift; sourceTree = "<group>"; };
 		E28EB8101BC8368B00E639E7 /* SpinnyController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinnyController.swift; sourceTree = "<group>"; };
 		E28EB8121BC8388200E639E7 /* Syncro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syncro.swift; sourceTree = "<group>"; };
+		E292D5F11C0B6947008E576C /* OSXVersion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OSXVersion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E292D5F31C0B6948008E576C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E292D5F51C0B6948008E576C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E292D5F71C0B6948008E576C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E292D5FA1C0B6948008E576C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		E292D5FC1C0B6948008E576C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E292D6001C0B69A9008E576C /* OpenGLView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenGLView.swift; sourceTree = "<group>"; };
 		E29319791BC589C0006CAA6F /* fft_stuff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft_stuff.cpp; sourceTree = "<group>"; };
 		E293197A1BC589C0006CAA6F /* fft_stuff.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fft_stuff.hpp; sourceTree = "<group>"; };
 		E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = face_overlay.png; sourceTree = "<group>"; };
@@ -210,6 +222,13 @@
 				E28D3AAA1BAC43E000ACC953 /* opencv2.framework in Frameworks */,
 				E28D3ABF1BAC480500ACC953 /* libjpeg.a in Frameworks */,
 				083A14DF4A05AEDE0220EFCA /* Pods_FaceWarpApp.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E292D5EE1C0B6947008E576C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,6 +269,7 @@
 				E20FE7881BB092CF00142050 /* Accelerate.framework */,
 				E28D3ABC1BAC464700ACC953 /* source.cpp */,
 				E28D3A8F1BAC409000ACC953 /* FaceWarpApp */,
+				E292D5F21C0B6947008E576C /* OSXVersion */,
 				E28D3A8E1BAC409000ACC953 /* Products */,
 				5265A42D2D3DA911F1F3D654 /* Pods */,
 				D1DEEB671C581D0FD8859698 /* Frameworks */,
@@ -260,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				E28D3A8D1BAC409000ACC953 /* Pixurgery.app */,
+				E292D5F11C0B6947008E576C /* OSXVersion.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -387,6 +408,19 @@
 			name = OpenGL;
 			sourceTree = "<group>";
 		};
+		E292D5F21C0B6947008E576C /* OSXVersion */ = {
+			isa = PBXGroup;
+			children = (
+				E292D5F31C0B6948008E576C /* AppDelegate.swift */,
+				E292D5F51C0B6948008E576C /* ViewController.swift */,
+				E292D5F71C0B6948008E576C /* Assets.xcassets */,
+				E292D5F91C0B6948008E576C /* Main.storyboard */,
+				E292D5FC1C0B6948008E576C /* Info.plist */,
+				E292D6001C0B69A9008E576C /* OpenGLView.swift */,
+			);
+			path = OSXVersion;
+			sourceTree = "<group>";
+		};
 		E2B55E4F1BB5DD380086F719 /* delaunay */ = {
 			isa = PBXGroup;
 			children = (
@@ -430,6 +464,23 @@
 			productReference = E28D3A8D1BAC409000ACC953 /* Pixurgery.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E292D5F01C0B6947008E576C /* OSXVersion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E292D5FD1C0B6948008E576C /* Build configuration list for PBXNativeTarget "OSXVersion" */;
+			buildPhases = (
+				E292D5ED1C0B6947008E576C /* Sources */,
+				E292D5EE1C0B6947008E576C /* Frameworks */,
+				E292D5EF1C0B6947008E576C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OSXVersion;
+			productName = OSXVersion;
+			productReference = E292D5F11C0B6947008E576C /* OSXVersion.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -437,13 +488,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Phi Research";
 				TargetAttributes = {
 					E28D3A8C1BAC409000ACC953 = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 743SUN8HL9;
+					};
+					E292D5F01C0B6947008E576C = {
+						CreatedOnToolsVersion = 7.1.1;
 					};
 				};
 			};
@@ -467,6 +521,7 @@
 			projectRoot = "";
 			targets = (
 				E28D3A8C1BAC409000ACC953 /* FaceWarpApp */,
+				E292D5F01C0B6947008E576C /* OSXVersion */,
 			);
 		};
 /* End PBXProject section */
@@ -537,6 +592,15 @@
 				E221D1011BC6DA17009F4B0B /* BrightenFragment.glsl in Resources */,
 				E2B3F4301BDD2C4A00B6A7E3 /* face_overlay.png in Resources */,
 				E25C0D631BD7C1FE00F9157F /* eye.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E292D5EF1C0B6947008E576C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E292D5F81C0B6948008E576C /* Assets.xcassets in Resources */,
+				E292D5FB1C0B6948008E576C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,6 +693,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E292D5ED1C0B6947008E576C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E292D5F61C0B6948008E576C /* ViewController.swift in Sources */,
+				E292D6011C0B69A9008E576C /* OpenGLView.swift in Sources */,
+				E292D5F41C0B6948008E576C /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -638,6 +712,17 @@
 			targetProxy = E264DF4D1BB950DA0051380D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		E292D5F91C0B6948008E576C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E292D5FA1C0B6948008E576C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		E28D3AA01BAC409000ACC953 /* Debug */ = {
@@ -813,6 +898,38 @@
 			};
 			name = Release;
 		};
+		E292D5FE1C0B6948008E576C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = OSXVersion/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.OSXVersion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E292D5FF1C0B6948008E576C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = OSXVersion/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				PRODUCT_BUNDLE_IDENTIFIER = ch.phiresear.OSXVersion;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -830,6 +947,15 @@
 			buildConfigurations = (
 				E28D3AA31BAC409000ACC953 /* Debug */,
 				E28D3AA41BAC409000ACC953 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E292D5FD1C0B6948008E576C /* Build configuration list for PBXNativeTarget "OSXVersion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E292D5FE1C0B6948008E576C /* Debug */,
+				E292D5FF1C0B6948008E576C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

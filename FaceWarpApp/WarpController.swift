@@ -12,7 +12,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
     
-    let titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT", "PRETTY", "HANDSOME", "NONE"]
+    var titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
