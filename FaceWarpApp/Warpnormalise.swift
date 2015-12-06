@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT
+    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT, PUPPET
 }
 
 //extension Array where Element : Comparable  {
@@ -156,6 +156,36 @@ class Warper {
             factr[idx2] = factr2
         }
         return(tmp_faces, factr)
+    }
+    
+    func doPuppetFace3D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [[PhiPoint]], [Float64]) {
+        let num_faces = all_landmarks.count
+        var factr : [Float64] = Array(count: num_faces, repeatedValue: 0.0)
+        
+        var tmp_faces = all_landmarks
+        var tmp_srcs = all_landmarks
+        for idx in 0..<(num_faces+1)/2 {
+            let idx1 = idx * 2
+            let idx2 = (idx1 + 1) % num_faces
+            var face1 = all_landmarks[idx1]
+            var face2 = all_landmarks[idx2]
+            
+            let pidx1 = findBestFace(face1)
+            let pidx2 = findBestFace(face2)
+            
+            
+            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            //            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            let warped1 = Array(warped_faces[0..<68])
+            let warped2 = Array(warped_faces[68..<136])
+            tmp_faces[idx1] = warped1
+            tmp_srcs[idx1] = face1
+            tmp_faces[idx2] = warped2
+            tmp_srcs[idx2] = face1
+            factr[idx1] = factr1
+            factr[idx2] = factr2
+        }
+        return(tmp_faces, tmp_srcs, factr)
     }
     
     func doShitSwap( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {

@@ -12,7 +12,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
     
-    let titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT"]
+    let titles = ["ANIME", "SWAP", "PUPPET", "TINY", "WOBBLE", "ROBOT"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,10 +60,12 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
         case 1:
             delegate!.syncro.warp = .SWAP
         case 2:
-            delegate!.syncro.warp = .TINY
+            delegate!.syncro.warp = .PUPPET
         case 3:
-            delegate!.syncro.warp = .DYNAMIC
+            delegate!.syncro.warp = .TINY
         case 4:
+            delegate!.syncro.warp = .DYNAMIC
+        case 5:
             delegate!.syncro.warp = .ROBOT
         case _:
             print("Shouldn't be here!")
