@@ -158,12 +158,13 @@ class Warper {
         return(tmp_faces, factr)
     }
     
-    func doPuppetFace3D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [[PhiPoint]], [Float64]) {
+
+    func doPuppetFace3D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [Float64]) {
         let num_faces = all_landmarks.count
         var factr : [Float64] = Array(count: num_faces, repeatedValue: 0.0)
         
         var tmp_faces = all_landmarks
-        var tmp_srcs = all_landmarks
+
         for idx in 0..<(num_faces+1)/2 {
             let idx1 = idx * 2
             let idx2 = (idx1 + 1) % num_faces
@@ -179,13 +180,12 @@ class Warper {
             let warped1 = Array(warped_faces[0..<68])
             let warped2 = Array(warped_faces[68..<136])
             tmp_faces[idx1] = warped1
-            tmp_srcs[idx1] = face1
+
             tmp_faces[idx2] = warped2
-            tmp_srcs[idx2] = face1
             factr[idx1] = factr1
             factr[idx2] = factr2
         }
-        return(tmp_faces, tmp_srcs, factr)
+        return(tmp_faces, factr)
     }
     
     func doShitSwap( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
@@ -366,6 +366,19 @@ class Warper {
         var factr2 : Float64 = 0.0
 //        var param1 : [Float64]
         let ans = face_swap_warp(&landmarks1, &landmarks2, &initParam1, &initParam2, &factr1, &factr2)
+        var safeAns : [PhiPoint] = [];
+        for idx in 0..<(landmarks1.count + landmarks2.count) {
+            safeAns.append((ans[Int(idx)]))
+        }
+        free(ans)
+        return (safeAns, factr1, factr2)
+    }
+    
+    func doPuppet( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
+        var factr1 : Float64 = 0.0
+        var factr2 : Float64 = 0.0
+        //        var param1 : [Float64]
+        let ans = face_puppet_warp(&landmarks1, &landmarks2, &initParam1, &initParam2, &factr1, &factr2)
         var safeAns : [PhiPoint] = [];
         for idx in 0..<(landmarks1.count + landmarks2.count) {
             safeAns.append((ans[Int(idx)]))

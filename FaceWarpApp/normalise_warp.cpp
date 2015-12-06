@@ -2039,33 +2039,107 @@ PhiPoint * return_face_swap_warp(int * landmarks_face1_ptr, int * landmarks_face
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_2 = dlib::subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1));
 
     
-//    dlib::matrix<long> face_outline(1,dlib_face_outline.size() + total_mouth.size() + total_eyes.size());
-//    for (int i = 0; i < dlib_face_outline.size(); i++ )
-//    {
-//        face_outline(0,i) = (long)dlib_face_outline[i];
-//    }
-//    
-//    for (int i = (int)dlib_face_outline.size(); i < (int)dlib_face_outline.size() + total_mouth.size(); i++ )
-//    {
-//        face_outline(0,i) = (long)total_mouth[i - (int)dlib_face_outline.size()];
-//    }
-//    
-//    for (int i = (int)(dlib_face_outline.size() + total_mouth.size()); i < (int)(dlib_face_outline.size() + total_mouth.size() + total_eyes.size()); i++ )
-//    {
-//        face_outline(0,i) = (long)total_eyes[i - (int)dlib_face_outline.size() - (int)total_mouth.size()];
-//    }
-    
-    dlib::matrix<long> face_outline(1,dlib_face_outline.size());
+    dlib::matrix<long> face_outline(1,dlib_face_outline.size() + total_mouth.size() + total_eyes.size());
     for (int i = 0; i < dlib_face_outline.size(); i++ )
     {
         face_outline(0,i) = (long)dlib_face_outline[i];
     }
+    
+    for (int i = (int)dlib_face_outline.size(); i < (int)dlib_face_outline.size() + total_mouth.size(); i++ )
+    {
+        face_outline(0,i) = (long)total_mouth[i - (int)dlib_face_outline.size()];
+    }
+    
+    for (int i = (int)(dlib_face_outline.size() + total_mouth.size()); i < (int)(dlib_face_outline.size() + total_mouth.size() + total_eyes.size()); i++ )
+    {
+        face_outline(0,i) = (long)total_eyes[i - (int)dlib_face_outline.size() - (int)total_mouth.size()];
+    }
+    
+//    dlib::matrix<long> face_outline(1,dlib_face_outline.size());
+//    for (int i = 0; i < dlib_face_outline.size(); i++ )
+//    {
+//        face_outline(0,i) = (long)dlib_face_outline[i];
+//    }
  
     dlib::set_subm(_2d_landmarks_full_face_1, face_outline, dlib::range(0,1)) = dlib::subm(centered_landmarks_face2, face_outline, dlib::range(0,1));
     dlib::set_subm(_2d_landmarks_full_face_2, face_outline, dlib::range(0,1)) = dlib::subm(centered_landmarks_face1, face_outline, dlib::range(0,1));
     
 //    _2d_landmarks_full_face_1 = adjust_warp_for_angle(landmarks_face2, _2d_landmarks_full_face_1, *factr_face1);
 //    _2d_landmarks_full_face_2 = adjust_warp_for_angle(landmarks_face1, _2d_landmarks_full_face_2, *factr_face2);
+    
+    dlib::set_colm(_2d_landmarks_full_face_1,0) = colm(_2d_landmarks_full_face_1,0) + mean_landmarks_face2(0,0);
+    dlib::set_colm(_2d_landmarks_full_face_1,1) = colm(_2d_landmarks_full_face_1,1) + mean_landmarks_face2(0,1);
+    
+    dlib::set_colm(_2d_landmarks_full_face_2,0) = colm(_2d_landmarks_full_face_2,0) + mean_landmarks_face1(0,0);
+    dlib::set_colm(_2d_landmarks_full_face_2,1) = colm(_2d_landmarks_full_face_2,1) + mean_landmarks_face1(0,1);
+    
+    PhiPoint * output = (PhiPoint *)malloc((_2d_landmarks_full_face_1.nr() + _2d_landmarks_full_face_2.nr())  *sizeof(PhiPoint));
+    for (int row = 0; row < _2d_landmarks_full_face_1.nr(); row++)
+    {
+        output[row] = PhiPoint{
+            static_cast<int>(std::round(_2d_landmarks_full_face_1(row,0))),
+            static_cast<int>(std::round(_2d_landmarks_full_face_1(row,1)))
+        };
+        
+    };
+    
+    for (int row = (int)_2d_landmarks_full_face_1.nr(); row < _2d_landmarks_full_face_1.nr()+_2d_landmarks_full_face_2.nr(); row++)
+    {
+        output[row] = PhiPoint{
+            static_cast<int>(std::round(_2d_landmarks_full_face_2(row - _2d_landmarks_full_face_1.nr(),0))),
+            static_cast<int>(std::round(_2d_landmarks_full_face_2(row - _2d_landmarks_full_face_1.nr(),1)))
+        };
+        
+    };
+    
+    
+    return output;
+};
+
+PhiPoint * return_face_puppet_warp(int * landmarks_face1_ptr, int * landmarks_face2_ptr, double * parameters_face1, double * parameters_face2, double*factr_face1, double*factr_face2)
+{
+    // CALLER MUST FREE MEMORY ON RETURN.
+    
+    dlib::matrix<int, 68, 2> landmarks_i1 = dlib::mat(landmarks_face1_ptr, 68, 2);
+    dlib::matrix<int, 68, 2> landmarks_i2 = dlib::mat(landmarks_face2_ptr, 68, 2);
+    
+    dlib::matrix<double, 68, 2> landmarks_face1 = dlib::matrix_cast<double>(landmarks_i1);
+    dlib::matrix<double, 68, 2> landmarks_face2 = dlib::matrix_cast<double>(landmarks_i2);
+    
+    dlib::matrix<double> mean_landmarks_face1 = dlib::rowm(landmarks_face1,30);
+    dlib::matrix<double> centered_landmarks_face1 = landmarks_face1;
+    dlib::set_colm(centered_landmarks_face1,0) = colm(centered_landmarks_face1,0) - mean_landmarks_face1(0,0);
+    dlib::set_colm(centered_landmarks_face1,1) = colm(centered_landmarks_face1,1) - mean_landmarks_face1(0,1);
+    
+    dlib::matrix<double> mean_landmarks_face2 = dlib::rowm(landmarks_face2,30);
+    dlib::matrix<double> centered_landmarks_face2 = landmarks_face2;
+    dlib::set_colm(centered_landmarks_face2,0) = colm(centered_landmarks_face2,0) - mean_landmarks_face2(0,0);
+    dlib::set_colm(centered_landmarks_face2,1) = colm(centered_landmarks_face2,1) - mean_landmarks_face2(0,1);
+    
+    double *dlib_3d = landmarks3d_dlib;
+    dlib::matrix<double,68,3> landmarks3d = dlib::mat(dlib_3d, 68, 3);
+    dlib::matrix<double> mean_landmarks3d = dlib::rowm(landmarks3d,30);
+    dlib::matrix<double> centered_landmarks3d = landmarks3d;
+    dlib::set_colm(centered_landmarks3d,0) = colm(centered_landmarks3d,0) - mean_landmarks3d(0,0);
+    dlib::set_colm(centered_landmarks3d,1) = colm(centered_landmarks3d,1) - mean_landmarks3d(0,1);
+    dlib::set_colm(centered_landmarks3d,2) = colm(centered_landmarks3d,2) - mean_landmarks3d(0,2);
+    
+    dlib::matrix<double> rotation_matrix_face1 = find_overall_rotation_matrix(centered_landmarks_face1, centered_landmarks3d, parameters_face1);
+    dlib::matrix<double> rotation_matrix_face2 = find_overall_rotation_matrix(centered_landmarks_face2, centered_landmarks3d, parameters_face2);
+    
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_face1 = centered_landmarks3d * rotation_matrix_face1;
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_face2 = centered_landmarks3d * rotation_matrix_face2;
+    
+    dlib::set_subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks_face1;
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated_face2 = flattened_2d_landmarks_full_face1 * dlib::inv(rotation_matrix_face1) * rotation_matrix_face2;
+    
+    dlib::set_subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks_face2;
+    dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated_face1 = flattened_2d_landmarks_full_face2 * dlib::inv(rotation_matrix_face2) * rotation_matrix_face1;
+    
+    dlib::matrix<double, 68,2> _2d_landmarks_full_face_1;
+    _2d_landmarks_full_face_1 = dlib::subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1));
+    dlib::matrix<double, 68,2> _2d_landmarks_full_face_2;
+    _2d_landmarks_full_face_2 = dlib::subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1));
     
     dlib::set_colm(_2d_landmarks_full_face_1,0) = colm(_2d_landmarks_full_face_1,0) + mean_landmarks_face2(0,0);
     dlib::set_colm(_2d_landmarks_full_face_1,1) = colm(_2d_landmarks_full_face_1,1) + mean_landmarks_face2(0,1);
@@ -2369,6 +2443,14 @@ extern "C" {
     PhiPoint * face_swap_warp(PhiPoint * landmarks_face1_ptr, PhiPoint * landmarks_face2_ptr, double * parameters_face1, double * parameters_face2, double*factr_face1, double*factr_face2){
         // CALLER MUST FREE MEMORY ON RETURN.
         PhiPoint * adjusted_warp = return_face_swap_warp((int*)landmarks_face1_ptr, (int*) landmarks_face2_ptr, parameters_face1, parameters_face2, factr_face1, factr_face2);
+        return adjusted_warp;
+    }
+}
+
+extern "C" {
+    PhiPoint * face_puppet_warp(PhiPoint * landmarks_face1_ptr, PhiPoint * landmarks_face2_ptr, double * parameters_face1, double * parameters_face2, double*factr_face1, double*factr_face2){
+        // CALLER MUST FREE MEMORY ON RETURN.
+        PhiPoint * adjusted_warp = return_face_puppet_warp((int*)landmarks_face1_ptr, (int*) landmarks_face2_ptr, parameters_face1, parameters_face2, factr_face1, factr_face2);
         return adjusted_warp;
     }
 }

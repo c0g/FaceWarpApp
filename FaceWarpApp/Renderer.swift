@@ -426,8 +426,9 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
 //                drawInnerMouth(XY: xyPoints, UV: xyPoints)
             }
         case .PUPPET:
-            let (xyzArray, uvArray, _) = warper.doPuppetFace3D(facePhiPoints)
-            for (uvPoints, xyPoints) in zip(uvArray, xyzArray) {
+
+            let (xyzArray, factrs) = warper.doPuppetFace3D(facePhiPoints)
+            for (uvPoints, (xyPoints, _)) in zip(xyzArray, zip(facePhiPoints, factrs)) {
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
