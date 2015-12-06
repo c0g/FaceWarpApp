@@ -12,7 +12,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
     
-    let titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT", "PRETTY", "HANDSOME", "NONE"]
+    let titles = ["ANIME", "SWAP", "TINY", "WOBBLE", "ROBOT"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,15 +65,13 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
             delegate!.syncro.warp = .DYNAMIC
         case 4:
             delegate!.syncro.warp = .ROBOT
-        case 5:
-            delegate!.syncro.warp = .PRETTY
-        case 6:
-            delegate!.syncro.warp = .HANDSOME
-        case 7:
-            delegate!.syncro.warp = .NONE
         case _:
             print("Shouldn't be here!")
         }
+    }
+    
+    func pickerView(pickerView: AKPickerView, didStopScrollingAtItem item: Int) {
+        print("Stopped")
     }
     
     /*

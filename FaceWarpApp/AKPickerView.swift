@@ -38,6 +38,7 @@ and customize the appearance of labels.
     optional func pickerView(pickerView: AKPickerView, didSelectItem item: Int)
     optional func pickerView(pickerView: AKPickerView, marginForItem item: Int) -> CGSize
     optional func pickerView(pickerView: AKPickerView, configureLabel label: UILabel, forItem item: Int)
+    optional func pickerView(pickerView: AKPickerView, didStopScrollingAt item: Int)
 }
 
 // MARK: - Private Classes and Protocols
@@ -477,6 +478,7 @@ public class AKPickerView: UIView, UICollectionViewDataSource, UICollectionViewD
     Private.
     */
     private func didEndScrolling() {
+
         switch self.pickerViewStyle {
         case .Flat:
             let center = self.convertPoint(self.collectionView.center, toView: self.collectionView)
@@ -498,6 +500,7 @@ public class AKPickerView: UIView, UICollectionViewDataSource, UICollectionViewD
                 }
             }
         }
+        self.delegate?.pickerView?(self, didStopScrollingAt:selectedItem)
     }
     
     // MARK: UICollectionViewDataSource
