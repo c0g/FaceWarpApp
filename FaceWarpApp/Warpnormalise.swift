@@ -9,7 +9,7 @@
 import Foundation
 
 enum WarpType {
-    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT
+    case PRETTY, HANDSOME, SILLY, NONE, TINY, DYNAMIC, SWAP, ROBOT, PUPPET
 }
 
 //extension Array where Element : Comparable  {

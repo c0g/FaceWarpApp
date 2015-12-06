@@ -2037,18 +2037,29 @@ PhiPoint * return_face_swap_warp(int * landmarks_face1_ptr, int * landmarks_face
     
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_1 = dlib::subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1));
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_2 = dlib::subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1));
+
     
-    dlib::matrix<long> face_outline(1,dlib_face_outline.size() + total_mouth.size());
+//    dlib::matrix<long> face_outline(1,dlib_face_outline.size() + total_mouth.size() + total_eyes.size());
+//    for (int i = 0; i < dlib_face_outline.size(); i++ )
+//    {
+//        face_outline(0,i) = (long)dlib_face_outline[i];
+//    }
+//    
+//    for (int i = (int)dlib_face_outline.size(); i < (int)dlib_face_outline.size() + total_mouth.size(); i++ )
+//    {
+//        face_outline(0,i) = (long)total_mouth[i - (int)dlib_face_outline.size()];
+//    }
+//    
+//    for (int i = (int)(dlib_face_outline.size() + total_mouth.size()); i < (int)(dlib_face_outline.size() + total_mouth.size() + total_eyes.size()); i++ )
+//    {
+//        face_outline(0,i) = (long)total_eyes[i - (int)dlib_face_outline.size() - (int)total_mouth.size()];
+//    }
+    
+    dlib::matrix<long> face_outline(1,dlib_face_outline.size());
     for (int i = 0; i < dlib_face_outline.size(); i++ )
     {
         face_outline(0,i) = (long)dlib_face_outline[i];
     }
-    
-    for (int i = (int)dlib_face_outline.size(); i < dlib_face_outline.size() + total_mouth.size(); i++ )
-    {
-        face_outline(0,i) = (long)total_mouth[i - (int)dlib_face_outline.size()];
-    }
-    
  
     dlib::set_subm(_2d_landmarks_full_face_1, face_outline, dlib::range(0,1)) = dlib::subm(centered_landmarks_face2, face_outline, dlib::range(0,1));
     dlib::set_subm(_2d_landmarks_full_face_2, face_outline, dlib::range(0,1)) = dlib::subm(centered_landmarks_face1, face_outline, dlib::range(0,1));
