@@ -2031,7 +2031,7 @@ PhiPoint * return_face_swap_warp(int * landmarks_face1_ptr, int * landmarks_face
     dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated_face2 = flattened_2d_landmarks_full_face1 * dlib::inv(rotation_matrix_face1) * rotation_matrix_face2;
     
     dlib::matrix<double,68,3> flattened_2d_landmarks_full_face2 = centered_landmarks3d * rotation_matrix_face2;
-    dlib::set_subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks_face2;
+    dlib::set_subm(flattened_2d_landmarks_full_face2, dlib::range(0,67), dlib::range(0,1)) = centered_landmarks_face2;
     dlib::matrix<double,68,3> flattened_2d_landmarks_full_rotated_face1 = flattened_2d_landmarks_full_face2 * dlib::inv(rotation_matrix_face2) * rotation_matrix_face1;
     
     dlib::matrix<double, 68,2> _2d_landmarks_full_face_1 = dlib::subm(flattened_2d_landmarks_full_face1, dlib::range(0,67), dlib::range(0,1));
