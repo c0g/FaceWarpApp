@@ -158,6 +158,33 @@ class Warper {
         return(tmp_faces, factr)
     }
     
+    func doPuppetFace3D(all_landmarks : [[PhiPoint]]) -> ([[PhiPoint]], [Float64]) {
+        let num_faces = all_landmarks.count
+        var factr : [Float64] = Array(count: num_faces, repeatedValue: 0.0)
+        
+        var tmp_faces = all_landmarks
+        for idx in 0..<(num_faces+1)/2 {
+            let idx1 = idx * 2
+            let idx2 = (idx1 + 1) % num_faces
+            var face1 = all_landmarks[idx1]
+            var face2 = all_landmarks[idx2]
+            
+            let pidx1 = findBestFace(face1)
+            let pidx2 = findBestFace(face2)
+            
+            
+            let (warped_faces, factr1, factr2) = doSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            //            let (warped_faces, factr1, factr2) = doShitSwap(face1, landmarks2: face2, initParam1: &face_log[pidx1].parameters, initParam2: &face_log[pidx2].parameters)
+            let warped1 = Array(warped_faces[0..<68])
+            let warped2 = Array(warped_faces[68..<136])
+            tmp_faces[idx1] = warped1
+            tmp_faces[idx2] = warped2
+            factr[idx1] = factr1
+            factr[idx2] = factr2
+        }
+        return(tmp_faces, factr)
+    }
+    
     func doShitSwap( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
         var concat = landmarks2
         concat.appendContentsOf(landmarks1)
@@ -336,6 +363,19 @@ class Warper {
         var factr2 : Float64 = 0.0
 //        var param1 : [Float64]
         let ans = face_swap_warp(&landmarks1, &landmarks2, &initParam1, &initParam2, &factr1, &factr2)
+        var safeAns : [PhiPoint] = [];
+        for idx in 0..<(landmarks1.count + landmarks2.count) {
+            safeAns.append((ans[Int(idx)]))
+        }
+        free(ans)
+        return (safeAns, factr1, factr2)
+    }
+    
+    func doPuppet( var landmarks1 : [PhiPoint], var landmarks2 : [PhiPoint], inout initParam1 : [CDouble],  inout initParam2 : [CDouble]) -> ([PhiPoint], Float64, Float64) {
+        var factr1 : Float64 = 0.0
+        var factr2 : Float64 = 0.0
+        //        var param1 : [Float64]
+        let ans = face_puppet_warp(&landmarks1, &landmarks2, &initParam1, &initParam2, &factr1, &factr2)
         var safeAns : [PhiPoint] = [];
         for idx in 0..<(landmarks1.count + landmarks2.count) {
             safeAns.append((ans[Int(idx)]))
