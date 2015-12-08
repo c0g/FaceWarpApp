@@ -70,6 +70,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func ownsWarp(owns : Bool) {
+        if let ui = ui {
+            ui.ownsWarp(owns)
+        }
+    }
+    
 	var window: UIWindow?
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {

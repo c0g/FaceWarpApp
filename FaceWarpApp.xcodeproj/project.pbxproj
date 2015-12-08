@@ -71,6 +71,8 @@
 		E2B55E4E1BB5DD340086F719 /* Clarkson-Delaunay.c in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E4C1BB5DD340086F719 /* Clarkson-Delaunay.c */; };
 		E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E541BB69F390086F719 /* triangulator.cpp */; };
 		E2B55E571BB6B9590086F719 /* Triangulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B55E561BB6B9590086F719 /* Triangulator.swift */; };
+		E2BFB7B01C172B68009CFFF4 /* IAPHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BFB7AE1C172B68009CFFF4 /* IAPHelper.swift */; };
+		E2BFB7B11C172B68009CFFF4 /* PixProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BFB7AF1C172B68009CFFF4 /* PixProducts.swift */; };
 		E2CB65B51C02A02800E92E38 /* robot.png in Resources */ = {isa = PBXBuildFile; fileRef = E2CB65B41C02A02800E92E38 /* robot.png */; };
 /* End PBXBuildFile section */
 
@@ -198,6 +200,8 @@
 		E2B55E541BB69F390086F719 /* triangulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = triangulator.cpp; sourceTree = "<group>"; };
 		E2B55E561BB6B9590086F719 /* Triangulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangulator.swift; sourceTree = "<group>"; };
 		E2B55E581BB6E2F70086F719 /* PHI_C_Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PHI_C_Types.h; sourceTree = "<group>"; };
+		E2BFB7AE1C172B68009CFFF4 /* IAPHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAPHelper.swift; sourceTree = "<group>"; };
+		E2BFB7AF1C172B68009CFFF4 /* PixProducts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixProducts.swift; sourceTree = "<group>"; };
 		E2CB65B41C02A02800E92E38 /* robot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = robot.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -400,6 +404,8 @@
 			isa = PBXGroup;
 			children = (
 				E2B55E561BB6B9590086F719 /* Triangulator.swift */,
+				E2BFB7AE1C172B68009CFFF4 /* IAPHelper.swift */,
+				E2BFB7AF1C172B68009CFFF4 /* PixProducts.swift */,
 				5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */,
 				E28EB8121BC8388200E639E7 /* Syncro.swift */,
 			);
@@ -599,6 +605,7 @@
 				E293197B1BC589C0006CAA6F /* fft_stuff.cpp in Sources */,
 				E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */,
 				E28E56361BBD26CF00358D16 /* Texture.swift in Sources */,
+				E2BFB7B01C172B68009CFFF4 /* IAPHelper.swift in Sources */,
 				E28D3A991BAC409000ACC953 /* FaceWarpApp.xcdatamodeld in Sources */,
 				E20F9F171C01B66600871A94 /* AKPickerView.swift in Sources */,
 				E28E563A1BBD324700358D16 /* ShaderProgram.swift in Sources */,
@@ -621,6 +628,7 @@
 				E28E56321BBD248C00358D16 /* ShaderManager.swift in Sources */,
 				E20F9FBF1C021F4C00871A94 /* WarpController.swift in Sources */,
 				5E386B001BBABE28003EDAEB /* triangle.c in Sources */,
+				E2BFB7B11C172B68009CFFF4 /* PixProducts.swift in Sources */,
 				E28E56381BBD279600358D16 /* PixelBufferTexture.swift in Sources */,
 				E28E562C1BBD246A00358D16 /* TextureManager.swift in Sources */,
 				E28D3AC11BAC5BF800ACC953 /* find_face.mm in Sources */,

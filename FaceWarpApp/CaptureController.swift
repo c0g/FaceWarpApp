@@ -7,12 +7,14 @@
 //
 
 import Foundation
+import StoreKit
 
 class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerViewDataSource, AKPickerViewDelegate {
     let albumName = "Pixurgery"
     let VIDEO_MODE = "PixurgeryVideoMode"
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
+    var allowCapture : Bool = false
     
     var images : [MWPhoto] = []
     var thumbs : [MWPhoto] = []
@@ -22,12 +24,77 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     @IBOutlet weak var openGrid: UIButton!
     @IBOutlet weak var selectCamera: UIButton!
     @IBAction func capturePressed(sender: AnyObject) {
-        if delegate!.syncro.capturing {
-            delegate!.syncro.capturing = false
+        if allowCapture{
+            if delegate!.syncro.capturing {
+                delegate!.syncro.capturing = false
+            } else {
+                delegate!.syncro.capturing = true
+            }
         } else {
-            delegate!.syncro.capturing = true
+            if IAPHelper.canMakePayments() {
+                PixProducts.store.requestProductsWithCompletionHandler({
+                    (success : Bool, products : [SKProduct]) in
+                    if !success {
+                        print("Failed to request products!")
+                    } else {
+                        print("Have \(products.count) products")
+                    }
+                    for product in products {
+                        print(product.productIdentifier)
+                        if product.productIdentifier == PixProducts.warppack1 {
+                            self.doPurchase(product)
+                        }
+                    }
+                })
+            } else {
+                let alert = UIAlertController(title: "Not available", message: "Purchases not available on this device. If you have previously purchased a Warp Pack, touch 'Restore'.", preferredStyle: UIAlertControllerStyle.Alert)
+                let redeemAction = UIAlertAction(title: "Restore", style: .Default, handler: {_ in
+                    PixProducts.store.restoreCompletedTransactions()
+                })
+                let cancelAction = UIAlertAction(title: "Ok", style: .Cancel, handler: {_ in print("done")})
+                alert.addAction(cancelAction)
+                alert.addAction(redeemAction)
+                self.presentViewController(alert, animated: true, completion: {})
+            }
+//            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"My Alert"
+//            message:@"This is an alert."
+//            preferredStyle:UIAlertControllerStyleAlert];
+//            
+//            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+//            handler:^(UIAlertAction * action) {}];
+//            
+//            [alert addAction:defaultAction];
+//            [self presentViewController:alert animated:YES completion:nil];
         }
     }
+    
+    func doPurchase(product : SKProduct) {
+        let name = product.localizedTitle
+        let numberFormatter = NSNumberFormatter()
+        numberFormatter.formatterBehavior = NSNumberFormatterBehavior.Behavior10_4
+        numberFormatter.numberStyle = NSNumberFormatterStyle.CurrencyStyle
+        numberFormatter.locale = product.priceLocale
+        let priceString = numberFormatter.stringFromNumber(product.price)
+//        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+//        [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+//        [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+//        [numberFormatter setLocale:product.priceLocale];
+//        NSString *formattedString = [numberFormatter stringFromNumber:product.price];
+        let alert = UIAlertController(title: "Purchase Warps", message: "Purchase (\(priceString!)) or restore \(name) to unlock Anime and Wobble Face.", preferredStyle: UIAlertControllerStyle.Alert)
+        let buyAction = UIAlertAction(title: "Buy", style: .Default, handler: {_ in
+            PixProducts.store.purchaseProduct(product)
+        })
+        let redeemAction = UIAlertAction(title: "Restore", style: .Default, handler: {_ in
+            PixProducts.store.restoreCompletedTransactions()
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {_ in print("cancel")})
+        alert.addAction(buyAction)
+        alert.addAction(redeemAction)
+        alert.addAction(cancelAction)
+        self.presentViewController(alert, animated: true, completion: {})
+
+    }
+    
     @IBAction func selectCameraPressed(sender: AnyObject) {
         delegate?.toggleCamera()
     }
@@ -180,6 +247,19 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         delegate!.ui = self
         updateImageIcon()
+    }
+    
+    func ownsWarp(owns : Bool) {
+        if owns {
+            self.pickerView.hidden = false
+            self.capture.setTitle("", forState: UIControlState.Normal)
+            allowCapture = true
+        } else {
+            delegate!.syncro.capturing = false
+            self.pickerView.hidden = true
+            self.capture.setTitle("🔒", forState: UIControlState.Normal)
+            allowCapture = false
+        }
     }
     
     func wobbleOpenGrid() {

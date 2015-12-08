@@ -168,7 +168,7 @@ class OpenGLView: UIView {
                 try self.captureManager?.connectToRenderer(renderer)
             } catch {
                 print("Capture manager could not connect to renderer")
-                exit(1)
+//                exit(1)
             }
             
             self.captureManager?.start()
@@ -234,12 +234,12 @@ class OpenGLView: UIView {
         
         if (self.context == nil) {
             print("Failed to initialize OpenGLES 3.0 context!")
-            exit(1)
+//            exit(1)
         }
         
         if (!EAGLContext.setCurrentContext(self.context)) {
             print("Failed to set current OpenGL context!")
-            exit(1)
+//            exit(1)
         }
     }
 }

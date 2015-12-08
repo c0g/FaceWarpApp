@@ -96,10 +96,10 @@ class TextureManager {
         CVOpenGLESTextureCacheFlush(self.textureCache!, 0);
         
         self.videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        guard let _ = self.videoPixelBuffer else {
-            print("Failed to get pixel buffer")
-            exit(1)
-        }
+//        guard let _ = self.videoPixelBuffer else {
+//            print("Failed to get pixel buffer")
+////            exit(1)
+//        }
         let width = CVPixelBufferGetWidth(self.videoPixelBuffer!)
         let height = CVPixelBufferGetHeight(self.videoPixelBuffer!)
         
@@ -118,7 +118,7 @@ class TextureManager {
             &self.videoTexture)
         if ret != kCVReturnSuccess {
             print("CVOpenGLESTextureCacheCreateTextureFromImage failed with code \(ret)")
-            exit(1)
+//            exit(1)
         }
         
         glBindTexture(
@@ -503,12 +503,12 @@ class TextureManager {
         let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(width), Int(height), kCVPixelFormatType_32BGRA, options, &buffer)
         if status != kCVReturnSuccess {
             print("Pixel buffer with image failed creating CVPixelBuffer with error \(status)")
-            exit(1)
+//            exit(1)
         }
-        guard let _ = buffer else {
-            print("Pixel buffer did not allocate")
-            exit(1)
-        }
+//        guard let _ = buffer else {
+//            print("Pixel buffer did not allocate")
+//            exit(1)
+//        }
         let res = CVOpenGLESTextureCacheCreateTextureFromImage(
             kCFAllocatorDefault,
             textureCache!,
@@ -522,10 +522,10 @@ class TextureManager {
             GLenum(GL_UNSIGNED_BYTE),
             0,
             &texture)
-        guard res == kCVReturnSuccess else {
-            print("Create texture from image failed with code \(res)")
-            exit(1)
-        }
+//        guard res == kCVReturnSuccess else {
+//            print("Create texture from image failed with code \(res)")
+//            exit(1)
+//        }
     }
     
 //    // MARK: Functions to load robot eye texture
