@@ -417,13 +417,13 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
                 drawRobotFace(UV: uvpoints)
             }
         case .SWAP:
-            let (xyzArray, factrs) = warper.doSwitchFace3D(facePhiPoints)
+            let (xyzArray, factrs) = warper.doSwitchFace2D(facePhiPoints)
             for (uvPoints, (xyPoints, _)) in zip(facePhiPoints, zip(xyzArray, factrs)) {
                 drawClearFace(XY: xyPoints, UV: uvPoints, withAlphas: (1.0, 0.0, 1.0, 1.0))
                 drawRightEye(XY: xyPoints, UV: uvPoints)
                 drawLeftEye(XY: xyPoints, UV: uvPoints)
                 drawMouth(XY: xyPoints, UV: uvPoints)
-//                drawInnerMouth(XY: xyPoints, UV: xyPoints)
+                drawInnerMouth(XY: xyPoints, UV: xyPoints)
             }
         case .PUPPET:
 

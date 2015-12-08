@@ -67,6 +67,7 @@ class OpenGLView: UIView {
     var renderer : Renderer?
     
     var camera : Int = 1
+    let CAMERA_KEY = "PixurgeryCamera"
     
     /* Class Methods
     ------------------------------------------*/
@@ -90,6 +91,10 @@ class OpenGLView: UIView {
         
         self.setupLayer()
         self.setupContext()
+        
+        if NSUserDefaults().objectForKey(CAMERA_KEY) != nil {
+            camera = NSUserDefaults().integerForKey(CAMERA_KEY)
+        }
         
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer, andCamera: camera)
         doPhotoAlbum()
@@ -172,7 +177,6 @@ class OpenGLView: UIView {
     
     func toggleCamera() {
         self.captureManager!.stop()
-//        self.renderer = nil
         self.captureManager = nil
         
         if self.camera == 0{
@@ -180,7 +184,7 @@ class OpenGLView: UIView {
         } else {
             camera = 0
         }
-//
+        NSUserDefaults().setInteger(camera, forKey: CAMERA_KEY)
         self.setupPipelineWithCamera(camera, andRenderer: renderer!)
     }
     

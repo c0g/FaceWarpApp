@@ -10,6 +10,7 @@ import Foundation
 
 class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerViewDataSource, AKPickerViewDelegate {
     let albumName = "Pixurgery"
+    let VIDEO_MODE = "PixurgeryVideoMode"
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
     
@@ -171,6 +172,10 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
         self.pickerView.pickerViewStyle = .Wheel
         self.pickerView.maskDisabled = false
         self.pickerView.reloadData()
+        
+        let i = NSUserDefaults().integerForKey(VIDEO_MODE)
+        self.pickerView.selectItem(i, animated: false)
+        setCam(i)
         
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
         delegate!.ui = self
@@ -341,6 +346,10 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     
     func pickerView(pickerView: AKPickerView, didSelectItem item: Int) {
         print("You have selected \(self.titles[item])")
+        NSUserDefaults().setInteger(item, forKey: VIDEO_MODE)
+        setCam(item)
+    }
+    func setCam(item : Int) {
         switch item {
         case 0:
             delegate?.syncro.capture_type = .IMAGE

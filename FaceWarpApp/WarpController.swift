@@ -11,8 +11,8 @@ import Foundation
 class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDelegate  {
     @IBOutlet var pickerView: AKPickerView!
     var delegate : AppDelegate? = nil
-    
-    let titles = ["ANIME", "SWAP", "PUPPET", "TINY", "WOBBLE", "ROBOT"]
+    let SELECTED_WARP = "PickerViewSelectedWarp"
+    let titles = ["TINY", "SWAP", "ROBOT",]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +26,9 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
         self.pickerView.reloadData()
         
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
-
+        
+        let i = NSUserDefaults().integerForKey(SELECTED_WARP)
+        self.pickerView.selectItem(i, animated: false)
     }
     
     // MARK: - AKPickerViewDataSource
@@ -54,18 +56,17 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     
     func pickerView(pickerView: AKPickerView, didSelectItem item: Int) {
         print("You have selected \(self.titles[item])")
-        switch item {
-        case 0:
+        NSUserDefaults().setInteger(item, forKey: SELECTED_WARP)
+        switch titles[item] {
+        case "ANIME":
             delegate!.syncro.warp = .SILLY
-        case 1:
+        case "SWAP":
             delegate!.syncro.warp = .SWAP
-        case 2:
-            delegate!.syncro.warp = .PUPPET
-        case 3:
+        case "TINY":
             delegate!.syncro.warp = .TINY
-        case 4:
+        case "WOBBLE":
             delegate!.syncro.warp = .DYNAMIC
-        case 5:
+        case "ROBOT":
             delegate!.syncro.warp = .ROBOT
         case _:
             print("Shouldn't be here!")
