@@ -83,9 +83,11 @@ func extremaOfPixelBuffer(pb : CVPixelBufferRef) -> (Float, Float) {
     return (minval, maxval)
 }
 
-class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+class Renderer : NSObject {
     
     var pauseRenderer = false
+    
+    var timer : NSTimer?
     
     var calibrateTime : NSDate? = nil
     var failCalibrateTime : NSDate? = nil
@@ -119,13 +121,15 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
     var delegate : AppDelegate? = nil
     var warpType : WarpType = .PRETTY
     
-    let scale = 4 // how much we shrink small image by
+    let scale = 1 // how much we shrink small image by
     let toothThreshold : GLfloat = 0.3
     
     var orientation : UIDeviceOrientation = .Unknown
     var pastOrientation : UIDeviceOrientation = .Unknown
     
     var hasInitedAW : Bool = false
+    
+    weak var reader : AVAssetReader?
     
     init(withContext c: EAGLContext, andLayer l: CAEAGLLayer, andCamera k: Int) {
         context = c
@@ -139,26 +143,32 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate
     }
     
+    func addReader(r: AVAssetReader) {
+        reader = r
+        timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: "recFrame", userInfo: nil, repeats: true)
+    }
+    
     func destroyTexture() {
         textureManager!.destroy()
     }
 
-    func captureOutput(captureOutput : AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBufferRef,
-                    fromConnection connection: AVCaptureConnection)
-    {
-        if let _ = captureOutput as? AVCaptureAudioDataOutput {
-            if recorder.state == .Recording {
-                recorder.addAudioSampleBuffer(sampleBuffer)
-            }
-        } else if let _ = captureOutput as? AVCaptureVideoDataOutput {
-            textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
-            dispatch_async(dispatch_get_main_queue()) {
-                let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                self.render(time)
-            }
+    func recFrame() {
+        let output = reader!.outputs[0]
+        let sampleBuffer = output.copyNextSampleBuffer()
+        if let sampleBuffer = sampleBuffer {
+            getFromSampleBuffer(sampleBuffer)
+        } else {
+            timer?.invalidate()
+            recorder.stopRecordingAndSave()
         }
     }
-        
+    
+    func getFromSampleBuffer(sampleBuffer : CMSampleBufferRef) {
+        textureManager!.loadTextureFromSampleBuffer(sampleBuffer)
+        let time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        self.render(time)
+    }
+    
     func setupForOrientation(withScale scale : Int = 2) {
         
         let vwidth = CVPixelBufferGetWidth(textureManager!.videoPixelBuffer!)
@@ -739,95 +749,25 @@ class Renderer : NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptu
         preprocessRender() // Generates upright and small-upright images
         blurRender() // Render from small upright texture to hblurred texture to vlburred to output texture
         
-        if !delegate!.syncro.calibrating {
-            
-            clearToOutput() // renders upright to output
-            findFaces() // Finds faces and renders them to output
-            renderToScreen()
-            pastOrientation = _pastOrientation
-            if delegate!.syncro.capturing {
-                if delegate!.syncro.capture_type == .IMAGE {
-                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-                    delegate!.syncro.capturing = false
-                    textureManager!.saveOutput(camera == 1) // camera == 1 is true if using front camera!
-                } else {
-                    if recorder.state == .Idle {
-                        let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
-                        let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
-                        recorder.prepareRecord(forWidth: width, andHeight: height)
-                        delegate!.disableUI()
-                        videoStartTime = NSDate()
-                    }  else if recorder.state == .Recording {
-                        let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
-                        delegate!.setRecordTime(intVal)
-                        if let pb = textureManager?.outputPixelBuffer {
-                            recorder.addVideoFrame(pb, atTime: initTime)
-                        }
-                    }
-                }
-            } else {
-                if recorder.state == .Recording {
-                    delegate!.setRecordTime(0)
-                    delegate!.syncro.capturing = false
-                    recorder.stopRecordingAndSave()
-                    delegate!.enableUI()
-                }
-            }
-            self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-        } else { // calibrating the pretty/handsome warp
-            delegate!.hideInstructions(false) // re-draw instructions
-            switch UIDevice.currentDevice().orientation {
-            case .Portrait:
-                if let time = calibrateTime { // do calibration
-                    failCalibrateTime = nil // nil this out, since either: it's already nil or the clever user has rotated their device
-                    let deltaT = NSDate().timeIntervalSinceDate(time)
-                    if deltaT > 5.5 {
-                        switch warpType {
-                        case .PRETTY:
-                            warper.finaliseAttractiveWarpPretty()
-                        case .HANDSOME:
-                            warper.finaliseAttractiveWarpHandsome()
-                        case _:
-                            break
-                        }
-                        delegate!.syncro.calibrating = false
-                        calibrateTime = nil
-                        delegate!.redrawUI()
-                    }
-                    else if deltaT >= 2 {
-                        calibrateFaces()
-                        delegate!.setTextForCount(Int(ceil(5.0 - deltaT)))
-                    }
-                    blurToOutput()
-                    renderToScreen()
-                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-                } else {
-                    calibrateTime = NSDate()
-                    switch warpType {
-                    case .PRETTY:
-                        warper.resetAttractiveWarpPretty()
-                    case .HANDSOME:
-                        warper.resetAttractiveWarpHandsome()
-                    case _:
-                        break
-                    }
-                }
-            case _:
-                if let time = failCalibrateTime { // display portait warning for three seconds
-                    let deltaT = NSDate().timeIntervalSinceDate(time)
-                    blurToOutput()
-                    renderToScreen()
-                    self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
-                    if deltaT > 3 {
-                        delegate!.syncro.calibrating = false
-                        calibrateTime = nil
-                        delegate!.redrawUI()
-                    }
-                } else {
-                    failCalibrateTime = NSDate()
-                }
+        clearToOutput() // renders upright to output
+        findFaces() // Finds faces and renders them to output
+        renderToScreen()
+        pastOrientation = _pastOrientation
+        self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
+        if recorder.state == .Idle {
+            let width = CVPixelBufferGetWidth(textureManager!.outputPixelBuffer!)
+            let height = CVPixelBufferGetHeight(textureManager!.outputPixelBuffer!)
+            recorder.prepareRecord(forWidth: width, andHeight: height)
+//            delegate!.disableUI()
+            videoStartTime = NSDate()
+        }  else if recorder.state == .Recording {
+            let intVal = Int(ceil(NSDate().timeIntervalSinceDate(videoStartTime)))
+            delegate!.setRecordTime(intVal)
+            if let pb = textureManager?.outputPixelBuffer {
+                print(initTime)
+                recorder.addVideoFrame(pb, atTime: initTime)
             }
         }
+        self.context.presentRenderbuffer(Int(GL_RENDERBUFFER))
     }
-    
 }

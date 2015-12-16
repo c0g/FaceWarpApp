@@ -1413,6 +1413,8 @@
         error_handler<font color='#5555FF'>&amp;</font> eh
     <font face='Lucida Console'>)</font>
     <b>{</b>
+        <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#5555FF'>!</font>in<font face='Lucida Console'>)</font>
+            <font color='#0000FF'>throw</font> <font color='#BB00BB'>xml_parse_error</font><font face='Lucida Console'>(</font>"<font color='#CC0000'>Unexpected end of file during xml parsing.</font>"<font face='Lucida Console'>)</font>;
         xml_parser parser;
         parser.<font color='#BB00BB'>add_document_handler</font><font face='Lucida Console'>(</font>dh<font face='Lucida Console'>)</font>;
         parser.<font color='#BB00BB'>add_error_handler</font><font face='Lucida Console'>(</font>eh<font face='Lucida Console'>)</font>;
@@ -1425,6 +1427,8 @@
         document_handler<font color='#5555FF'>&amp;</font> dh
     <font face='Lucida Console'>)</font>
     <b>{</b>
+        <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#5555FF'>!</font>in<font face='Lucida Console'>)</font>
+            <font color='#0000FF'>throw</font> <font color='#BB00BB'>xml_parse_error</font><font face='Lucida Console'>(</font>"<font color='#CC0000'>Unexpected end of file during xml parsing.</font>"<font face='Lucida Console'>)</font>;
         xml_parser parser;
         parser.<font color='#BB00BB'>add_document_handler</font><font face='Lucida Console'>(</font>dh<font face='Lucida Console'>)</font>;
         parser.<font color='#BB00BB'>add_error_handler</font><font face='Lucida Console'>(</font>eh<font face='Lucida Console'>)</font>;
@@ -1436,6 +1440,8 @@
         error_handler<font color='#5555FF'>&amp;</font> eh
     <font face='Lucida Console'>)</font>
     <b>{</b>
+        <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#5555FF'>!</font>in<font face='Lucida Console'>)</font>
+            <font color='#0000FF'>throw</font> <font color='#BB00BB'>xml_parse_error</font><font face='Lucida Console'>(</font>"<font color='#CC0000'>Unexpected end of file during xml parsing.</font>"<font face='Lucida Console'>)</font>;
         xml_parser parser;
         parser.<font color='#BB00BB'>add_error_handler</font><font face='Lucida Console'>(</font>eh<font face='Lucida Console'>)</font>;
         parser.<font color='#BB00BB'>parse</font><font face='Lucida Console'>(</font>in<font face='Lucida Console'>)</font>;
@@ -1446,6 +1452,8 @@
         document_handler<font color='#5555FF'>&amp;</font> dh
     <font face='Lucida Console'>)</font>
     <b>{</b>
+        <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#5555FF'>!</font>in<font face='Lucida Console'>)</font>
+            <font color='#0000FF'>throw</font> <font color='#BB00BB'>xml_parse_error</font><font face='Lucida Console'>(</font>"<font color='#CC0000'>Unexpected end of file during xml parsing.</font>"<font face='Lucida Console'>)</font>;
         xml_parser parser;
         parser.<font color='#BB00BB'>add_document_handler</font><font face='Lucida Console'>(</font>dh<font face='Lucida Console'>)</font>;
         impl::default_xml_error_handler eh;

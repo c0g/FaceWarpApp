@@ -91,7 +91,16 @@
         <font face='Lucida Console'>)</font>;
         <font color='#009900'>/*!
             ensures
-                - calls set_current_dir(old_dir())
+                - if (revert() hasn't already been called) then
+                    - calls set_current_dir(old_dir())
+        !*/</font>
+
+        <font color='#0000FF'><u>void</u></font> <b><a name='revert'></a>revert</b> <font face='Lucida Console'>(</font>
+        <font face='Lucida Console'>)</font>;
+        <font color='#009900'>/*!
+            ensures
+                - if (revert() hasn't already been called) then
+                    - calls set_current_dir(old_dir())
         !*/</font>
     <b>}</b>;
 

@@ -457,6 +457,16 @@ namespace dlib
 
 // ----------------------------------------------------------------------------------------
 
+    bool text_field::
+    has_input_focus (
+    ) const
+    {
+        auto_mutex M(m);
+        return has_focus;
+    }
+
+// ----------------------------------------------------------------------------------------
+
     void text_field::
     select_all_text (
     )
@@ -6302,6 +6312,9 @@ namespace dlib
             std::map<std::string,point>::const_iterator itr;
             for (itr = overlay_rects[i].parts.begin(); itr != overlay_rects[i].parts.end(); ++itr)
             {
+                if (itr->second == OBJECT_PART_NOT_PRESENT)
+                    continue;
+
                 rectangle temp = centered_rect(get_rect_on_screen(centered_rect(itr->second,1,1)), part_width, part_width);
 
                 if (rect_is_selected && selected_rect == i && 
@@ -6494,6 +6507,9 @@ namespace dlib
                 std::map<std::string,point>::const_iterator itr;
                 for (itr = overlay_rects[i].parts.begin(); itr != overlay_rects[i].parts.end(); ++itr)
                 {
+                    if (itr->second == OBJECT_PART_NOT_PRESENT)
+                        continue;
+
                     rectangle temp = centered_rect(get_rect_on_screen(centered_rect(itr->second,1,1)), part_width, part_width);
                     point c = center(temp);
 
@@ -6637,6 +6653,9 @@ namespace dlib
                 std::map<std::string,point>::const_iterator itr;
                 for (itr = overlay_rects[i].parts.begin(); itr != overlay_rects[i].parts.end(); ++itr)
                 {
+                    if (itr->second == OBJECT_PART_NOT_PRESENT)
+                        continue;
+
                     rectangle temp = centered_rect(get_rect_on_screen(centered_rect(itr->second,1,1)), part_width, part_width);
                     point c = center(temp);
 

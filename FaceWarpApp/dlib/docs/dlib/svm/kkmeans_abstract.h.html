@@ -284,13 +284,53 @@
             - centers.size() &gt; 0
             - array_type == something with an interface compatible with std::vector
               and it must contain row or column vectors capable of being stored in 
-              sample_type objects
+              sample_type objects.
             - sample_type == a dlib::matrix capable of representing vectors
         ensures
             - performs regular old linear kmeans clustering on the samples.  The clustering
               begins with the initial set of centers given as an argument to this function.
               When it finishes #centers will contain the resulting centers.
             - no more than max_iter iterations will be performed before this function
+              terminates.
+    !*/</font>
+
+<font color='#009900'>// ----------------------------------------------------------------------------------------
+</font>
+    <font color='#0000FF'>template</font> <font color='#5555FF'>&lt;</font>
+        <font color='#0000FF'>typename</font> array_type, 
+        <font color='#0000FF'>typename</font> sample_type,
+        <font color='#0000FF'>typename</font> alloc
+        <font color='#5555FF'>&gt;</font>
+    <font color='#0000FF'><u>void</u></font> <b><a name='find_clusters_using_angular_kmeans'></a>find_clusters_using_angular_kmeans</b> <font face='Lucida Console'>(</font>
+        <font color='#0000FF'>const</font> array_type<font color='#5555FF'>&amp;</font> samples,
+        std::vector<font color='#5555FF'>&lt;</font>sample_type, alloc<font color='#5555FF'>&gt;</font><font color='#5555FF'>&amp;</font> centers,
+        <font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> max_iter <font color='#5555FF'>=</font> <font color='#979000'>1000</font>
+    <font face='Lucida Console'>)</font>;
+    <font color='#009900'>/*!
+        requires
+            - samples.size() &gt; 0
+            - samples == a bunch of row or column vectors and they all must be of the
+              same length.
+            - centers.size() &gt; 0
+            - array_type == something with an interface compatible with std::vector
+              and it must contain row or column vectors capable of being stored in 
+              sample_type objects.
+            - sample_type == a dlib::matrix capable of representing vectors
+        ensures
+            - performs linear kmeans clustering on the samples, except instead of using
+              Euclidean distance to compare samples to the centers it uses the angle
+              between a sample and a center (with respect to the origin).  So we try to
+              cluster samples together if they have small angles with respect to each
+              other. The clustering begins with the initial set of centers given as an
+              argument to this function.  When it finishes #centers will contain the
+              resulting centers.
+            - for all valid i:
+                - length(#centers[i]) == 1
+                  (i.e. the output centers are scaled to be unit vectors since their
+                  magnitude is irrelevant.  Moreover, this makes it so you can use
+                  functions like nearest_center() with #centers to find the cluster
+                  assignments.)
+            - No more than max_iter iterations will be performed before this function
               terminates.
     !*/</font>
 

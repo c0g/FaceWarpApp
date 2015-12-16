@@ -63,7 +63,7 @@ class OpenGLView: UIView {
     var eaglLayer: CAEAGLLayer!
     var context: EAGLContext!
     
-    var captureManager : CaptureManager?
+    var cap : CaptureFromFile?
     var renderer : Renderer?
     
     var camera : Int = 1
@@ -97,8 +97,9 @@ class OpenGLView: UIView {
         }
         
         self.renderer = Renderer(withContext: context, andLayer: eaglLayer, andCamera: camera)
-        doPhotoAlbum()
-        setupPipelineWithCamera(camera, andRenderer: renderer!)
+        self.cap = CaptureFromFile(withRenderer: self.renderer!)
+//        doPhotoAlbum()
+//        setupPipelineWithCamera(camera, andRenderer: renderer!)
     }
     
     func doPhotoAlbum() {
@@ -161,23 +162,23 @@ class OpenGLView: UIView {
                 }
             }
             
-            self.captureManager = CaptureManager(withDevice: device)
+//            self.captureManager = CaptureManager(withDevice: device)
             renderer.camera = camera
-            
-            do {
-                try self.captureManager?.connectToRenderer(renderer)
-            } catch {
-                print("Capture manager could not connect to renderer")
-//                exit(1)
-            }
-            
-            self.captureManager?.start()
+//            
+//            do {
+//                try self.captureManager?.connectToRenderer(renderer)
+//            } catch {
+//                print("Capture manager could not connect to renderer")
+////                exit(1)
+//            }
+//            
+//            self.captureManager?.start()
         }
     }
     
     func toggleCamera() {
-        self.captureManager!.stop()
-        self.captureManager = nil
+//        self.captureManager!.stop()
+//        self.captureManager = nil
         
         if self.camera == 0{
             camera = 1

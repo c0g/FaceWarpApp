@@ -8,7 +8,6 @@
 #include "../matrix.h"
 #include "../array2d.h"
 #include "../image_transforms/assign_image.h"
-#include <dispatch/dispatch.h>
 
 
 namespace dlib
@@ -19,7 +18,7 @@ namespace dlib
     class correlation_tracker
     {
     public:
-        dispatch_queue_t q = dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0);
+
         correlation_tracker (
         ) 
         {
@@ -79,13 +78,13 @@ namespace dlib
 
 
         unsigned long get_filter_size (
-        ) const { return 128/4; } // must be power of 2 // original 128/2
+        ) const { return 128/2; } // must be power of 2
 
         unsigned long get_num_scale_levels(
-        ) const { return 32/2; }  // must be power of 2 // original 32
+        ) const { return 32; }  // must be power of 2
 
         unsigned long get_scale_window_size (
-        ) const { return 23; } // original 23
+        ) const { return 23; }
 
         double get_regularizer_space (
         ) const { return 0.001; }
@@ -122,18 +121,13 @@ namespace dlib
 
 
             const point_transform_affine tform = make_chip(img, guess, F);
-//            std::cout << "F size " << F.size() << std::endl;
-//            for (unsigned long i = 0; i < F.size(); ++i)
-            dispatch_apply(F.size(), q, ^(size_t i) {
+            for (unsigned long i = 0; i < F.size(); ++i)
                 fft_inplace(F[i]);
-            });
 
             // use the current filter to predict the object's location
             G = 0; 
-//            for (unsigned long i = 0; i < F.size(); ++i)
-            dispatch_apply(F.size(), q, ^(size_t i) {
+            for (unsigned long i = 0; i < F.size(); ++i)
                 G += pointwise_multiply(F[i],conj(A[i]));
-            });
             G = pointwise_multiply(G, reciprocal(B+get_regularizer_space()));
             ifft_inplace(G);
             const dlib::vector<double,2> pp = max_point_interpolated(real(G));
@@ -160,25 +154,21 @@ namespace dlib
             // now update the position filters
             make_target_location_image(pp, G);
             B *= (1-get_nu_space());
-//            for (unsigned long i = 0; i < F.size(); ++i)
-            dispatch_apply(F.size(), q, ^(size_t i) {
+            for (unsigned long i = 0; i < F.size(); ++i)
+            {
                 A[i] = get_nu_space()*pointwise_multiply(G, F[i]) + (1-get_nu_space())*A[i];
                 B += get_nu_space()*(squared(real(F[i]))+squared(imag(F[i])));
-            });
+            }
 
 
 
             // Now predict the scale change
             make_scale_space(img, Fs);
-//            for (unsigned long i = 0; i < Fs.size(); ++i)
-            dispatch_apply(Fs.size(), q, ^(size_t i) {
+            for (unsigned long i = 0; i < Fs.size(); ++i)
                 fft_inplace(Fs[i]);
-            });
             Gs = 0;
-            dispatch_apply(Fs.size(), q, ^(size_t i) {
-//            for (unsigned long i = 0; i < Fs.size(); ++i)
+            for (unsigned long i = 0; i < Fs.size(); ++i)
                 Gs += pointwise_multiply(Fs[i],conj(As[i]));
-            });
             Gs = pointwise_multiply(Gs, reciprocal(Bs+get_regularizer_scale()));
             ifft_inplace(Gs);
             const double pos = max_point_interpolated(real(Gs)).y();
@@ -186,16 +176,18 @@ namespace dlib
             // update the rectangle's scale
             position *= std::pow(get_scale_pyramid_alpha(), pos-(double)get_num_scale_levels()/2);
 
-//            std::cout << "Fs size " << Fs.size() << std::endl;
 
 
             // Now update the scale filters
             make_scale_target_location_image(pos, Gs);
             Bs *= (1-get_nu_scale());
-            dispatch_apply(Fs.size(), q, ^(size_t i) {
+            for (unsigned long i = 0; i < Fs.size(); ++i)
+            {
                 As[i] = get_nu_scale()*pointwise_multiply(Gs, Fs[i]) + (1-get_nu_scale())*As[i];
                 Bs += get_nu_scale()*(squared(real(Fs[i]))+squared(imag(Fs[i])));
-            });
+            }
+
+
             return psr;
         }
 
@@ -220,7 +212,6 @@ namespace dlib
             // Make an image pyramid and put it into the chips array.
             const long chip_size = get_scale_window_size();
             drectangle ppp = position*std::pow(get_scale_pyramid_alpha(), -(double)get_num_scale_levels()/2);
-//            std::vector<array2d<pixel_type>> chips_vec;
             dlib::array<array2d<pixel_type> > chips;
             std::vector<dlib::vector<double,2> > from_points, to_points;
             from_points.push_back(point(0,0));
@@ -228,7 +219,6 @@ namespace dlib
             from_points.push_back(point(chip_size-1,chip_size-1));
             for (unsigned long i = 0; i < get_num_scale_levels(); ++i)
             {
-//            dispatch_apply(get_num_scale_levels(), q, ^(size_t i) {
                 array2d<pixel_type> chip(chip_size,chip_size);
 
                 // pull box into chip
@@ -240,15 +230,11 @@ namespace dlib
 
                 chips.push_back(chip);
                 ppp *= get_scale_pyramid_alpha();
-//            });
             }
-//
-//            for (auto & c : chips_vec) {
-//                chips.push_back(c);
-//            }
+
+
             // extract HOG for each chip
             dlib::array<dlib::array<array2d<float> > > hogs(chips.size());
-//            dispatch_apply(chips.size(), q, ^(size_t i) {
             for (unsigned long i = 0; i < chips.size(); ++i)
             {
                 extract_fhog_features(chips[i], hogs[i], 4);
@@ -256,7 +242,6 @@ namespace dlib
                 assign_image(hogs[i][31], chips[i]);
                 assign_image(hogs[i][31], mat(hogs[i][31])/255.0);
             }
-//            );
 
             // Now copy the hog features into the Fs outputs and also apply the cosine
             // windowing.

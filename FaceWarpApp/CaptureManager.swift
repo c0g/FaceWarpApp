@@ -51,8 +51,8 @@ class CaptureManager {
         
         videoOutput.alwaysDiscardsLateVideoFrames = true // Stops things getting bogged down if the CPU is being hammered
         videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA),] // 32BGRA needed to be OpenGL compatible
-        videoOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue()) // run on main thread
-        audioOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue())
+//        videoOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue()) // run on main thread
+//        audioOutput.setSampleBufferDelegate(renderer, queue: dispatch_get_main_queue())
         session.beginConfiguration()
         session.addOutput(videoOutput)
         session.addOutput(audioOutput)

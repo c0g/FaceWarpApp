@@ -342,7 +342,7 @@
         boxes_overlap<font face='Lucida Console'>(</font>overlap_tester<font face='Lucida Console'>)</font>
     <b>{</b>
         <font color='#009900'>// make sure requires clause is not broken
-</font>        <font color='#BB00BB'>DLIB_ASSERT</font><font face='Lucida Console'>(</font>scanner_.<font color='#BB00BB'>get_num_detection_templates</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&gt;</font> <font color='#979000'>0</font> <font color='#5555FF'>&amp;</font><font color='#5555FF'>&amp;</font> w_.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&gt;</font> <font color='#979000'>0</font>,
+</font>        <font color='#BB00BB'>DLIB_CASSERT</font><font face='Lucida Console'>(</font>scanner_.<font color='#BB00BB'>get_num_detection_templates</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&gt;</font> <font color='#979000'>0</font> <font color='#5555FF'>&amp;</font><font color='#5555FF'>&amp;</font> w_.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>&gt;</font> <font color='#979000'>0</font>,
             "<font color='#CC0000'>\t object_detector::object_detector(scanner_,overlap_tester,w_)</font>"
             <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t Invalid inputs were given to this function </font>"
             <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t scanner_.get_num_detection_templates(): </font>" <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> scanner_.<font color='#BB00BB'>get_num_detection_templates</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>
@@ -350,10 +350,9 @@
             <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t this: </font>" <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> <font color='#0000FF'>this</font>
             <font face='Lucida Console'>)</font>;
 
-<font color='#0000FF'>#ifdef</font> ENABLE_ASSERTS
         <font color='#0000FF'>for</font> <font face='Lucida Console'>(</font><font color='#0000FF'><u>unsigned</u></font> <font color='#0000FF'><u>long</u></font> i <font color='#5555FF'>=</font> <font color='#979000'>0</font>; i <font color='#5555FF'>&lt;</font> w_.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>; <font color='#5555FF'>+</font><font color='#5555FF'>+</font>i<font face='Lucida Console'>)</font>
         <b>{</b>
-            <font color='#BB00BB'>DLIB_ASSERT</font><font face='Lucida Console'>(</font>w_[i].<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font><font color='#5555FF'>=</font> scanner_.<font color='#BB00BB'>get_num_dimensions</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>+</font> <font color='#979000'>1</font>, 
+            <font color='#BB00BB'>DLIB_CASSERT</font><font face='Lucida Console'>(</font>w_[i].<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>=</font><font color='#5555FF'>=</font> scanner_.<font color='#BB00BB'>get_num_dimensions</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>+</font> <font color='#979000'>1</font>, 
                 "<font color='#CC0000'>\t object_detector::object_detector(scanner_,overlap_tester,w_)</font>"
                 <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t Invalid inputs were given to this function </font>"
                 <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t scanner_.get_num_detection_templates(): </font>" <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> scanner_.<font color='#BB00BB'>get_num_detection_templates</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>
@@ -362,7 +361,6 @@
                 <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t this: </font>" <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> <font color='#0000FF'>this</font>
                 <font face='Lucida Console'>)</font>;
         <b>}</b>
-<font color='#0000FF'>#endif</font>
 
         scanner.<font color='#BB00BB'>copy_configuration</font><font face='Lucida Console'>(</font>scanner_<font face='Lucida Console'>)</font>;
         w.<font color='#BB00BB'>resize</font><font face='Lucida Console'>(</font>w_.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font><font face='Lucida Console'>)</font>;
@@ -383,7 +381,7 @@
         <font color='#0000FF'>const</font> std::vector<font color='#5555FF'>&lt;</font>object_detector<font color='#5555FF'>&gt;</font><font color='#5555FF'>&amp;</font> detectors
     <font face='Lucida Console'>)</font>
     <b>{</b>
-        <font color='#BB00BB'>DLIB_ASSERT</font><font face='Lucida Console'>(</font>detectors.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>!</font><font color='#5555FF'>=</font> <font color='#979000'>0</font>,
+        <font color='#BB00BB'>DLIB_CASSERT</font><font face='Lucida Console'>(</font>detectors.<font color='#BB00BB'>size</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font> <font color='#5555FF'>!</font><font color='#5555FF'>=</font> <font color='#979000'>0</font>,
                 "<font color='#CC0000'>\t object_detector::object_detector(detectors)</font>"
                 <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t Invalid inputs were given to this function </font>"
                 <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> "<font color='#CC0000'>\n\t this: </font>" <font color='#5555FF'>&lt;</font><font color='#5555FF'>&lt;</font> <font color='#0000FF'>this</font>

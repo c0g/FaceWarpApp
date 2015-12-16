@@ -341,7 +341,7 @@ namespace dlib
         boxes_overlap(overlap_tester)
     {
         // make sure requires clause is not broken
-        DLIB_ASSERT(scanner_.get_num_detection_templates() > 0 && w_.size() > 0,
+        DLIB_CASSERT(scanner_.get_num_detection_templates() > 0 && w_.size() > 0,
             "\t object_detector::object_detector(scanner_,overlap_tester,w_)"
             << "\n\t Invalid inputs were given to this function "
             << "\n\t scanner_.get_num_detection_templates(): " << scanner_.get_num_detection_templates()
@@ -349,10 +349,9 @@ namespace dlib
             << "\n\t this: " << this
             );
 
-#ifdef ENABLE_ASSERTS
         for (unsigned long i = 0; i < w_.size(); ++i)
         {
-            DLIB_ASSERT(w_[i].size() == scanner_.get_num_dimensions() + 1, 
+            DLIB_CASSERT(w_[i].size() == scanner_.get_num_dimensions() + 1, 
                 "\t object_detector::object_detector(scanner_,overlap_tester,w_)"
                 << "\n\t Invalid inputs were given to this function "
                 << "\n\t scanner_.get_num_detection_templates(): " << scanner_.get_num_detection_templates()
@@ -361,7 +360,6 @@ namespace dlib
                 << "\n\t this: " << this
                 );
         }
-#endif
 
         scanner.copy_configuration(scanner_);
         w.resize(w_.size());
@@ -382,7 +380,7 @@ namespace dlib
         const std::vector<object_detector>& detectors
     )
     {
-        DLIB_ASSERT(detectors.size() != 0,
+        DLIB_CASSERT(detectors.size() != 0,
                 "\t object_detector::object_detector(detectors)"
                 << "\n\t Invalid inputs were given to this function "
                 << "\n\t this: " << this
@@ -509,28 +507,8 @@ namespace dlib
         (*this)(img,dets,adjust_threshold);
 
         std::vector<rectangle> final_dets(dets.size());
-        std::vector<rectangle> rect_dets(dets.size());
-        std::vector<int> face_indices;
-        std::vector<long> face_left_boundaries;
-        
-        for (unsigned long i = 0; i < dets.size(); ++i){
-            rect_dets[i] = dets[i].rect;
-        };
-    
-        std::vector<int> indices(dets.size());
-        std::size_t n(0);
-        std::generate(std::begin(indices), std::end(indices), [&]{ return n++; });
-        
-
-        std::sort(std::begin(indices),
-                  std::end(indices),
-                  [&](int i1, int i2) { return rect_dets[i1].left() < rect_dets[i2].left(); } );
-        
-        
-        //Sort instead by left/right on screen
-        for (unsigned long i = 0; i < dets.size(); ++i){
-            final_dets[i] = rect_dets[indices[i]];
-        };
+        for (unsigned long i = 0; i < dets.size(); ++i)
+            final_dets[i] = dets[i].rect;
 
         return final_dets;
     }

@@ -19,13 +19,14 @@
             <font color='#0000FF'>const</font> std::string<font color='#5555FF'>&amp;</font> new_dir
         <font face='Lucida Console'>)</font>
         <b>{</b>
+            reverted <font color='#5555FF'>=</font> <font color='#979000'>false</font>;
             _old_dir <font color='#5555FF'>=</font> <font color='#BB00BB'>get_current_dir</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>;
             <font color='#BB00BB'>set_current_dir</font><font face='Lucida Console'>(</font>new_dir<font face='Lucida Console'>)</font>;
         <b>}</b>
 
         ~<b><a name='locally_change_current_dir'></a>locally_change_current_dir</b><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>
         <b>{</b>
-            <font color='#BB00BB'>set_current_dir</font><font face='Lucida Console'>(</font>_old_dir<font face='Lucida Console'>)</font>;
+            <font color='#BB00BB'>revert</font><font face='Lucida Console'>(</font><font face='Lucida Console'>)</font>;
         <b>}</b>
 
         <font color='#0000FF'>const</font> std::string<font color='#5555FF'>&amp;</font> <b><a name='old_dir'></a>old_dir</b> <font face='Lucida Console'>(</font>
@@ -34,7 +35,18 @@
             <font color='#0000FF'>return</font> _old_dir;
         <b>}</b>
 
+        <font color='#0000FF'><u>void</u></font> <b><a name='revert'></a>revert</b> <font face='Lucida Console'>(</font>
+        <font face='Lucida Console'>)</font>
+        <b>{</b>
+            <font color='#0000FF'>if</font> <font face='Lucida Console'>(</font><font color='#5555FF'>!</font>reverted<font face='Lucida Console'>)</font>
+            <b>{</b>
+                <font color='#BB00BB'>set_current_dir</font><font face='Lucida Console'>(</font>_old_dir<font face='Lucida Console'>)</font>;
+                reverted <font color='#5555FF'>=</font> <font color='#979000'>true</font>;
+            <b>}</b>
+        <b>}</b>
+
     <font color='#0000FF'>private</font>:
+        <font color='#0000FF'><u>bool</u></font> reverted;
         std::string _old_dir;
     <b>}</b>;
 

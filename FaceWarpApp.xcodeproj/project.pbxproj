@@ -29,6 +29,8 @@
 		E21BAB2E1BC193B700E9B58F /* AverageVerticalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */; };
 		E21BAB301BC193C400E9B58F /* AverageFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */; };
 		E21D45F81BC556A6006F2CDE /* AverageHorizontalVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */; };
+		E220650E1C2099AF0093DCE8 /* CaptureFromFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E220650D1C2099AF0093DCE8 /* CaptureFromFile.swift */; };
+		E22065141C20A0710093DCE8 /* movie.mov in Resources */ = {isa = PBXBuildFile; fileRef = E22065131C20A0710093DCE8 /* movie.mov */; };
 		E221D0FF1BC6DA0B009F4B0B /* BrightenVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */; };
 		E221D1011BC6DA17009F4B0B /* BrightenFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */; };
 		E22F8B901BBB004100D9AAE7 /* Warpnormalise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED3AB881BB6BF250092A7CE /* Warpnormalise.swift */; };
@@ -143,6 +145,9 @@
 		E21BAB2D1BC193B700E9B58F /* AverageVerticalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageVerticalVertex.glsl; sourceTree = "<group>"; };
 		E21BAB2F1BC193C400E9B58F /* AverageFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageFragment.glsl; sourceTree = "<group>"; };
 		E21D45F71BC556A6006F2CDE /* AverageHorizontalVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AverageHorizontalVertex.glsl; sourceTree = "<group>"; };
+		E220650D1C2099AF0093DCE8 /* CaptureFromFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureFromFile.swift; sourceTree = "<group>"; };
+		E22065121C209E0A0093DCE8 /* doit.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = doit.mp4; sourceTree = "<group>"; };
+		E22065131C20A0710093DCE8 /* movie.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = movie.mov; sourceTree = "<group>"; };
 		E221D0FE1BC6DA0B009F4B0B /* BrightenVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenVertex.glsl; sourceTree = "<group>"; };
 		E221D1001BC6DA17009F4B0B /* BrightenFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = BrightenFragment.glsl; sourceTree = "<group>"; };
 		E25C0D461BD5077C00F9157F /* camera_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera_icon.png; sourceTree = "<group>"; };
@@ -317,10 +322,12 @@
 				E2CB65B41C02A02800E92E38 /* robot.png */,
 				E25C0D611BD7C1FE00F9157F /* eye.png */,
 				E25C0D621BD7C1FE00F9157F /* mask.png */,
+				E22065131C20A0710093DCE8 /* movie.mov */,
 				5E65128D1BD587AA00455528 /* overlay2.png */,
 				E25C0D5F1BD6268100F9157F /* overlay3.png */,
 				E25C0D4A1BD53F4A00F9157F /* overlay.png */,
 				E20FE76A1BB032AF00142050 /* Main.storyboard */,
+				E22065121C209E0A0093DCE8 /* doit.mp4 */,
 				E20F9F181C01BD5800871A94 /* image_grid.png */,
 				E2B3F4341BDD32B400B6A7E3 /* camera_button.png */,
 				E2B3F42F1BDD2C4A00B6A7E3 /* face_overlay.png */,
@@ -387,6 +394,7 @@
 				E28E56391BBD324700358D16 /* ShaderProgram.swift */,
 				E28E56471BBD7A1100358D16 /* Renderer.swift */,
 				E21069581BCA873700E28B33 /* Recorder.swift */,
+				E220650D1C2099AF0093DCE8 /* CaptureFromFile.swift */,
 			);
 			name = OpenGL;
 			sourceTree = "<group>";
@@ -529,6 +537,7 @@
 				5EB989FA1BC8A1F4002BF51F /* launch_logo.png in Resources */,
 				E28E56251BBC31B700358D16 /* GaussianFragment.glsl in Resources */,
 				E2B3F4351BDD32B400B6A7E3 /* camera_button.png in Resources */,
+				E22065141C20A0710093DCE8 /* movie.mov in Resources */,
 				E28E56231BBC319D00358D16 /* GaussianVerticalVertex.glsl in Resources */,
 				E25C0D601BD6268100F9157F /* overlay3.png in Resources */,
 				E25C0D4F1BD54DF400F9157F /* PassVertex.glsl in Resources */,
@@ -622,6 +631,7 @@
 				E28EB8131BC8388200E639E7 /* Syncro.swift in Sources */,
 				5ED3AB8B1BB6C14E0092A7CE /* normalise_warp.cpp in Sources */,
 				E2B55E551BB69F390086F719 /* triangulator.cpp in Sources */,
+				E220650E1C2099AF0093DCE8 /* CaptureFromFile.swift in Sources */,
 				E20FE7691BB032A800142050 /* OpenGLView.swift in Sources */,
 				E28D3ABD1BAC464700ACC953 /* source.cpp in Sources */,
 				E20FE7671BB0326C00142050 /* ViewController.swift in Sources */,

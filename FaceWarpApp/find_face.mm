@@ -80,10 +80,10 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
         
         facesAverage = [[NSMutableArray alloc] init];
         faceQueue = dispatch_queue_create("com.PHI.faceQueue", DISPATCH_QUEUE_CONCURRENT);
-        dispatch_async(faceQueue, ^{
+//        dispatch_async(faceQueue, ^{
             dlib::deserialize(dat_file.UTF8String) >> predictor;
             doPredict = true;
-        });
+//        });
         movingAverageCount = 0;
 
     }
@@ -103,7 +103,7 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
 -(void)retrackInImage:(const cv::Mat &) smallMat {
     // Asynchronously find the faces using dlib's face detector
     cv::Mat smallMatCopy = smallMat;
-    dispatch_async(faceQueue, ^{
+//    dispatch_async(faceQueue, ^{
         dlib::cv_image<dlib::rgb_pixel> smallImgCopy(smallMatCopy);
         std::vector<dlib::rectangle> faces = detector(smallImgCopy);
 
@@ -113,7 +113,7 @@ cv::Mat makeMat(CVPixelBufferRef buffer) {
         dlibmtx.unlock();
 
         dlibDone = true;
-    });
+//    });
 }
 
 -(std::vector<dlib::rectangle>) getRectsWithScale:(int) scale {

@@ -506,6 +506,18 @@
 
 <font color='#009900'>// ----------------------------------------------------------------------------------------
 </font>
+    drectangle <b><a name='centered_drect'></a>centered_drect</b> <font face='Lucida Console'>(</font>
+        <font color='#0000FF'>const</font> drectangle<font color='#5555FF'>&amp;</font> rect,
+        <font color='#0000FF'><u>double</u></font> width,
+        <font color='#0000FF'><u>double</u></font> height
+    <font face='Lucida Console'>)</font>;
+    <font color='#009900'>/*!
+        ensures
+            - returns centered_drect(center(rect), width, height)
+    !*/</font>
+
+<font color='#009900'>// ----------------------------------------------------------------------------------------
+</font>
     <font color='#0000FF'>const</font> drectangle <b><a name='shrink_rect'></a>shrink_rect</b> <font face='Lucida Console'>(</font>
         <font color='#0000FF'>const</font> drectangle<font color='#5555FF'>&amp;</font> rect,
         <font color='#0000FF'><u>double</u></font> num 
@@ -553,6 +565,24 @@
         ensures
             - return shrink_rect(rect, -width, -height)
               (i.e. grows the given drectangle by expanding its border)
+    !*/</font>
+
+<font color='#009900'>// ----------------------------------------------------------------------------------------
+</font>
+    drectangle <b><a name='set_aspect_ratio'></a>set_aspect_ratio</b> <font face='Lucida Console'>(</font>
+        <font color='#0000FF'>const</font> drectangle<font color='#5555FF'>&amp;</font> rect,
+        <font color='#0000FF'><u>double</u></font> ratio
+    <font face='Lucida Console'>)</font>;
+    <font color='#009900'>/*!
+        requires
+            - ratio &gt; 0
+        ensures
+            - This function reshapes the given rectangle so that it has the given aspect
+              ratio.  In particular, this means we return a rectangle R such that the
+              following equations are true:
+                - R.width()/R.height() == ratio
+                - R.area() == rect.area()
+                - dcenter(rect) == dcenter(R)
     !*/</font>
 
 <font color='#009900'>// ----------------------------------------------------------------------------------------

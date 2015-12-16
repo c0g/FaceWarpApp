@@ -44,6 +44,7 @@ class Recorder {
         print("Preparing")
         let dir =  NSTemporaryDirectory()
         vidURL = NSURL(fileURLWithPath: "\(dir)/movie.m4v")
+        print(vidURL)
         do {
             try NSFileManager.defaultManager().removeItemAtURL(vidURL!)
         } catch {
@@ -133,6 +134,7 @@ class Recorder {
                     //            albumFound = true
                     assetCollection = first_Obj as! PHAssetCollection
                     self.saveVideoAssetAtURL(self.vidURL!, inCollection: assetCollection!)
+                    print(self.vidURL!)
                 }else{
                     //Album placeholder for the asset collection, used to reference collection in completion handler
                     var albumPlaceholder:PHObjectPlaceholder!
@@ -149,6 +151,7 @@ class Recorder {
                                 let collection = PHAssetCollection.fetchAssetCollectionsWithLocalIdentifiers([albumPlaceholder.localIdentifier], options: nil)
                                 assetCollection = collection.firstObject as! PHAssetCollection
                                 self.saveVideoAssetAtURL(self.vidURL!, inCollection: assetCollection!)
+                                print(self.vidURL!)
                             }else{
                                 print("Error creating folder")
                                 //                        self.albumFound = false

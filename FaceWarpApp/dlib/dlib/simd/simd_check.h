@@ -26,12 +26,6 @@
             #define DLIB_HAVE_SSE2
         #endif
     #else
-        #ifdef __ARM_NEON
-            #ifndef DLIB_HAVE_NEON
-                #define DLIB_HAVE_NEON
-            #endif
-        #endif
-
         #ifdef __SSE2__
             #ifndef DLIB_HAVE_SSE2
                 #define DLIB_HAVE_SSE2
@@ -62,10 +56,6 @@
 
  
 // ----------------------------------------------------------------------------------------
-
-#ifdef DLIB_HAVE_NEON
-    #include "SSE2TONEON.h"
-#endif
 
 #ifdef DLIB_HAVE_SSE2
     #include <xmmintrin.h>
