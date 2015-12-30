@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15A279b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="0f0-BC-lgn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="0f0-BC-lgn">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -21,7 +21,6 @@
                         <subviews>
                             <containerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uNX-lt-2MC">
                                 <rect key="frame" x="500" y="0.0" width="100" height="600"/>
-                                <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -45,7 +44,6 @@
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SR7-yP-2IO" userLabel="Warp sel container">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <animations/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="lCW-In-Qnj">
@@ -67,7 +65,6 @@
                                 </connections>
                             </containerView>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" red="1" green="0.52648174316488017" blue="0.48974023977280912" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="uNX-lt-2MC" firstAttribute="bottom" secondItem="2fi-mo-0CV" secondAttribute="top" id="6pw-yA-fSo"/>
@@ -141,7 +138,6 @@
                         <subviews>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z70-gz-8tu">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="JtL-69-kX4">
                                         <variation key="heightClass=regular-widthClass=compact" constant="70"/>
@@ -171,7 +167,6 @@
                             </button>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fH6-uM-tmT">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="O3d-uO-06p"/>
                                     <constraint firstAttribute="width" constant="40" id="uIf-6X-POE"/>
@@ -195,7 +190,6 @@
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Vf-CM-gAN" customClass="AKPickerView" customModule="Pixurgery" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="ATP-RX-9IB"/>
                                 </constraints>
@@ -220,7 +214,6 @@
                             </view>
                             <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l1D-HK-dNH">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <animations/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Ppj-G4-Sq7"/>
                                     <constraint firstAttribute="width" constant="40" id="qeE-TF-zUT"/>
@@ -243,7 +236,6 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.70370565878378377" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="BE2-VB-UEB" firstAttribute="top" secondItem="Z70-gz-8tu" secondAttribute="bottom" constant="5" id="0M3-1y-06a"/>
@@ -349,7 +341,6 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K7i-oE-wu1" customClass="AKPickerView" customModule="Pixurgery" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="textColor">
@@ -361,7 +352,6 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
-                        <animations/>
                         <constraints>
                             <constraint firstItem="K7i-oE-wu1" firstAttribute="leading" secondItem="ZDS-XH-pMY" secondAttribute="leading" id="2o3-UR-rST"/>
                             <constraint firstItem="K7i-oE-wu1" firstAttribute="top" secondItem="ZDS-XH-pMY" secondAttribute="top" constant="20" symbolic="YES" id="Aiq-w4-WSg">
@@ -419,7 +409,6 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="JAt-t4-0XL">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

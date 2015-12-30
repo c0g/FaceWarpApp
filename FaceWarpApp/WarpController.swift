@@ -13,7 +13,7 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
     var delegate : AppDelegate? = nil
     let SELECTED_WARP = "PickerViewSelectedWarp"
     let WARP_PACK_1 = "PixurgeryWarpPack1"
-    var titles = ["TINY", "SWAP", "ROBOT", "ANIME", "WOBBLE"]
+    var titles = ["NONE", "TINY", "SWAP", "ROBOT", "ANIME", "WOBBLE"]
     var hasWarpPack1 = false
     
     
@@ -83,6 +83,8 @@ class WarpController : UIViewController, AKPickerViewDataSource, AKPickerViewDel
             delegate!.syncro.warp = .DYNAMIC
         case "ROBOT":
             delegate!.syncro.warp = .ROBOT
+        case "NONE":
+            delegate!.syncro.warp = .NONE
         case _:
             print("Shouldn't be here!")
         }
