@@ -20,6 +20,8 @@ class CaptureController : UIViewController, MWPhotoBrowserDelegate, AKPickerView
     var thumbs : [MWPhoto] = []
     var uithumb : UIImage? = nil
     
+    let titles = ["IMAGE", "VIDEO"]
+    
     @IBOutlet weak var capture: UIButton!
     @IBOutlet weak var openGrid: UIButton!
     @IBOutlet weak var selectCamera: UIButton!
